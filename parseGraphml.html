@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
+</head>
+
+<body>
+
+	<h1> Parsing the graphml to json object array as required by cytoscape </h1>
+
+	<script type="text/javascript">
+
+		var graphP = $.ajax({
+                url: 'assets/data/Trumpworld_CPM_20160401.graphml',
+                type: 'GET',
+                dataType: 'text'
+           	});
+		var $graphmlNodes;
+		var $nodes;
+		Promise.all([graphP]).then(function (then) {
+			var xmlDoc = $.parseXML( then[0] );
+			var $graphml = $( xmlDoc );
+			$graphmlNodes = $graphml.find("node");
+			$nodes = [];
+			$graphmlNodes.each(function(i,x) {
+				//console.log(x);
+				$nodes.push({
+					"id": x.attributes["id"].value,
+					"data": getNodeData(x)
+				});
+			});
+
+			function getNodeData($node) {
+				var dataElements = $node.getElementsByTagName("data");
+				var data = {}
+				for (i=0; i< dataElements.length; i++) {
+					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
+				}
+				return data;
+			}
+			console.log($nodes);
+		
+		})
+	
+	</script>
+
+</body>
+
+</html>

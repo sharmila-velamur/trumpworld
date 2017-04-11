@@ -245,7 +245,22 @@
                     ready: function() {
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        this.graphml(then[0]);                                    
+                        this.graphml(then[0]);
+                        let ccn = this.elements().closenessCentralityNormalized({directed:false});
+                        let bc = this.elements().betweennessCentrality({directed:false});
+                        let dcn = this.elements().degreeCentralityNormalized({directed:false});
+                        let pr = this.elements().pageRank();
+
+                        this.nodes().forEach(n => {
+                            n.data({
+                                degree: n.degree(),
+                                ccn: ccn.closeness( n ),
+                                bc: bc.betweennessNormalized( n ),
+                                dcn: dcn.degree( n ),
+                                pr: pr.rank( n )
+                            });
+                            console.log(n.data());
+                        });                                    
                     }
                     
 
@@ -253,15 +268,12 @@
                 console.log(cy.nodes()[0]);
                 var layout = cy.makeLayout(layoutOptions);
                 layout.run();
-                // layout.one("layoutstop", function() {
-                //     console.log("In layoutstop");
-                //     for (var i=0 ; i<cy.nodes().length ; i++) {
-                //         cy.nodes()[i].data()["degree"] = cy.nodes()[i].degree();   
-                //     } 
-                // });
+                layout.one("layoutstop", function() {
+                    console.log("Layout Stop Invoked"); 
+                });
 
                 /**********************************************************************/
-                /*** On Click of Trump World show Cytoscape Container           ***********/
+                /*** On Click of Trump World show Cytoscape Container       ***********/
 
                 $("#graph_viz_btn").click(function() {
                     $("#cy_container").show();
