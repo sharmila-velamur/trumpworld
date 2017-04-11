@@ -1,0 +1,23 @@
+html,
+body {
+    font: 12px metrophobic, helvetica neue, helvetica, arial, sans-serif;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+#cy {
+    height:100%;
+    border: 1px solid #CCC;
+}
+
+.title {
+    font-family: Metrophobic, sans-serif !important;
+}
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+

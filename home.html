@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+
+    <title>Trump World</title>
+    <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
+    <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/ripples.min.css">
+    <link href="assets/css/styles.css" rel="stylesheet" />
+
+    <!-- Material Design for Bootstrap -->
+    <script>
+        $.material.init();
+
+    </script>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h2 class="title">Mapping The Trump World</h2>
+        </div>
+        <row>
+            <div class="col-md-7 col-lg-7 col-sm-7">
+                <div class="card btn-group btn-group-justified">
+                    <a href="javascript:void(0)" class="btn ">Description</a>
+                    <a href="javascript:void(0)" class="btn ">Rankings</a>
+                    <a href="javascript:void(0)" class="btn ">Data</a>
+                    <a href="javascript:void(0)" class="btn ">Help</a>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-3 col-md-offset-2 col-sm-offset-2 col-lg-offset-2">
+                <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>
+            </div>
+        </row>
+        <row id="home">
+            <div class="col-md-9 col-lg-9 col-sm-9">
+                <div class="panel panel-primary">
+                    <div id="cy_container">
+                        <div id="cy"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-3">
+                <div class="card">
+                    <row class="vertical-align">
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
+                        </div>
+                        <div class="col-md-5 col-lg-5 col-sm-5">
+                            <div class="form-group label-static has-info">
+                                <label for="startNode" class="control-label">Start At</label>
+                                <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-lg-5 col-sm-5">
+                            <div class="form-group label-static has-info">
+                                <label for="endNode" class="control-label">End At</label>
+                                <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
+                            </div>
+                        </div>
+                    </row>
+                    <row class="vertical-align">
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
+                        </div>
+                        <div class="col-md-9 col-lg-9 col-sm-9">
+                            <div class="form-group label-static has-error">
+                                <label for="focusOn" class="control-label">Focus On</label>
+                                <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
+                            </div>
+                        </div>
+                    </row>
+                    <row class="vertical-align">
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                        </div>
+                        <div class="col-md-10 col-lg-10 col-sm-10">
+                            <div class="form-group label-static has-success">
+                                <label for="resizeNodes" class="control-label">Resize Nodes</label>
+                                <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                                    <option value="">Select</option>
+                                    <option value="degree"> Most Connected (Degree) </option>
+                                    <option value="betweeness"> Most Paths (Betweeness) </option>
+                                    <option value="closeness"> Most Reach (Closeness) </option>
+                                </select>
+                            </div>
+                        </div>
+                    </row>
+                </div>
+
+            </div>
+        </row>
+
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+
+            "use strict";
+
+
+            var graphP = $.ajax({
+                url: '../assets/data/Trumpworld_CPM_20160401.graphml',
+                type: 'GET',
+                dataType: 'text'
+            });
+            // also get style via ajax
+            var styleP = $.ajax({
+                url: '../assets/cose-layout-styles.txt',
+                type: 'GET',
+                dataType: 'text'
+            });
+
+            var layoutOptions = {
+                name: 'cytoscape-ngraph.forcelayout',
+                async: {
+                    // tell layout that we want to compute all at once:
+                    maxIterations: 1000,
+                    stepsPerCycle: 30,
+
+                    // Run it till the end:
+                    waitForStep: false
+                },
+                physics: {
+                    /**
+                     * Ideal length for links (springs in physical model).
+                     */
+                    springLength: 100,
+
+                    /**
+                     * Hook's law coefficient. 1 - solid spring.
+                     */
+                    springCoeff: 0.0008,
+
+                    /**
+                     * Coulomb's law coefficient. It's used to repel nodes thus should be negative
+                     * if you make it positive nodes start attract each other :).
+                     */
+                    gravity: -1.2,
+
+                    /**
+                     * Theta coefficient from Barnes Hut simulation. Ranged between (0, 1).
+                     * The closer it's to 1 the more nodes algorithm will have to go through.
+                     * Setting it to one makes Barnes Hut simulation no different from
+                     * brute-force forces calculation (each node is considered).
+                     */
+                    theta: 0.8,
+
+                    /**
+                     * Drag force coefficient. Used to slow down system, thus should be less than 1.
+                     * The closer it is to 0 the less tight system will be.
+                     */
+                    dragCoeff: 0.02,
+
+                    /**
+                     * Default time step (dt) for forces integration
+                     */
+                    timeStep: 20,
+                    iterations: 10000,
+                    fit: true,
+
+                    /**
+                     * Maximum movement of the system which can be considered as stabilized
+                     */
+                    stableThreshold: 0.000009
+                },
+                iterations: 10000,
+                refreshInterval: 16, // in ms
+                refreshIterations: 10, // iterations until thread sends an update
+                stableThreshold: 2,
+                animate: true,
+                fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
+            };
+            // when both graph export json and style loaded, init cy
+            Promise.all([graphP, styleP]).then(initCy);
+
+            function initCy(then) {
+                var win = $(window);
+
+                var styleJson = then[1];
+                //var elements = getCyElementsForTest();
+                var cy = window.cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    style: styleJson,
+                    motionBlur: true,
+                    selectionType: 'single',
+                    boxSelectionEnabled: false,
+                    utounselectify: true,
+                    ready: function() {
+                        $("#cy_container").height(win.innerHeight() - 130);
+                        this.resize();
+                        this.graphml(then[0]);
+                        this.layout(layoutOptions);
+                    }
+
+                });
+
+                function resize() {
+                    console.log(win.height(), win.innerHeight());
+                    $("#cy_container").height(win.innerHeight() - 130);
+                    cy.resize();
+                }
+
+                win.resize(function() {
+                    resize();
+                });
+
+            }
+
+
+
+        });
+
+    </script>
+</body>
+
+</html>
