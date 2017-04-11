@@ -169,7 +169,7 @@
                     /**
                      * Ideal length for links (springs in physical model).
                      */
-                    springLength: 100,
+                    springLength: 250,
 
                     /**
                      * Hook's law coefficient. 1 - solid spring.
@@ -180,7 +180,7 @@
                      * Coulomb's law coefficient. It's used to repel nodes thus should be negative
                      * if you make it positive nodes start attract each other :).
                      */
-                    gravity: -1.2,
+                    gravity: -8.0,
 
                     /**
                      * Theta coefficient from Barnes Hut simulation. Ranged between (0, 1).
@@ -194,7 +194,7 @@
                      * Drag force coefficient. Used to slow down system, thus should be less than 1.
                      * The closer it is to 0 the less tight system will be.
                      */
-                    dragCoeff: 0.02,
+                    dragCoeff: 0.0001,
 
                     /**
                      * Default time step (dt) for forces integration
@@ -206,14 +206,14 @@
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
-                    stableThreshold: 0.001
+                    stableThreshold: 0.00009
                 },
                 iterations: 1000,
-                refreshInterval: 160, // in ms
-                refreshIterations: 100, // iterations until thread sends an update
+                refreshInterval: 16, // in ms
+                refreshIterations: 10, // iterations until thread sends an update
                 stableThreshold: 2,
-                animate: false,
-                fit: true //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
+                animate: true,
+                fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
             };
 
             function resize() {
