@@ -21,3 +21,10 @@ body {
     align-items: center;
 }
 
+#rankings_container,
+#description_container,
+#graph_data_container,
+#help_container {
+    display: none;
+    border: 1px solid #DDD;
+}
