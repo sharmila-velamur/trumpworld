@@ -23,6 +23,14 @@ node[label = "Contract"] {
     opacity:0.4;
     content: data(name);
 }
+node[[degree > 50]] {
+    width: 150px;
+    height:150px;
+}
+node[[degree < 50]] {
+    width: 5px;
+    height:5px;
+}
 
 edge {
     width: 1;

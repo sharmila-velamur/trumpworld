@@ -140,6 +140,7 @@
         $(function() {
 
             "use strict";
+            var win = $(window);
 
 
             var graphP = $.ajax({
@@ -199,54 +200,65 @@
                      * Default time step (dt) for forces integration
                      */
                     timeStep: 20,
-                    iterations: 10000,
+                    iterations: 1000,
                     fit: true,
 
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
-                    stableThreshold: 0.000009
+                    stableThreshold: 0.001
                 },
-                iterations: 10000,
-                refreshInterval: 16, // in ms
-                refreshIterations: 10, // iterations until thread sends an update
+                iterations: 1000,
+                refreshInterval: 160, // in ms
+                refreshIterations: 100, // iterations until thread sends an update
                 stableThreshold: 2,
-                animate: true,
-                fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
+                animate: false,
+                fit: true //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
             };
+
+            function resize() {
+                console.log(win.height(), win.innerHeight());
+                $("#cy_container").height(win.innerHeight() - 130);
+                cy.resize();
+            }
+
+            win.resize(function() {
+                resize();
+            });
+
             // when both graph export json and style loaded, init cy
             Promise.all([graphP, styleP]).then(initCy);
 
             function initCy(then) {
-                var win = $(window);
+                
 
                 var styleJson = then[1];
                 //var elements = getCyElementsForTest();
                 var cy = window.cy = cytoscape({
                     container: document.getElementById('cy'),
                     style: styleJson,
-                    motionBlur: true,
-                    selectionType: 'single',
+                    //hideEdgesOnViewport: true,
+                    //textureOnViewport: true,
                     boxSelectionEnabled: false,
-                    utounselectify: true,
+                    autounselectify: false,
+                    //autoungrabify: false,
                     ready: function() {
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        this.graphml(then[0]);
-                        this.layout(layoutOptions);
+                        this.graphml(then[0]);                                    
                     }
+                    
 
                 });
-
-                function resize() {
-                    console.log(win.height(), win.innerHeight());
-                    $("#cy_container").height(win.innerHeight() - 130);
-                    cy.resize();
-                }
-
-                win.resize(function() {
-                    resize();
-                });
+                console.log(cy.nodes()[0]);
+                var layout = cy.makeLayout(layoutOptions);
+                layout.run();
+                // layout.one("layoutstop", function() {
+                //     console.log("In layoutstop");
+                //     for (var i=0 ; i<cy.nodes().length ; i++) {
+                //         cy.nodes()[i].data()["degree"] = cy.nodes()[i].degree();   
+                //     } 
+                // });
 
                 /**********************************************************************/
                 /*** On Click of Trump World show Cytoscape Container           ***********/
@@ -302,10 +314,7 @@
                     $("#help_container").show();
                     $("#rankings_container").hide();    
                 });
-
             }
-
-
 
         });
 
