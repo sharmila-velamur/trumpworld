@@ -40,6 +40,7 @@
         <row>
             <div class="col-md-7 col-lg-7 col-sm-7">
                 <div class="card btn-group btn-group-justified">
+                    <a href="javascript:void(0)" class="btn " id="graph_viz_btn">Trump World</a>
                     <a href="javascript:void(0)" class="btn " id="description_btn">Description</a>
                     <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
                     <a href="javascript:void(0)" class="btn " id="graph_data_btn">Graph Data</a>
@@ -245,6 +246,17 @@
 
                 win.resize(function() {
                     resize();
+                });
+
+                /**********************************************************************/
+                /*** On Click of Trump World show Cytoscape Container           ***********/
+
+                $("#graph_viz_btn").click(function() {
+                    $("#cy_container").show();
+                    $("#description_container").hide();
+                    $("#rgraph_data_container").hide();
+                    $("#help_container").hide();
+                    $("#rankings_container").hide();    
                 });
 
                 /**********************************************************************/
