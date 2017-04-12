@@ -4,6 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
 </head>
 
 <body>
@@ -19,29 +20,94 @@
            	});
 		var $graphmlNodes;
 		var $nodes;
+		var $graphmlEdges;
+		var $edges;
+		var cy = window.cy;
 		Promise.all([graphP]).then(function (then) {
 			var xmlDoc = $.parseXML( then[0] );
 			var $graphml = $( xmlDoc );
 			$graphmlNodes = $graphml.find("node");
+			$graphmlEdges = $graphml.find("edge");
 			$nodes = [];
+			$edges = [];
 			$graphmlNodes.each(function(i,x) {
 				//console.log(x);
 				$nodes.push({
-					"id": x.attributes["id"].value,
 					"data": getNodeData(x)
 				});
 			});
 
 			function getNodeData($node) {
 				var dataElements = $node.getElementsByTagName("data");
-				var data = {}
+				var data = {
+					"id": $node.attributes["id"].value,
+				}
 				for (i=0; i< dataElements.length; i++) {
 					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
 				}
 				return data;
 			}
-		
-		})
+			
+
+			$graphmlEdges.each(function(i,e) {
+				//console.log(x);
+				$edges.push({
+					"data": getEdgeData(e)
+				});
+			});
+
+
+			function getEdgeData($edge) {
+				var dataElements = $edge.getElementsByTagName("data");
+				var data = {
+					"id": $edge.attributes["id"].value,
+					"source": $edge.attributes["source"].value,
+					"target": $edge.attributes["target"].value,
+				}
+				for (i=0; i< dataElements.length; i++) {
+					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
+				}
+				return data;
+			}
+			
+
+			var cy = window.cy = cytoscape({
+				headless: true,
+				container: undefined,
+				styleEnabled: false,
+				ready: function() {
+					this.add($nodes);
+					this.add($edges);
+					
+					var ccn = this.elements().closenessCentralityNormalized();
+					console.log("closenessCentralityNormalized: ");
+					console.log(ccn);
+
+	                var bc = this.elements().betweennessCentrality();
+	                console.log("betweennessCentrality: ");
+	                console.log(bc);
+
+	                var dcn = this.elements().degreeCentralityNormalized({directed:false});
+	                console.log("degreeCentralityNormalized: ");
+	                console.log(dcn);
+
+	                var pr = this.elements().pageRank();
+	                console.log("pageRank: ");
+	                console.log(pr);
+
+	                this.nodes().forEach(n => {
+	                    n.data({
+	                        "ccn": ccn.closeness( n ),
+	                        "bc": bc.betweennessNormalized( n ),
+	                        "dcn": dcn.degree( n ),
+	                        "pr": pr.rank ( n )
+	                    });
+	                });
+	                
+				}
+			});
+			
+		});
 	
 	</script>
 

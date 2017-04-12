@@ -15,6 +15,9 @@
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
 
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- <script type="text/javascript" src="assets/js/graphDataView.js"></script> -->
+
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -41,7 +44,7 @@
             <div class="col-md-7 col-lg-7 col-sm-7">
                 <div class="card btn-group btn-group-justified">
                     <a href="javascript:void(0)" class="btn " id="graph_viz_btn">Trump World</a>
-                    <a href="javascript:void(0)" class="btn " id="description_btn">Description</a>
+                    <a href="javascript:void(0)" class="btn " id="adj_matrix_btn">Adjacency Matrix</a>
                     <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
                     <a href="javascript:void(0)" class="btn " id="graph_data_btn">Graph Data</a>
                     <a href="javascript:void(0)" class="btn " id="help_btn">Help</a>
@@ -58,9 +61,9 @@
                         <div id="cy"></div>
                     </div>
 
-                    <div id="description_container">
-                        <div id="description">
-                            What is this visualization for?
+                    <div id="adj_matrix_container">
+                        <div id="adj_matrix">
+                            
                         </div>
                     </div>
 
@@ -72,7 +75,7 @@
 
                     <div id="graph_data_container">
                         <div id="graph_data">
-                            Display the data - be transparent.
+                            
                         </div>
                     </div>
 
@@ -144,9 +147,9 @@
 
 
             var graphP = $.ajax({
-                url: 'assets/data/Trumpworld_CPM_20160401.graphml',
+                url: 'assets/data/trump-world.json',
                 type: 'GET',
-                dataType: 'text'
+                dataType: 'json'
             });
             // also get style via ajax
             var styleP = $.ajax({
@@ -216,69 +219,105 @@
                 fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
             };
 
-            function resize() {
-                console.log(win.height(), win.innerHeight());
-                $("#cy_container").height(win.innerHeight() - 130);
-                cy.resize();
-            }
+            var tabulate = function (data,columns) {
+              var table = d3.select('#graph_data').append('table')
+                table.classed("table", true);
+                table.classed("table-striped", true);
+                table.classed("table-bordered", true);
+                table.classed("table-hover", true);
+                var thead = table.append('thead')
+                var tbody = table.append('tbody')
 
-            win.resize(function() {
-                resize();
+                thead.append('tr')
+                  .selectAll('th')
+                    .data(columns)
+                    .enter()
+                  .append('th')
+                    .text(function (d) { return d })
+
+                var rows = tbody.selectAll('tr')
+                    .data(data)
+                    .enter()
+                  .append('tr')
+
+                var cells = rows.selectAll('td')
+                    .data(function(row) {
+                        return columns.map(function (column) {
+                            return { column: column, value: row[column] }
+                      })
+                  })
+                  .enter()
+                .append('td')
+                  .text(function (d) { return d.value })
+
+              return table;
+            };
+
+            d3.csv('assets/data/org-org-connections.csv',function (data) {
+                var columns = ['Organization A','Organization B','Connection','Source(s)'];
+                tabulate(data,columns);
             });
 
             // when both graph export json and style loaded, init cy
             Promise.all([graphP, styleP]).then(initCy);
 
             function initCy(then) {
-                
+                console.log("In Init CY");
 
                 var styleJson = then[1];
-                //var elements = getCyElementsForTest();
+                var graphElements = then[0];
+
+                console.log(graphElements[0]);
+                
                 var cy = window.cy = cytoscape({
-                    container: document.getElementById('cy'),
+                    headless: false,
+                    styleEnabled: true,
+                    container: $("#cy"),
+                    elements: graphElements,
                     style: styleJson,
-                    //hideEdgesOnViewport: true,
-                    //textureOnViewport: true,
+                    zoom: 1,
+                    pan: { x: 0, y: 0 },
+                    minZoom: 1e-50,
+                    maxZoom: 1e50,
+                    zoomingEnabled: true,
+                    userZoomingEnabled: true,
+                    panningEnabled: true,
+                    userPanningEnabled: true,
                     boxSelectionEnabled: false,
+                    selectionType: 'single',
+                    touchTapThreshold: 8,
+                    desktopTapThreshold: 4,
+                    autolock: false,
+                    autoungrabify: false,
                     autounselectify: false,
-                    //autoungrabify: false,
                     ready: function() {
+                        console.log(this.elements()[0]);                        
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        this.graphml(then[0]);
-                        let ccn = this.elements().closenessCentralityNormalized({directed:false});
-                        let bc = this.elements().betweennessCentrality({directed:false});
-                        let dcn = this.elements().degreeCentralityNormalized({directed:false});
-                        let pr = this.elements().pageRank();
-
-                        this.nodes().forEach(n => {
-                            n.data({
-                                degree: n.degree(),
-                                ccn: ccn.closeness( n ),
-                                bc: bc.betweennessNormalized( n ),
-                                dcn: dcn.degree( n ),
-                                pr: pr.rank( n )
-                            });
-                            console.log(n.data());
-                        });                                    
-                    }
-                    
+                        this.layout(layoutOptions);
+                    } 
 
                 });
-                
-                var layout = cy.makeLayout(layoutOptions);
-                layout.run();
-                layout.one("layoutstop", function() {
-                    console.log("Layout Stop Invoked"); 
+                               
+
+                function resize() {
+                    console.log(win.height(), win.innerHeight());
+                    $("#cy_container").height(win.innerHeight() - 130);
+                    cy.resize();
+                }
+
+                win.resize(function() {
+                    resize();
                 });
+
 
                 /**********************************************************************/
                 /*** On Click of Trump World show Cytoscape Container       ***********/
 
                 $("#graph_viz_btn").click(function() {
                     $("#cy_container").show();
-                    $("#description_container").hide();
-                    $("#rgraph_data_container").hide();
+                    $("#adj_matrix_container").hide();
+                    $("#graph_data_container").hide();
                     $("#help_container").hide();
                     $("#rankings_container").hide();    
                 });
@@ -288,8 +327,8 @@
 
                 $("#rankings_btn").click(function() {
                     $("#cy_container").hide();
-                    $("#description_container").hide();
-                    $("#rgraph_data_container").hide();
+                    $("#adj_matrix_container").hide();
+                    $("#graph_data_container").hide();
                     $("#help_container").hide();
                     $("#rankings_container").show();    
                 });
@@ -297,10 +336,10 @@
                 /**********************************************************************/
                 /*** On Click of Description show Description Container           ***********/
 
-                $("#description_btn").click(function() {
+                $("#adj_matrix_btn").click(function() {
                     $("#cy_container").hide();
-                    $("#description_container").show();
-                    $("#rgraph_data_container").hide();
+                    $("#adj_matrix_container").show();
+                    $("#graph_data_container").hide();
                     $("#help_container").hide();
                     $("#rankings_container").hide();    
                 });
@@ -309,11 +348,13 @@
                 /*** On Click of Graph Data show Graph Data Container           ***********/
 
                 $("#graph_data_btn").click(function() {
+
                     $("#cy_container").hide();
-                    $("#description_container").hide();
-                    $("#rgraph_data_container").show();
+                    $("#adj_matrix_container").hide();
+                    $("#graph_data_container").show();
                     $("#help_container").hide();
-                    $("#rankings_container").hide();    
+                    $("#rankings_container").hide();
+
                 });
 
                 /**********************************************************************/
@@ -321,8 +362,8 @@
 
                 $("#help_btn").click(function() {
                     $("#cy_container").hide();
-                    $("#description_container").hide();
-                    $("#rgraph_data_container").hide();
+                    $("#adj_matrix_container").hide();
+                    $("#graph_data_container").hide();
                     $("#help_container").show();
                     $("#rankings_container").hide();    
                 });
