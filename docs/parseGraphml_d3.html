@@ -118,12 +118,8 @@
 				return data;
 			}
 
-			var node_data = $nodes.map(function (d) {
-				return $nodeIndicesLookup[d.id]; 
-			});
-			var edge_data = $edges.map(function (d) {
-				return [d.source, d.target]; 
-			});
+			var node_data = $nodes.map(function (d) {return $nodeIndicesLookup[d.id]});
+			var edge_data = $edges.map(function (d) {return [d.source, d.target]; });
 
 			var G = new jsnx.Graph();
 			G.addNodesFrom(node_data);
