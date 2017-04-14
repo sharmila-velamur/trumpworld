@@ -1,9 +1,0 @@
-node {
-    background-color: #ad1a66;
-    content: data(id);
-}
-
-edge {
-    width: 3;
-    line-color: #ad1a66;
-}

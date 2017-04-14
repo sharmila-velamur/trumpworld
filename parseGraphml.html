@@ -5,11 +5,16 @@
 	<meta charset="utf-8">
 	<script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
+	<script type="text/javascript" src="assets/js/jsnetworkx.js"></script>
 </head>
 
 <body>
 
 	<h1> Parsing the graphml to json object array as required by cytoscape </h1>
+
+	<div id="trump_world_json" style="font-size:12px;width: 100%; color:#000">
+	</div>
+
 
 	<script type="text/javascript">
 
@@ -106,6 +111,8 @@
 	                
 				}
 			});
+
+			$("#trump_world_json").html(JSON.stringify(cy.elements()));
 			
 		});
 	

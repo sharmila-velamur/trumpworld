@@ -1,0 +1,55 @@
+{
+  "name": "bootstrap-overlay",
+  "version": "0.1.0",
+  "description": "Programmatic overlays for Bootstrap.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asilluron/Overlay-Bootstrap.git"
+  },
+  "keywords": [
+    "overlay",
+    "overlays",
+    "bootstrap",
+    "programmatic"
+  ],
+  "author": {
+    "name": "Andrew Silluron"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asilluron/Overlay-Bootstrap/issues"
+  },
+  "homepage": "https://github.com/asilluron/Overlay-Bootstrap#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-cssnano": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0"
+  },
+  "gitHead": "b5d45134fbcf37627d44a244ff835e6732959571",
+  "_id": "bootstrap-overlay@0.1.0",
+  "_shasum": "772904adb3c2b8d6dd3f5e1c2d80981d78cf9eeb",
+  "_from": "bootstrap-overlay@latest",
+  "_npmVersion": "2.14.7",
+  "_nodeVersion": "4.2.3",
+  "_npmUser": {
+    "name": "asilluron",
+    "email": "silur3@gmail.com"
+  },
+  "dist": {
+    "shasum": "772904adb3c2b8d6dd3f5e1c2d80981d78cf9eeb",
+    "tarball": "https://registry.npmjs.org/bootstrap-overlay/-/bootstrap-overlay-0.1.0.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "asilluron",
+      "email": "silur3@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/bootstrap-overlay/-/bootstrap-overlay-0.1.0.tgz"
+}

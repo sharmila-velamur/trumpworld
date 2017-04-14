@@ -7,9 +7,10 @@
 
     <title>Trump World</title>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
+    <script src="assets/js/slidereveal.js"></script>
 
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
@@ -22,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/ripples.min.css">
     <link href="assets/css/styles.css" rel="stylesheet" />
@@ -50,12 +51,12 @@
                     <a href="javascript:void(0)" class="btn " id="help_btn">Help</a>
                 </div>
             </div>
-            <div class="col-md-3 col-lg-3 col-sm-3 col-md-offset-2 col-sm-offset-2 col-lg-offset-2">
-                <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>
+            <div id="trigger" class="col-md-3 col-lg-3 col-sm-3 col-md-offset-2 col-sm-offset-2 col-lg-offset-2">
+                <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>    
             </div>
         </row>
         <row id="home">
-            <div class="col-md-9 col-lg-9 col-sm-9">
+            <div class="col-md-12 col-lg-12 col-sm-12">
                 <div class="panel panel-primary">
                     <div id="cy_container">
                         <div id="cy"></div>
@@ -85,65 +86,73 @@
                         </div>
                     </div>
                 </div>
+            </div>            
+        </row>
+    </div>
+    <div class="card" id="slider">
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
             </div>
-            <div class="col-md-3 col-lg-3 col-sm-3">
-                <div class="card">
-                    <row class="vertical-align">
-                        <div class="col-md-2 col-lg-2 col-sm-2">
-                            <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
-                        </div>
-                        <div class="col-md-5 col-lg-5 col-sm-5">
-                            <div class="form-group label-static has-info">
-                                <label for="startNode" class="control-label">Start At</label>
-                                <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
-                            </div>
-                        </div>
-                        <div class="col-md-5 col-lg-5 col-sm-5">
-                            <div class="form-group label-static has-info">
-                                <label for="endNode" class="control-label">End At</label>
-                                <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
-                            </div>
-                        </div>
-                    </row>
-                    <row class="vertical-align">
-                        <div class="col-md-2 col-lg-2 col-sm-2">
-                            <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
-                        </div>
-                        <div class="col-md-9 col-lg-9 col-sm-9">
-                            <div class="form-group label-static has-error">
-                                <label for="focusOn" class="control-label">Focus On</label>
-                                <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
-                            </div>
-                        </div>
-                    </row>
-                    <row class="vertical-align">
-                        <div class="col-md-2 col-lg-2 col-sm-2">
-                            <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
-                        </div>
-                        <div class="col-md-10 col-lg-10 col-sm-10">
-                            <div class="form-group label-static has-success">
-                                <label for="resizeNodes" class="control-label">Resize Nodes</label>
-                                <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
-                                    <option value="">Select</option>
-                                    <option value="degree"> Most Connected (Degree) </option>
-                                    <option value="betweeness"> Most Paths (Betweeness) </option>
-                                    <option value="closeness"> Most Reach (Closeness) </option>
-                                </select>
-                            </div>
-                        </div>
-                    </row>
+            <div class="col-md-5 col-lg-5 col-sm-5">
+                <div class="form-group label-static has-info">
+                    <label for="startNode" class="control-label">Start At</label>
+                    <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
                 </div>
-
+            </div>
+            <div class="col-md-5 col-lg-5 col-sm-5">
+                <div class="form-group label-static has-info">
+                    <label for="endNode" class="control-label">End At</label>
+                    <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
+                </div>
             </div>
         </row>
-
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
+            </div>
+            <div class="col-md-9 col-lg-9 col-sm-9">
+                <div class="form-group label-static has-error">
+                    <label for="focusOn" class="control-label">Focus On</label>
+                    <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
+                </div>
+            </div>
+        </row>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <div class="form-group label-static has-success">
+                    <label for="resizeNodes" class="control-label">Resize Nodes</label>
+                    <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                        <option value="">Select</option>
+                        <option value="degree"> Most Connected (Degree) </option>
+                        <option value="betweeness"> Most Paths (Betweeness) </option>
+                        <option value="closeness"> Most Reach (Closeness) </option>
+                    </select>
+                </div>
+            </div>
+        </row>
     </div>
 
     <script type="text/javascript">
         $(function() {
 
+           
+
             "use strict";
             var win = $(window);
+
+             $('#slider').slideReveal({
+                trigger: $("#trigger"),
+                position: "right",
+                width: "26%",
+                top: 180,
+                push: false,
+                overlay: true,
+                autoEscape: true                
+            });
 
 
             var graphP = $.ajax({
@@ -153,7 +162,7 @@
             });
             // also get style via ajax
             var styleP = $.ajax({
-                url: 'assets/cose-layout-styles.txt',
+                url: 'assets/graph-layout-styles.txt',
                 type: 'GET',
                 dataType: 'text'
             });
@@ -166,7 +175,7 @@
                     stepsPerCycle: 30,
 
                     // Run it till the end:
-                    waitForStep: false
+                    waitForStep: true
                 },
                 physics: {
                     /**
@@ -177,7 +186,7 @@
                     /**
                      * Hook's law coefficient. 1 - solid spring.
                      */
-                    springCoeff: 0.0008,
+                    springCoeff: 0.001,
 
                     /**
                      * Coulomb's law coefficient. It's used to repel nodes thus should be negative
@@ -209,14 +218,14 @@
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
-                    stableThreshold: 0.00009
+                    stableThreshold: 0.0009
                 },
                 iterations: 1000,
-                refreshInterval: 16, // in ms
-                refreshIterations: 10, // iterations until thread sends an update
+                refreshInterval: 160, // in ms
+                refreshIterations: 100, // iterations until thread sends an update
                 stableThreshold: 2,
                 animate: true,
-                fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
+                fit: true //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
             };
 
             var tabulate = function (data,columns) {
@@ -275,6 +284,7 @@
                     container: $("#cy"),
                     elements: graphElements,
                     style: styleJson,
+                    layout: layoutOptions,
                     zoom: 1,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
@@ -294,7 +304,7 @@
                         console.log(this.elements()[0]);                        
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        this.layout(layoutOptions);
+                        //this.layout(layoutOptions);                        
                     } 
 
                 });
@@ -316,6 +326,7 @@
 
                 $("#graph_viz_btn").click(function() {
                     $("#cy_container").show();
+                    $("#trigger").show();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -327,6 +338,7 @@
 
                 $("#rankings_btn").click(function() {
                     $("#cy_container").hide();
+                    $("#trigger").hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -338,6 +350,7 @@
 
                 $("#adj_matrix_btn").click(function() {
                     $("#cy_container").hide();
+                    $("#trigger").hide();
                     $("#adj_matrix_container").show();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -350,6 +363,7 @@
                 $("#graph_data_btn").click(function() {
 
                     $("#cy_container").hide();
+                    $("#trigger").hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").show();
                     $("#help_container").hide();
@@ -362,6 +376,7 @@
 
                 $("#help_btn").click(function() {
                     $("#cy_container").hide();
+                    $("#trigger").hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").show();

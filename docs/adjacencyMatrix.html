@@ -1,143 +1,282 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Trump World Network Representation as Adjacency Matrix</title>
+<!-- 
+Source code from: 
+Mike Bostock's Les Mis co-occurrence adjacency matrix example https://bost.ocks.org/mike/miserables/
+L Cherny's Twittwe adjacency matrix example http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html 
+-->
+<style>
+
+body {
+  position: relative;
+  font-family: "Arial Narrow", sans-serif;
+  width: 1000px;
+  margin: auto;
+  margin-top: 40px;
+  margin-bottom: 4em;
+}
+
+footer {
+  font-size: small;
+  margin-top: 8em;
+}
+
+aside {
+  font-size: medium;
+  position:absolute;
+  width: 180px;
+  left: 850px;
+}
+
+h2,h3,h4 {
+font-family: "Arial Narrow", sans-serif;
+margin-top: .5em;
+margin-bottom: .2em;
+color: gray;
+}
+
+.midnote {
+margin-top: .25em;
+font-size: small;
+border-bottom: 1px #ccc;
+}
+
+.infotext {
+	font-size: medium;
+	padding-bottom: .2em;
+	}
+
+.infotext p {
+margin-top: .5em;
+margin-bottom: .5em;
+}
+
+sourcenote {
+font-style: italic;
+font-size: small;
+}
+
+
+body > p {
+  line-height: 1em;
+  width: 1000px;
+}
+
+.infotext {
+	font-size: medium;
+	padding-bottom: .2em;
+	}
+
+a {
+  color: steelblue;
+}
+
+a:not(:hover) {
+  text-decoration: none;
+}
+
+.background {
+  fill: #eee;
+}
+
+line {
+  stroke: #fff;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+text.active {
+  fill: red;
+}
+
+</style>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 
 
+<h2>Sample with High Eigenvector Centrality</h2>
 
-<script type="text/javascript">
 
-	var margin = {top: 80, right: 0, bottom: 10, left: 80},
-	    width = 720,
-	    height = 720;
+<aside style="margin-top:80px;">
 
-	var x = d3.scale.ordinal().rangeBands([0, width]),
-	    z = d3.scale.linear().domain([0, 4]).clamp(true),
-	    c = d3.scale.category10().domain(d3.range(10));
+	<div class="infotext">
+	<h3>Data Set</h3>
 
-	var svg = d3.select("body").append("svg")
-	    .attr("width", width + margin.left + margin.right)
-	    .attr("height", height + margin.top + margin.bottom)
-	    .style("margin-left", -margin.left + "px")
-	  .append("g")
-	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	</div>
 
-	d3.json("miserables.json", function(miserables) {
-	  var matrix = [],
-	      nodes = miserables.nodes,
-	      n = nodes.length;
+	<h4>Order (From Top Left) By:</h4>
+	<select id="order">
+	  <option value="eigen">Eigenvector Centrality</option>
+	  <option value="degree">Degree</option>
+	  <option value="betweenness">Betweenness</option>
+	</select>
 
-	  // Compute index per node.
-	  nodes.forEach(function(node, i) {
-	    node.index = i;
-	    node.count = 0;
-	    matrix[i] = d3.range(n).map(function(j) { return {x: j, y: i, z: 0}; });
-	  });
 
-	  // Convert links to matrix; count character occurrences.
-	  miserables.links.forEach(function(link) {
-	    matrix[link.source][link.target].z += link.value;
-	    matrix[link.target][link.source].z += link.value;
-	    matrix[link.source][link.source].z += link.value;
-	    matrix[link.target][link.target].z += link.value;
-	    nodes[link.source].count += link.value;
-	    nodes[link.target].count += link.value;
-	  });
+	<sourcenote>
+		Based on Mike Bostock's 
+			<a href="http://bost.ocks.org/mike/miserables/">Les Mis Co-occurrence Matrix Example</a>. Built with <a href="http://mbostock.github.com/d3/">D3</a>
+	  	and 
+	  		<a href="http://www.ghostweather.com/">Lynn Cherny</a> from NetworkX analysis with accompanying <a href="http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html">talk slides and blog post.</a>
+	 </sourcenote>
 
-	  // Precompute the orders.
-	  var orders = {
-	    name: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
-	    count: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
-	    group: d3.range(n).sort(function(a, b) { return nodes[b].group - nodes[a].group; })
-	  };
+</aside>
 
-	  // The default sort order.
-	  x.domain(orders.name);
+<script>
+var margin = {top: 80, right: 0, bottom: 10, left: 90},
+    width = 820,
+    height = 820;
 
-	  svg.append("rect")
-	      .attr("class", "background")
-	      .attr("width", width)
-	      .attr("height", height);
+var x = d3.scale.ordinal().rangeBands([0, width]),
+    z = d3.scale.linear().domain([0, 4]).clamp(true),
+    c = d3.scale.category10().domain(d3.range(10));
 
-	  var row = svg.selectAll(".row")
-	      .data(matrix)
-	    .enter().append("g")
-	      .attr("class", "row")
-	      .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
-	      .each(row);
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("margin-left", -margin.left + "px")
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	  row.append("line")
-	      .attr("x2", width);
+	// I used the 100 node set, and then sliced off the first 88.
+d3.json("assets/data/trump-world-d3.json", function(json) {
 
-	  row.append("text")
-	      .attr("x", -6)
-	      .attr("y", x.rangeBand() / 2)
-	      .attr("dy", ".32em")
-	      .attr("text-anchor", "end")
-	      .text(function(d, i) { return nodes[i].name; });
+	var sorted = json.nodes.slice();
+	sorted.sort(function(a,b) {return d3.descending(a.eigen_cent,b.eigen_cent);});
+	
+  var matrix = [],
+      nodes = sorted.slice(0,88),
+      n = nodes.length,
+	  linkstotal = 0;
+	  
+  // Compute index per node.
+  nodes.forEach(function(node, i) {
+    node.index = i;
+    matrix[i] = d3.range(n).map(function(j) { return {x: j, y: i, z: 0}; });
+  });
 
-	  var column = svg.selectAll(".column")
-	      .data(matrix)
-	    .enter().append("g")
-	      .attr("class", "column")
-	      .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+  // Convert links to matrix; count character occurrences.
+  json.links.forEach(function(link) {
+	if ((link.source < n) && (link.target < n)) {
+    matrix[link.source][link.target].z += 1;
+    matrix[link.target][link.source].z += 1;
+    matrix[link.source][link.source].z += 1;
+    matrix[link.target][link.target].z += 1;
+	linkstotal += 1;
+	}
+  });
 
-	  column.append("line")
-	      .attr("x1", -width);
+  // Precompute the orders.
+  var orders = {
+    degree: d3.range(n).sort(function(a, b) { return nodes[b].degree - nodes[a].degree; }),
+    betweenness: d3.range(n).sort(function(a, b) { return nodes[b].betweenness - nodes[a].betweenness; }),
+    partition: d3.range(n).sort(function(a, b) { return nodes[b].partition - nodes[a].partition; }),
+	eigen: d3.range(n).sort(function(a, b) { return nodes[b].eigen_cent - nodes[a].eigen_cent; })
+  };
 
-	  column.append("text")
-	      .attr("x", 6)
-	      .attr("y", x.rangeBand() / 2)
-	      .attr("dy", ".32em")
-	      .attr("text-anchor", "start")
-	      .text(function(d, i) { return nodes[i].name; });
+  // The default sort order.
+  x.domain(orders.eigen);
 
-	  function row(row) {
-	    var cell = d3.select(this).selectAll(".cell")
-	        .data(row.filter(function(d) { return d.z; }))
-	      .enter().append("rect")
-	        .attr("class", "cell")
-	        .attr("x", function(d) { return x(d.x); })
-	        .attr("width", x.rangeBand())
-	        .attr("height", x.rangeBand())
-	        .style("fill-opacity", function(d) { return z(d.z); })
-	        .style("fill", function(d) { return nodes[d.x].group == nodes[d.y].group ? c(nodes[d.x].group) : null; })
-	        .on("mouseover", mouseover)
-	        .on("mouseout", mouseout);
-	  }
+  svg.append("rect")
+      .attr("class", "background")
+      .attr("width", width)
+      .attr("height", height);
 
-	  function mouseover(p) {
-	    d3.selectAll(".row text").classed("active", function(d, i) { return i == p.y; });
-	    d3.selectAll(".column text").classed("active", function(d, i) { return i == p.x; });
-	  }
+  var row = svg.selectAll(".row")
+      .data(matrix)
+    .enter().append("g")
+      .attr("class", "row")
+      .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
+      .each(row);
 
-	  function mouseout() {
-	    d3.selectAll("text").classed("active", false);
-	  }
+  row.append("line")
+      .attr("x2", width);
+	  
+  row.append("text")
+      .attr("x", -6)
+      .attr("y", x.rangeBand() / 2)
+      .attr("dy", ".32em")
+      .attr("text-anchor", "end")
+      .text(function(d, i) { return nodes[i].id; });
 
-	  d3.select("#order").on("change", function() {
-	    clearTimeout(timeout);
-	    order(this.value);
-	  });
+  var column = svg.selectAll(".column")
+      .data(matrix)
+    .enter().append("g")
+      .attr("class", "column")
+      .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
 
-	  function order(value) {
-	    x.domain(orders[value]);
+  column.append("line")
+      .attr("x1", -width);
 
-	    var t = svg.transition().duration(2500);
+  column.append("text")
+      .attr("x", 6)
+      .attr("y", x.rangeBand() / 2)
+      .attr("dy", ".32em")
+      .attr("text-anchor", "start")
+      .text(function(d, i) { return nodes[i].id; });
 
-	    t.selectAll(".row")
-	        .delay(function(d, i) { return x(i) * 4; })
-	        .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
-	      .selectAll(".cell")
-	        .delay(function(d) { return x(d.x) * 4; })
-	        .attr("x", function(d) { return x(d.x); });
+  function row(row) {
+    var cell = d3.select(this).selectAll(".cell")
+        .data(row.filter(function(d) { return d.z; }))
+      .enter().append("rect")
+        .attr("class", "cell")
+        .attr("x", function(d) { return x(d.x); })
+        .attr("width", x.rangeBand())
+        .attr("height", x.rangeBand())
+        .style("fill-opacity", function(d) { return z(d.z); })
+        .style("fill", function(d) { return nodes[d.x].partition == nodes[d.y].partition ? c(nodes[d.x].partition) : null; })
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
+  }
 
-	    t.selectAll(".column")
-	        .delay(function(d, i) { return x(i) * 4; })
-	        .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
-	  }
+  function mouseover(p) {
+    d3.selectAll(".row text").classed("active", function(d, i) { return i == p.y; });
+    d3.selectAll(".column text").classed("active", function(d, i) { return i == p.x; });
+  }
 
-	  var timeout = setTimeout(function() {
-	    order("group");
-	    d3.select("#order").property("selectedIndex", 2).node().focus();
-	  }, 5000);
-	});
+  function mouseout() {
+    d3.selectAll("text").classed("active", false);
+  }
+
+  d3.select("#order").on("change", function() {
+    clearTimeout(timeout);
+    order(this.value);
+  });
+
+  function order(value) {
+    x.domain(orders[value]);
+
+    var t = svg.transition().duration(2500);
+
+    t.selectAll(".row")
+        .delay(function(d, i) { return x(i) * 4; })
+        .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
+      .selectAll(".cell")
+        .delay(function(d) { return x(d.x) * 4; })
+        .attr("x", function(d) { return x(d.x); });
+
+    t.selectAll(".column")
+        .delay(function(d, i) { return x(i) * 4; })
+        .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+  }
+
+  var timeout = setTimeout(function() {
+    order("eigen");
+    d3.select("#order").property("selectedIndex", 0).node().focus();
+  }, 5000);
+  
+  var asidetextlengths = ["Nodes: " + nodes.length, "Edges: " + linkstotal];
+	 
+	d3.select("aside div.infotext").selectAll("p")
+	.data(asidetextlengths)
+	.enter()
+	.append("p")
+	.text(function(d) {return d;});
+	
+});
 
 </script>
+</html>
