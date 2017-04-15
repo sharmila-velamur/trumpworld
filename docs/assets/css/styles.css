@@ -12,6 +12,9 @@ body {
     height:100%;
     border: 1px solid #CCC;
 }
+#slider {
+    display:none;
+}
 
 .title {
     font-family: Metrophobic, sans-serif !important;

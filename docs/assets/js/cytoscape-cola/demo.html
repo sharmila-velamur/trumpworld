@@ -1,0 +1,133 @@
+<!DOCTYPE>
+
+<html>
+
+	<head>
+		<title>cytoscape-cola.js demo</title>
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+
+		<!-- for testing with local version of cytoscape.js -->
+		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+
+		<script src="cola.js"></script>
+		<script src="cytoscape-cola.js"></script>
+
+		<style>
+			body {
+				font-family: helvetica;
+				font-size: 14px;
+			}
+
+			#cy {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				z-index: 999;
+			}
+
+			h1 {
+				opacity: 0.5;
+				font-size: 1em;
+			}
+		</style>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function(){
+
+				var cy = window.cy = cytoscape({
+					container: document.getElementById('cy'),
+
+					layout: {
+						name: 'cola',
+						
+	animate: true, // whether to show the layout as it's running
+	refresh: 1, // number of ticks per frame; higher is faster but more jerky
+	maxSimulationTime: 4000, // max length in ms to run the layout
+	ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+	fit: true, // on every layout reposition of nodes, fit the viewport
+	padding: 30, // padding around the simulation
+	boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+
+	// layout event callbacks
+	ready: function(){
+		//cy.center();
+	}, // on layoutready
+	stop: function(){}, // on layoutstop
+
+	// positioning options
+	randomize: false, // use random node positions at beginning of layout
+	avoidOverlap: true, // if true, prevents overlap of node bounding boxes
+	handleDisconnected: true, // if true, avoids disconnected components from overlapping
+	nodeSpacing: function( node ){ return 10; }, // extra spacing around nodes
+	flow: { axis: 'y', minSeparation: 30 }, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+	alignment: undefined, // relative alignment constraints on nodes, e.g. function( node ){ return { x: 0, y: 1 } }
+
+	// different methods of specifying edge length
+	// each can be a constant numerical value or a function like `function( edge ){ return 2; }`
+	edgeLength: undefined, // sets edge length directly in simulation
+	edgeSymDiffLength: undefined, // symmetric diff edge length in simulation
+	edgeJaccardLength: undefined, // jaccard edge length in simulation
+
+	// iterations of cola algorithm; uses default values on undefined
+	unconstrIter: undefined, // unconstrained initial layout iterations
+	userConstIter: undefined, // initial layout iterations with user-specified constraints
+	allConstIter: undefined, // initial layout iterations with all constraints including non-overlap
+
+	// infinite layout options
+	infinite: false // overrides all other options for a forces-all-the-time mode
+					},
+
+					style: [
+						{
+							selector: 'node',
+							css: {
+								'content': 'data(name)'
+							}
+						},
+
+						{
+							selector: 'edge',
+							css: {
+								'target-arrow-shape': 'triangle'
+							}
+						}
+					],
+
+					elements: {
+						nodes: [
+							{ data: { id: 'j', name: 'Jerry' } },
+							{ data: { id: 'e', name: 'Elaine' } },
+							{ data: { id: 'k', name: 'Kramer' } },
+							{ data: { id: 'g', name: 'George' } }
+						],
+						edges: [
+							{ data: { source: 'j', target: 'e' } },
+							{ data: { source: 'j', target: 'k' } },
+							{ data: { source: 'j', target: 'g' } },
+							{ data: { source: 'e', target: 'j' } },
+							{ data: { source: 'e', target: 'k' } },
+							{ data: { source: 'k', target: 'j' } },
+							{ data: { source: 'k', target: 'e' } },
+							{ data: { source: 'k', target: 'g' } },
+							{ data: { source: 'g', target: 'j' } }
+						]
+					}
+				});
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<h1>cytoscape-cola demo</h1>
+
+		<div id="cy"></div>
+
+	</body>
+
+</html>
