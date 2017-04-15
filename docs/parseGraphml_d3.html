@@ -26,22 +26,38 @@
            	});
 		var $graphmlNodes;
 		var $nodes = [];
+		var $cyNodes = [];
 		var $nodeIndicesLookup = [];
 		var $graphmlEdges;
-		var $edges = [];
+		var $cyEdges = [];
+		var $links = [];
 		var trumpworldJsonD3
 		var cy = window.cy;
 		Promise.all([graphP]).then(function (then) {
 			var xmlDoc = $.parseXML( then[0] );
 			var $graphml = $( xmlDoc );
+
 			$graphmlNodes = $graphml.find("node");
 			$graphmlEdges = $graphml.find("edge");
-			$nodes = [];
-			$edges = [];
+
 			$graphmlNodes.each(function(i,x) {
 				//console.log(x);
 				$nodes.push(getNodeData(x));
+				$cyNodes.push({
+					"data": getCyNodeData(x)
+				});
 			});
+
+			function getCyNodeData($node) {
+				var dataElements = $node.getElementsByTagName("data");
+				var data = {
+					"id": $node.attributes["id"].value,
+				}
+				for (i=0; i< dataElements.length; i++) {
+					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
+				}
+				return data;
+			}
 
 			function getNodeData($node) {
 				var dataElements = $node.getElementsByTagName("data");
@@ -100,7 +116,8 @@
 
 			$graphmlEdges.each(function(i,e) {
 				//console.log(x);
-				$edges.push(getEdgeData(e));
+				$cyEdges.push(getEdgeData(e));
+				$links.push(getLinkData(e));
 			});
 
 
@@ -108,10 +125,23 @@
 				var dataElements = $edge.getElementsByTagName("data");
 				var data = {
 					"id": $edge.attributes["id"].value,
-					"source": $nodeIndicesLookup[$edge.attributes["source"].value],
-					"target": $nodeIndicesLookup[$edge.attributes["target"].value],
-					"sourceNodeId": $edge.attributes["source"].value,
-					"targetNodeId": $edge.attributes["target"].value
+					"source": $edge.attributes["source"].value,
+					"target": $edge.attributes["target"].value
+				}
+				for (i=0; i< dataElements.length; i++) {
+					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
+				}
+				return data;
+			}
+
+			function getLinkData($link) {
+				var dataElements = $link.getElementsByTagName("data");
+				var data = {
+					"id": $link.attributes["id"].value,
+					"source": $nodeIndicesLookup[$link.attributes["source"].value],
+					"target": $nodeIndicesLookup[$link.attributes["target"].value],
+					"sourceNodeId": $link.attributes["source"].value,
+					"targetNodeId": $link.attributes["target"].value
 				}
 				for (i=0; i< dataElements.length; i++) {
 					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
@@ -139,8 +169,8 @@
 				container: undefined,
 				styleEnabled: false,
 				ready: function() {
-					this.add($nodes);
-					this.add($edges);
+					this.add($cyNodes);
+					this.add($cyEdges);
 					
 					var ccn = this.elements().closenessCentralityNormalized();
 					console.log("closenessCentralityNormalized: ");
@@ -165,15 +195,14 @@
 	                        "dcn": dcn.degree( n ),
 	                        "pr": pr.rank ( n )
 	                    });
-	                });
-
-	                trumpworldJsonD3 = {
-						"nodes": $nodes,
-						"links": $edges
-					};
+	                });               
 	                
 				}
 			});
+			trumpworldJsonD3 = {
+				"nodes": $nodes,
+				"links": $links
+			};
 
 			$("#trump_world_json_d3").html(JSON.stringify(trumpworldJsonD3));
 			
