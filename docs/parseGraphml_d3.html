@@ -19,186 +19,47 @@
 
 	<script type="text/javascript">
 
-		var graphP = $.ajax({
-                url: 'assets/data/Trumpworld_CPM_20160401.graphml',
+		var trumpworldJson = $.ajax({
+                url: 'assets/data/trump-world.json',
                 type: 'GET',
                 dataType: 'text'
            	});
-		var $graphmlNodes;
 		var $nodes = [];
-		var $cyNodes = [];
-		var $nodeIndicesLookup = [];
-		var $graphmlEdges;
-		var $cyEdges = [];
 		var $links = [];
-		var trumpworldJsonD3
-		var cy = window.cy;
-		Promise.all([graphP]).then(function (then) {
-			var xmlDoc = $.parseXML( then[0] );
-			var $graphml = $( xmlDoc );
+		var cyEles;
+		Promise.all([trumpworldJson]).then(function(data) {
 
-			$graphmlNodes = $graphml.find("node");
-			$graphmlEdges = $graphml.find("edge");
+			cyEles = eval(data[0]);
 
-			$graphmlNodes.each(function(i,x) {
-				//console.log(x);
-				$nodes.push(getNodeData(x));
-				$cyNodes.push({
-					"data": getCyNodeData(x)
-				});
+			$nodes = [];
+			$links = [];
+			$nodesIndicesLookup = [];
+
+			var nodeIndex = 0;
+
+			$nodes.forEach( n => {
+
 			});
 
-			function getCyNodeData($node) {
-				var dataElements = $node.getElementsByTagName("data");
-				var data = {
-					"id": $node.attributes["id"].value,
-				}
-				for (i=0; i< dataElements.length; i++) {
-					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
-				}
-				return data;
-			}
+			cyEles.forEach(c => { 
+				if (!c.data["source"]) {
+					$nodes.push(c.data);
+					$nodesIndicesLookup[c.data["id"]] = nodeIndex;					
+					nodeIndex++;
 
-			function getNodeData($node) {
-				var dataElements = $node.getElementsByTagName("data");
-				var data = {
-					"id": $node.attributes["id"].value,
-				}
-				let key;
-				let val;
+				} else {
 
-				for (i=0; i< dataElements.length; i++) {
-			
-					key = dataElements[i].attributes["key"].value;
-					val = dataElements[i].firstChild.textContent;
-					if (key == "label") {
-						switch(val) {
-							case "Organization": {
-								key = "group"
-								val = 1;
-								break;
-							}
-							case "Person": {
-								key = "group"
-								val = 2;
-								break;
-							}
-							case "Contract": {
-								key = "group"
-								val = 3;
-								break;
-							}
-							case "Agency": {
-								key = "group"
-								val = 4;
-								break;
-							}
-							case "Country": {
-								key = "group"
-								val = 5;
-								break;
-							}
-							default: {								
-								key = "group"
-								val = 0;							
-							}
-							
-						}	
-					}
-					data[key] = val;
-				}
-				return data;
-			}
-			
-			for (var i=0; i<$nodes.length; i++) {
-				$nodeIndicesLookup[$nodes[i].id] = i;
-			}
-
-			$graphmlEdges.each(function(i,e) {
-				//console.log(x);
-				$cyEdges.push(getEdgeData(e));
-				$links.push(getLinkData(e));
-			});
-
-
-			function getEdgeData($edge) {
-				var dataElements = $edge.getElementsByTagName("data");
-				var data = {
-					"id": $edge.attributes["id"].value,
-					"source": $edge.attributes["source"].value,
-					"target": $edge.attributes["target"].value
-				}
-				for (i=0; i< dataElements.length; i++) {
-					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
-				}
-				return data;
-			}
-
-			function getLinkData($link) {
-				var dataElements = $link.getElementsByTagName("data");
-				var data = {
-					"id": $link.attributes["id"].value,
-					"source": $nodeIndicesLookup[$link.attributes["source"].value],
-					"target": $nodeIndicesLookup[$link.attributes["target"].value],
-					"sourceNodeId": $link.attributes["source"].value,
-					"targetNodeId": $link.attributes["target"].value
-				}
-				for (i=0; i< dataElements.length; i++) {
-					 data[dataElements[i].attributes["key"].value] = dataElements[i].firstChild.textContent;
-				}
-				return data;
-			}
-
-			// var node_data = $nodes.map(function (d) {return $nodeIndicesLookup[d.id]});
-			// var edge_data = $edges.map(function (d) {return [d.source, d.target]; });
-
-			// var G = new jsnx.Graph();
-			// G.addNodesFrom(node_data);
-			// G.addEdgesFrom(edge_data);
-
-			// var betweenness = jsnx.betweennessCentrality(G);
-			// var eigenvector = jsnx.eigenvectorCentrality(G);
-			// var clustering = jsnx.clustering(G);
-			// console.log(G);
-			// console.log(betweenness);
-			// console.log(eigenvector);
-			// console.log(clustering);
-
-			var cy = window.cy = cytoscape({
-				headless: true,
-				container: undefined,
-				styleEnabled: false,
-				ready: function() {
-					this.add($cyNodes);
-					this.add($cyEdges);
-					
-					var ccn = this.elements().closenessCentralityNormalized();
-					console.log("closenessCentralityNormalized: ");
-					console.log(ccn);
-
-	                var bc = this.elements().betweennessCentrality();
-	                console.log("betweennessCentrality: ");
-	                console.log(bc);
-
-	                var dcn = this.elements().degreeCentralityNormalized({directed:false});
-	                console.log("degreeCentralityNormalized: ");
-	                console.log(dcn);
-
-	                var pr = this.elements().pageRank();
-	                console.log("pageRank: ");
-	                console.log(pr);
-
-	                $nodes.forEach(n => {
-	                    n.data({
-	                        "ccn": ccn.closeness( n ),
-	                        "bc": bc.betweennessNormalized( n ),
-	                        "dcn": dcn.degree( n ),
-	                        "pr": pr.rank ( n )
-	                    });
-	                });               
-	                
+					$links.push({
+						"id": c.data["id"],
+						"source": $nodesIndicesLookup[c.data["source"]],
+						"target": $nodesIndicesLookup[c.data["target"]],
+						"sourceId": c.data["source"],
+						"targetId": c.data["target"]
+					});
 				}
 			});
+
+		
 			trumpworldJsonD3 = {
 				"nodes": $nodes,
 				"links": $links
