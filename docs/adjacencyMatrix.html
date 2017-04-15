@@ -6,6 +6,12 @@
 Source code from: 
 Mike Bostock's Les Mis co-occurrence adjacency matrix example https://bost.ocks.org/mike/miserables/
 L Cherny's Twittwe adjacency matrix example http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html 
+//TO DO-
+//1) Get a presorted JSON file by one of our centrality measures
+//2) Adjust the coloring to reflect one of our measurs of centrality, fill not working
+//3) create more room for the text on the side -DONE
+
+
 -->
 <style>
 
@@ -110,7 +116,7 @@ text.active {
 
 	<h4>Order (From Top Left) By:</h4>
 	<select id="order">
-	  <option value="eigen">Eigenvector Centrality</option>
+	  <option value="pageRank">pageRank</option>
 	  <option value="degree">Degree</option>
 	  <option value="betweenness">Betweenness</option>
 	</select>
@@ -126,7 +132,7 @@ text.active {
 </aside>
 
 <script>
-var margin = {top: 80, right: 0, bottom: 10, left: 90},
+var margin = {top: 250, right: 0, bottom: 10, left: 250}, //made wider for names
     width = 820,
     height = 820;
 
@@ -142,10 +148,10 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	// I used the 100 node set, and then sliced off the first 88.
-d3.json("assets/data/trump-world-d3.json", function(json) {
+d3.json("assets/data/trump-world-measures.json", function(json) {
 
 	var sorted = json.nodes.slice();
-	sorted.sort(function(a,b) {return d3.descending(a.eigen_cent,b.eigen_cent);});
+	sorted.sort(function(a,b) {return d3.descending(a.pr,b.pr);});
 	
   var matrix = [],
       nodes = sorted.slice(0,88),
@@ -165,20 +171,20 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
     matrix[link.target][link.source].z += 1;
     matrix[link.source][link.source].z += 1;
     matrix[link.target][link.target].z += 1;
-	linkstotal += 1;
+	linkstotal += 1; //broken at the moment
 	}
   });
 
   // Precompute the orders.
   var orders = {
-    degree: d3.range(n).sort(function(a, b) { return nodes[b].degree - nodes[a].degree; }),
-    betweenness: d3.range(n).sort(function(a, b) { return nodes[b].betweenness - nodes[a].betweenness; }),
-    partition: d3.range(n).sort(function(a, b) { return nodes[b].partition - nodes[a].partition; }),
-	eigen: d3.range(n).sort(function(a, b) { return nodes[b].eigen_cent - nodes[a].eigen_cent; })
+    degree: d3.range(n).sort(function(a, b) { return nodes[b].dcn - nodes[a].dcn; }),
+    betweenness: d3.range(n).sort(function(a, b) { return nodes[b].bc - nodes[a].bc; }),
+    ccn: d3.range(n).sort(function(a, b) { return nodes[b].ccn - nodes[a].ccn; }), //seems to be used to fill, 
+	pageRank: d3.range(n).sort(function(a, b) { return nodes[b].pr - nodes[a].pr; })
   };
 
   // The default sort order.
-  x.domain(orders.eigen);
+  x.domain(orders.pageRank);
 
   svg.append("rect")
       .attr("class", "background")
@@ -200,7 +206,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "end")
-      .text(function(d, i) { return nodes[i].id; });
+      .text(function(d, i) { return nodes[i].name; });
 
   var column = svg.selectAll(".column")
       .data(matrix)
@@ -216,7 +222,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "start")
-      .text(function(d, i) { return nodes[i].id; });
+      .text(function(d, i) { return nodes[i].name; });
 
   function row(row) {
     var cell = d3.select(this).selectAll(".cell")
@@ -226,8 +232,8 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        .style("fill-opacity", function(d) { return z(d.z); })
-        .style("fill", function(d) { return nodes[d.x].partition == nodes[d.y].partition ? c(nodes[d.x].partition) : null; })
+        .style("fill-opacity", function(d) { return z(d.z*20); })
+        .style("fill", function(d) { return nodes[d.x].dcn == nodes[d.y].dcn ? c(nodes[d.x].dcn) : null; }) //is ccn right here?
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
   }
@@ -264,7 +270,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
   }
 
   var timeout = setTimeout(function() {
-    order("eigen");
+    order("pageRank");
     d3.select("#order").property("selectedIndex", 0).node().focus();
   }, 5000);
   
