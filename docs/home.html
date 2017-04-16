@@ -42,9 +42,11 @@
         <div id="loading">
             <span class="fa fa-refresh fa-spin"></span>
         </div>
-        <div class="jumbotron">
-            <h2 class="title">Mapping The Trump World</h2>
-        </div>
+        <row class="card jumbotron">
+            <div class="col-md-12 col-lg-12 col-sm-12">
+                <h2 class=" title">Mapping The Trump World</h2>
+            </div>            
+        </row>
         <row>
             <div class="col-md-8 col-lg-8 col-sm-8">
                 <div class="card btn-group btn-group-justified">
@@ -55,12 +57,16 @@
                     <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
                 </div>
             </div>
-            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-sm-offset-1 col-lg-offset-1">
-                <a href="javascript:void(0)" id="reset" class="card btn btn-sm"><i class="material-icons resetIcon">aspect_ratio</i></a>    
+            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-lg-offset-1 col-sm-offset-1"> 
+                <div class="btn-group btn-group-justified">               
+                    <button id="reset" class="btn btn-sm"><i class="material-icons ">aspect_ratio</i></button>                
+                    <button id="refresh" class="btn btn-sm"><i class="material-icons" >refresh</i></button>
+                </div>                 
             </div>
-            <div id="trigger" class="col-md-2 col-lg-2 col-sm-2">
+            <div id="trigger" class="col-md-2 col-lg-2 col-sm-2 ">
                 <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>    
             </div>
+            
         </row>
         <row id="home">
             <div class="col-md-12 col-lg-12 col-sm-12">
@@ -68,7 +74,7 @@
                     <div id="cy_container">
                         <div id="cy"></div>
                     </div>
-
+                    
                     <div id="adj_matrix_container">
                         <div id="adj_matrix">
                             
@@ -246,6 +252,7 @@
                         allEles = cy.elements();
                         $loading.addClass('loaded');
                         $('#slider').show();
+                        $('#viewPort').show();
                         this.center();
                     } 
 
@@ -343,6 +350,11 @@
                     cy.zoom(0.05);
                     cy.center();
                     this.blur();
+                }); 
+
+                $("#refresh").on('click', function() {
+                    $('body').removeClass('has-start has-end');
+                    cy.elements().removeClass('path not-path start end');
                 });         
 
                 /**********************************************************************/

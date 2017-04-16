@@ -8,7 +8,9 @@ body {
     color: #000;
 }
 #cy_container {
-    z-index: 9999;
+    position: absolute;
+    width: 100%;
+    background-color: #FFF;
 }
 
 #cy {
@@ -32,9 +34,9 @@ body {
     border: 1px solid #DDD;
 }
 
-.resetIcon {
-    font-size: 30px;
-    color: #f44336;
+#reset, #refresh {
+    font-size: 20px;
+    text-align: center;
 }
 
 .focusOnIcon {
