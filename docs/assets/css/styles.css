@@ -15,9 +15,6 @@ body {
     height:100%;
     border: 1px solid #CCC;    
 }
-#slider.has-start{
-    display: none;   
-}
 
 .title {
     font-family: Metrophobic, sans-serif !important;
@@ -33,6 +30,19 @@ body {
 #help_container {
     display: none;
     border: 1px solid #DDD;
+}
+
+.resetIcon {
+    font-size: 30px;
+    color: #f44336;
+}
+
+.focusOnIcon {
+    padding: 0px 4px 0px;
+    text-align: left;
+    font-size: 40px;
+    border: 3px solid #3F9D2F;
+    color: #3F9D2F;
 }
 
 #clear {

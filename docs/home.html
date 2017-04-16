@@ -46,16 +46,19 @@
             <h2 class="title">Mapping The Trump World</h2>
         </div>
         <row>
-            <div class="col-md-7 col-lg-7 col-sm-7">
+            <div class="col-md-8 col-lg-8 col-sm-8">
                 <div class="card btn-group btn-group-justified">
                     <a href="javascript:void(0)" class="btn " id="graph_viz_btn">Trump World</a>
                     <a href="javascript:void(0)" class="btn " id="adj_matrix_btn">Adjacency Matrix</a>
                     <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
                     <a href="javascript:void(0)" class="btn " id="graph_data_btn">Graph Data</a>
-                    <a href="javascript:void(0)" class="btn " id="help_btn">Help</a>
+                    <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
                 </div>
             </div>
-            <div id="trigger" class="col-md-3 col-lg-3 col-sm-3 col-md-offset-2 col-sm-offset-2 col-lg-offset-2">
+            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-sm-offset-1 col-lg-offset-1">
+                <a href="javascript:void(0)" id="reset" class="card btn btn-sm"><i class="material-icons resetIcon">aspect_ratio</i></a>    
+            </div>
+            <div id="trigger" class="col-md-2 col-lg-2 col-sm-2">
                 <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>    
             </div>
         </row>
@@ -125,7 +128,7 @@
             </row>
             <row class="vertical-align">
                 <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                    <i class="fa fa-bullseye focusOnIcon"></i>
                 </div>
                 <div class="col-md-10 col-lg-10 col-sm-10">
                     <div class="form-group label-static has-success">
@@ -141,12 +144,12 @@
             </row>
             <row class="vertical-align">
                 <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                    <i class="fa fa-bullseye focusOnIcon"></i>
                 </div>
                 <div class="col-md-10 col-lg-10 col-sm-10">
                     <div class="form-group label-static has-success">
                         <fieldset id="nodeTypeFilters">
-                            <legend> Filter away: </legend>
+                            <legend class="control-label"> Filter away: </legend>
                             <input type="checkbox" id="organization" name="nodeTypeFilter" value="Organization" checked="true" />
                             <label for="organization"> Organization </label>
                             <input type="checkbox" id="person" name="nodeTypeFilter" value="Person" checked="true"/>
@@ -163,7 +166,7 @@
             </row>
             <row class="vertical-align">
                 <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                    <i class="fa fa-bullseye focusOnIcon"></i>
                 </div>
                 <div class="col-md-10 col-lg-10 col-sm-10">
                     <div class="form-group label-static has-success">
@@ -275,6 +278,7 @@
                 $("#graph_viz_btn").click(function() {
                     $("#cy_container").show();
                     $("#trigger").show();
+                    $('#reset').show();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -287,6 +291,7 @@
                 $("#rankings_btn").click(function() {
                     $("#cy_container").hide();
                     $("#trigger").hide();
+                    $('#reset').hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -299,6 +304,7 @@
                 $("#adj_matrix_btn").click(function() {
                     $("#cy_container").hide();
                     $("#trigger").hide();
+                    $('#reset').hide();
                     $("#adj_matrix_container").show();
                     $("#graph_data_container").hide();
                     $("#help_container").hide();
@@ -312,6 +318,7 @@
 
                     $("#cy_container").hide();
                     $("#trigger").hide();
+                    $('#reset').hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").show();
                     $("#help_container").hide();
@@ -325,10 +332,17 @@
                 $("#help_btn").click(function() {
                     $("#cy_container").hide();
                     $("#trigger").hide();
+                    $('#reset').hide();
                     $("#adj_matrix_container").hide();
                     $("#graph_data_container").hide();
                     $("#help_container").show();
                     $("#rankings_container").hide();    
+                });
+
+                $("#reset").on('click', function() {
+                    cy.zoom(0.05);
+                    cy.center();
+                    this.blur();
                 });         
 
                 /**********************************************************************/
