@@ -20,13 +20,13 @@ node {
     height: 5;
     font-size: 10;
     font-weight: bold;
-    min-zoomed-font-size: 10;
+    min-zoomed-font-size: 4;
     content: data(name);
     text-valign: center;
     text-halign: center;
     color: #000;
     text-outline-width: 2;
-    text-outline-color: #fff;
+    text-outline-color: #CCC;
     text-outline-opacity: 1;
     overlay-color: #fff;
 }
@@ -57,8 +57,8 @@ node[label = "Contract"] {
 }
 
 node{
-    width: mapData(dcn, 0, 0.3, 30, 200);
-    height: mapData(dcn, 0, 0.3, 30, 200);
+    width: mapData(dcn, 0, 1, 50, 700);
+    height: mapData(dcn, 0, 1, 50, 700);
 }
 
 node.highlighted {

@@ -2,7 +2,7 @@ var layoutOptions = {
                 name: 'cytoscape-ngraph.forcelayout',
                 async: {
                     // tell layout that we want to compute all at once:
-                    maxIterations: 10000,
+                    maxIterations: 5000,
                     stepsPerCycle: 30,
 
                     // Run it till the end:
@@ -12,18 +12,18 @@ var layoutOptions = {
                     /**
                      * Ideal length for links (springs in physical model).
                      */
-                    springLength: 1000,
+                    springLength: 6000,
 
                     /**
                      * Hook's law coefficient. 1 - solid spring.
                      */
-                    springCoeff: 0.0001,
+                    springCoeff: 0.00000001,
 
                     /**
                      * Coulomb's law coefficient. It's used to repel nodes thus should be negative
                      * if you make it positive nodes start attract each other :).
                      */
-                    gravity: -10.0,
+                    gravity: -15.0,
 
                     /**
                      * Theta coefficient from Barnes Hut simulation. Ranged between (0, 1).
@@ -31,30 +31,30 @@ var layoutOptions = {
                      * Setting it to one makes Barnes Hut simulation no different from
                      * brute-force forces calculation (each node is considered).
                      */
-                    theta: 0.9,
+                    theta: 0.8,
 
                     /**
                      * Drag force coefficient. Used to slow down system, thus should be less than 1.
                      * The closer it is to 0 the less tight system will be.
                      */
-                    dragCoeff: 0.00001,
+                    dragCoeff: 0.0001,
 
                     /**
                      * Default time step (dt) for forces integration
                      */
                     timeStep: 20,
-                    iterations: 10000,
-                    fit: true,
+                    iterations: 5000,
+                    fit: false,
 
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
-                    stableThreshold: 0.00009
+                    stableThreshold: 0.001
                 },
-                iterations: 10000,
-                refreshInterval: 160, // in ms
+                iterations: 5000,
+                refreshInterval: 50, // in ms
                 refreshIterations: 100, // iterations until thread sends an update
-                stableThreshold: 2,
+                stableThreshold: 5,
                 animate: true,
-                fit: true //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
+                fit: false //True makes it always resize the entire graph in the window. This seems to free up memory for rendering and peform better
             };

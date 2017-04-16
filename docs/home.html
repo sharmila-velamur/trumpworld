@@ -6,24 +6,25 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
 
     <title>Trump World</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/colaLayoutOptions.js"></script> -->
     <script type="text/javascript" src="assets/js/ngraphForceLayoutOptions.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script> -->
-    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script> -->
     <script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js"></script>
+    <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.2.5/cytoscape-qtip.js"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/ripples.min.css">
@@ -32,13 +33,15 @@
     <!-- Material Design for Bootstrap -->
     <script>
         $.material.init();
-
     </script>
 
 </head>
 
 <body>
     <div class="container-fluid">
+        <div id="loading">
+            <span class="fa fa-refresh fa-spin"></span>
+        </div>
         <div class="jumbotron">
             <h2 class="title">Mapping The Trump World</h2>
         </div>
@@ -183,10 +186,12 @@
         var allEles = null;
         var lastHighlighted = null;
         var lastUnhighlighted = null;
+        $('#slider').hide();
 
         $(function() {          
 
             "use strict";
+            var $loading = $('#loading');
 
             var graphP = $.ajax({
                 url: 'assets/data/trump-world.json',
@@ -215,7 +220,8 @@
                     elements: graphElements,
                     style: styleJson,
                     layout: layoutOptions,
-                    zoom: 0.001,
+                    motionBlur: true,
+                    zoom: 0.05,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
                     maxZoom: 1e50,
@@ -223,7 +229,7 @@
                     userZoomingEnabled: true,
                     panningEnabled: true,
                     userPanningEnabled: true,
-                    boxSelectionEnabled: false,
+                    boxSelectionEnabled: true,
                     selectionType: 'single',
                     touchTapThreshold: 8,
                     desktopTapThreshold: 4,
@@ -235,7 +241,9 @@
                         this.resize();
                         allNodes = cy.nodes();
                         allEles = cy.elements();
-                        //this.layout(layoutOptions);                        
+                        $loading.addClass('loaded');
+                        $('#slider').show();
+                        this.center();
                     } 
 
                 });                               
@@ -383,8 +391,6 @@
                                 cy.endBatch();
                                 return;
                             }
-
-                            console.log(aStar.path);
 
                             cy.elements().not( aStar.path ).addClass('not-path');
                             aStar.path.addClass('path');
