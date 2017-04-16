@@ -18,7 +18,7 @@ edge {
 node {
     width: 5;
     height: 5;
-    font-size: 10;
+    font-size: 16;
     font-weight: bold;
     min-zoomed-font-size: 4;
     content: data(name);
@@ -26,7 +26,7 @@ node {
     text-halign: center;
     color: #000;
     text-outline-width: 2;
-    text-outline-color: #CCC;
+    text-outline-color: #FFF;
     text-outline-opacity: 1;
     overlay-color: #fff;
 }
