@@ -207,10 +207,7 @@
                 console.log("In Init CY");
 
                 var styleJson = then[1];
-                var graphElements = then[0];
-
-                console.log(graphElements[0]);
-                
+                var graphElements = then[0];                
                 var cy = window.cy = cytoscape({
                     headless: false,
                     styleEnabled: true,
@@ -234,7 +231,6 @@
                     autoungrabify: false,
                     autounselectify: false,
                     ready: function() {
-                        console.log(this.elements()[0]);                        
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
                         allNodes = cy.nodes();
@@ -357,42 +353,47 @@
                     if ($("#startNode").val() === "" || $("#startNode").val() === undefined) {
                         alert("Please enter a value for the starting node.");
                     } else {
-                        let start = $("#startNode").val();
-                        let end = $("#endNode").val();
+                        let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
+                        let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
+                        console.log(start);
+                        console.log(end);
 
                         // calculate shortest path
                         cy.startBatch();
                         end.addClass('end');
 
-                        setTimeout(function() {
-                            var aStar = cy.elements().aStart({
+                        setTimeout (function() {
+                            var aStar = cy.elements().aStar({
                                 root: start,
-                                goal: end
-                                // weight: function( e ){ 
-                                //       // if( e.data('is_walking') ){
-                                //       //   return 0.25; // assume very little time to walk inside stn
-                                //       // }
+                                goal: end,
+                                directed: false,
+                                weight: function( e ) { 
+                                    return 1;
+                                      // if( e.data('is_walking') ){
+                                      //   return 0.25; // assume very little time to walk inside stn
+                                      // }
                                       
-                                //       // return e.data('is_bullet') ? 1 : 3; // assume bullet is ~3x faster
-                                // },
-                            });
-                             
-                                if( #aStar.found ){
-                                    $("body").removeClass('calc');
-                                    clear();
-
-                                    cy.endBatch();
-                                    return;
+                                      // return e.data('is_bullet') ? 1 : 3; // assume bullet is ~3x faster
                                 }
-
-                                cy.elements().not( aStar.path ).addClass('not-path');
-                                aStar.path.addClass('path');
+                            });                             
+                            if ( !aStar.found ) {
+                                $("body").removeClass('calc');
+                                clear();
 
                                 cy.endBatch();
+                                return;
+                            }
 
-                                $body.removeClass('calc');
-                            }, 300);
-                        }
+                            console.log(aStar.path);
+
+                            cy.elements().not( aStar.path ).addClass('not-path');
+                            aStar.path.addClass('path');
+
+                            cy.endBatch();
+
+                            $('body').removeClass('calc');
+                        }, 300);
+                    }
 
                 });
 
