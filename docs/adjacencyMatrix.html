@@ -148,7 +148,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	// I used the 100 node set, and then sliced off the first 88.
-d3.json("assets/data/trump-world-measures.json", function(json) {
+d3.json("assets/data/trump-world-d3.json", function(json) {
 
 	var sorted = json.nodes.slice();
 	sorted.sort(function(a,b) {return d3.descending(a.pr,b.pr);});
@@ -232,8 +232,8 @@ d3.json("assets/data/trump-world-measures.json", function(json) {
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        .style("fill-opacity", function(d) { return z(d.z*20); })
-        .style("fill", function(d) { return nodes[d.x].dcn == nodes[d.y].dcn ? c(nodes[d.x].dcn) : null; }) //is ccn right here?
+        .style("fill-opacity", function(d) { return z(d.z)*100; })
+        .style("fill", function(d) { return nodes[d.x].pr == nodes[d.y].pr ? c(nodes[d.x].pr) : null; }) //is ccn right here?
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
   }
