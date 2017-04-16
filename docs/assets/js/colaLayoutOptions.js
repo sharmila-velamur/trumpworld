@@ -16,10 +16,10 @@ var layoutOptions = {
 
 	// positioning options
 	randomize: false, // use random node positions at beginning of layout
-	avoidOverlap: false, // if true, prevents overlap of node bounding boxes
+	avoidOverlap: true, // if true, prevents overlap of node bounding boxes
 	handleDisconnected: false, // if true, avoids disconnected components from overlapping
 	nodeSpacing: function( node ){ return 10; }, // extra spacing around nodes
-	flow: null, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+	flow: null, // use DAG/tree flow layout if spacingecified, e.g. { axis: 'y', minSeparation: 30 }
 	// alignment: undefined, // relative alignment constraints on nodes, e.g. function( node ){ return { x: 0, y: 1 } }
 
 	// different methods of specifying edge length

@@ -10,13 +10,13 @@
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
-    <script type="text/javascript" src="assets/js/colaLayoutOptions.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/ngraphForceLayoutOptions.js"></script> -->
+    <!-- <script type="text/javascript" src="assets/js/colaLayoutOptions.js"></script> -->
+    <script type="text/javascript" src="assets/js/ngraphForceLayoutOptions.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script> -->
-    <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
+    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script> -->
+    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script> -->
     <script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
@@ -91,57 +91,102 @@
         </row>
     </div>
     <div class="card" id="slider">
-        <row class="vertical-align">
-            <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
-            </div>
-            <div class="col-md-5 col-lg-5 col-sm-5">
-                <div class="form-group label-static has-info">
-                    <label for="startNode" class="control-label">Start At</label>
-                    <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
+        <div id="filters">
+            <row class="vertical-align">
+                <div class="col-md-2 col-lg-2 col-sm-2">
+                    <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
                 </div>
-            </div>
-            <div class="col-md-5 col-lg-5 col-sm-5">
-                <div class="form-group label-static has-info">
-                    <label for="endNode" class="control-label">End At</label>
-                    <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
+                <div class="col-md-5 col-lg-5 col-sm-5">
+                    <div class="form-group label-static has-info">
+                        <label for="startNode" class="control-label">Start At</label>
+                        <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
+                    </div>
                 </div>
-            </div>
-        </row>
-        <row class="vertical-align">
-            <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
-            </div>
-            <div class="col-md-9 col-lg-9 col-sm-9">
-                <div class="form-group label-static has-error">
-                    <label for="focusOn" class="control-label">Focus On</label>
-                    <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
+                <div class="col-md-5 col-lg-5 col-sm-5">
+                    <div class="form-group label-static has-info">
+                        <label for="endNode" class="control-label">End At</label>
+                        <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
+                    </div>
                 </div>
-            </div>
-        </row>
-        <row class="vertical-align">
-            <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
-            </div>
-            <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static has-success">
-                    <label for="resizeNodes" class="control-label">Resize Nodes</label>
-                    <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
-                        <option value="">Select</option>
-                        <option value="degree"> Most Connected (Degree) </option>
-                        <option value="betweeness"> Most Paths (Betweeness) </option>
-                        <option value="closeness"> Most Reach (Closeness) </option>
-                    </select>
+            </row>
+            <row class="vertical-align">
+                <div class="col-md-2 col-lg-2 col-sm-2">
+                    <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
                 </div>
-            </div>
-        </row>
+                <div class="col-md-9 col-lg-9 col-sm-9">
+                    <div class="form-group label-static has-error">
+                        <label for="focusOn" class="control-label">Focus On</label>
+                        <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
+                    </div>
+                </div>
+            </row>
+            <row class="vertical-align">
+                <div class="col-md-2 col-lg-2 col-sm-2">
+                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                </div>
+                <div class="col-md-10 col-lg-10 col-sm-10">
+                    <div class="form-group label-static has-success">
+                        <label for="resizeNodes" class="control-label">Resize Nodes</label>
+                        <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                            <option value="">Select</option>
+                            <option value="degree"> Most Connected (Degree) </option>
+                            <option value="betweeness"> Most Paths (Betweeness) </option>
+                            <option value="closeness"> Most Reach (Closeness) </option>
+                        </select>
+                    </div>
+                </div>
+            </row>
+            <row class="vertical-align">
+                <div class="col-md-2 col-lg-2 col-sm-2">
+                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                </div>
+                <div class="col-md-10 col-lg-10 col-sm-10">
+                    <div class="form-group label-static has-success">
+                        <fieldset id="nodeTypeFilters">
+                            <legend> Filter away: </legend>
+                            <input type="checkbox" id="organization" name="nodeTypeFilter" value="Organization" checked="true" />
+                            <label for="organization"> Organization </label>
+                            <input type="checkbox" id="person" name="nodeTypeFilter" value="Person" checked="true"/>
+                            <label for="person"> Person </label>
+                            <input type="checkbox" id="contract" name="nodeTypeFilter" value="Contract" checked="true"/>
+                            <label for="contract"> Contract </label>
+                            <input type="checkbox" id="agency" name="nodeTypeFilter" value="Agency" checked="true"/>
+                            <label for="agency"> Agency </label>
+                            <input type="checkbox" id="country" name="nodeTypeFilter" value="Country" checked="true"/>
+                            <label for="country"> Country </label>
+                        </fieldset>                        
+                    </div>
+                </div>
+            </row>
+            <row class="vertical-align">
+                <div class="col-md-2 col-lg-2 col-sm-2">
+                    <i class="fa fa-bullseye" style="padding:0px 4px 0px;text-align:left;font-size:40px;border:3px solid #3F9D2F;color:#3F9D2F;"></i>
+                </div>
+                <div class="col-md-10 col-lg-10 col-sm-10">
+                    <div class="form-group label-static has-success">
+                        <label for="resizeNodes" class="control-label">Export As</label>
+                        <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                            <option value="">Select</option>
+                            <option value="png"> PNG </option>
+                            <option value="svg"> SVG </option>
+                            <option value="graphml"> GraphML </option>
+                        </select>
+                    </div>
+                </div>
+            </row>
+        </div>
     </div>
 
     <script type="text/javascript">
+        var win = $(window);
+        var allNodes = null;
+        var allEles = null;
+        var lastHighlighted = null;
+        var lastUnhighlighted = null;
+
         $(function() {          
 
             "use strict";
-            var win = $(window);
 
             var graphP = $.ajax({
                 url: 'assets/data/trump-world.json',
@@ -192,20 +237,16 @@
                         console.log(this.elements()[0]);                        
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
+                        allNodes = cy.nodes();
+                        allEles = cy.elements();
                         //this.layout(layoutOptions);                        
                     } 
 
-                });
-                               
-
-                function resize() {
-                    console.log(win.height(), win.innerHeight());
-                    $("#cy_container").height(win.innerHeight() - 130);
-                    cy.resize();
-                }
+                });                               
 
                 win.resize(function() {
-                    resize();
+                    $("#cy_container").height(win.innerHeight() - 130);
+                    cy.resize();
                 });
 
                 d3.csv('assets/data/org-org-connections.csv',function (data) {
@@ -284,8 +325,79 @@
                     $("#graph_data_container").hide();
                     $("#help_container").show();
                     $("#rankings_container").hide();    
+                });         
+
+                /**********************************************************************/
+                /*      Apply Node Type Based Filter                                  */
+                $("#nodeTypeFilters").on('change', 'input', function() {
+                    var noOrg         = $("#organization").is(':checked');
+                    var noPerson     = $("#person").is(':checked');
+                    var noAgency      = $("#agency").is(':checked');
+                    var noCountry     = $("#country").is(':checked');
+                    var noContract    = $("#contract").is(':checked');
+                    cy.batch (function() {
+                        allNodes.forEach ( n => { 
+                            var type = n.data("label");                            
+                            n.removeClass('filtered');
+                            var filter = function(){
+                              n.addClass('filtered');
+                            };
+                            if (n.data("label") === "Organization" && !noOrg 
+                                || n.data("label") === "Person" && !noPerson
+                                || n.data("label") === "Agency" && !noAgency
+                                || n.data("label") === "Contract" && !noContract) {
+                                filter();
+                            }
+                        });
+
+                    });
                 });
+
+                $("#endNode").on('change', function() {
+                    if ($("#startNode").val() === "" || $("#startNode").val() === undefined) {
+                        alert("Please enter a value for the starting node.");
+                    } else {
+                        let start = $("#startNode").val();
+                        let end = $("#endNode").val();
+
+                        // calculate shortest path
+                        cy.startBatch();
+                        end.addClass('end');
+
+                        setTimeout(function() {
+                            var aStar = cy.elements().aStart({
+                                root: start,
+                                goal: end
+                                // weight: function( e ){ 
+                                //       // if( e.data('is_walking') ){
+                                //       //   return 0.25; // assume very little time to walk inside stn
+                                //       // }
+                                      
+                                //       // return e.data('is_bullet') ? 1 : 3; // assume bullet is ~3x faster
+                                // },
+                            });
+                             
+                                if( #aStar.found ){
+                                    $("body").removeClass('calc');
+                                    clear();
+
+                                    cy.endBatch();
+                                    return;
+                                }
+
+                                cy.elements().not( aStar.path ).addClass('not-path');
+                                aStar.path.addClass('path');
+
+                                cy.endBatch();
+
+                                $body.removeClass('calc');
+                            }, 300);
+                        }
+
+                });
+
             }
+
 
         });
 

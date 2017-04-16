@@ -1,62 +1,107 @@
 
+core {
+    active-bg-color: #fff;
+    active-bg-opacity: 0.333;
+}
+
+edge {
+    line-color: #CCC;
+    curve-style: haystack;
+    haystack-radius: 0.2;
+    opacity: 0.2;
+    width: 2;
+    z-index: 0;
+    overlay-opacity: 0;
+    events: no;
+}
+
 node {
-    background-color: #DDD;
-    width: 30px;
-    height: 30px;
+    width: 5;
+    height: 5;
+    font-size: 10;
+    font-weight: bold;
+    min-zoomed-font-size: 10;
+    content: data(name);
+    text-valign: center;
+    text-halign: center;
+    color: #000;
+    text-outline-width: 2;
+    text-outline-color: #fff;
+    text-outline-opacity: 1;
+    overlay-color: #fff;
+}
+
+edge[connection = "Ownership"] {
+    curve-style: haystack;
+    haystack-radius: 0.2;
+    line-color: #CCC;
+    opacity: 0.666;
+    z-index: 9;
+    width: 4;
 }
 
 node[label = "Organization"] {
     background-color: #FFAC00;
-    /*content: data(name);*/
 }
 node[label = "Person"] {
     background-color: #0FB2FC;
-    /*content: data(name);*/
 }
 node[label = "Agency"] {
     background-color: #3F9D2F;
-    /*content: data(name);*/
 }
 node[label = "Country"] {
     background-color: #00ACAC;
-    /*content: data(name);*/
 }
 node[label = "Contract"] {
     background-color: #F93324;
-    /*content: data(name);*/
 }
 
-node[[degree > 40]]{
-    width: 50px;
-    height:50px;
-    content: data(name);
-    font-size: 14px;
-    color: black;
-}
-node[[degree > 30]][[degree <= 40]] {
-    width: 40px;
-    height:40px;
-    content: data(name);
-    font-size:14px;
-    color: black;
+node{
+    width: mapData(dcn, 0, 0.3, 30, 200);
+    height: mapData(dcn, 0, 0.3, 30, 200);
 }
 
-node[[degree > 20]][[degree <= 30]] {
-    width: 30px;
-    height:30px;
+node.highlighted {
+    min-zoomed-font-size: 0;
+    z-index: 9999;
 }
 
-node[[degree > 10]][[degree <= 20]] {
-    width: 20px;
-    height:20px;
+edge.highlighted {
+    opacity: 0.8;
+    width: 4;
+    z-index: 9999;
 }
 
-node[[degree <= 10]] {
-    width: 5px;
-    height:5px;
+.faded {
+  events: no;
 }
 
-edge {
-    width: 1;
-    line-color: #AAA;
+node.faded {
+  opacity: 0.08;
 }
+
+edge.faded {
+  opacity: 0.06;
+}
+
+.hidden {
+    display: none;
+}
+
+.highlighted {
+
+}
+
+node:selected {
+    width: 40;
+    height: 40;
+    border-color: rgb(187, 219, 247);
+    border-opacity: 0.5;
+    border-width: 10;
+}
+
+.filtered {
+    display: none;
+}
+
+

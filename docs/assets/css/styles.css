@@ -7,13 +7,16 @@ body {
     padding: 0;
     color: #000;
 }
+#cy_container {
+    z-index: 9999;
+}
 
 #cy {
     height:100%;
-    border: 1px solid #CCC;
+    border: 1px solid #CCC;    
 }
 #slider {
-    display:none;
+    z-index: 0;
 }
 
 .title {
@@ -31,3 +34,32 @@ body {
     display: none;
     border: 1px solid #DDD;
 }
+
+#clear {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0.25em;
+  visibility: hidden;
+}
+
+body.has-start #clear {
+  visibility: visible;
+}
+
+#end {
+  display: none;
+}
+
+body.has-start:not(.has-end) #end {
+  display: inline;
+}
+
+body.has-start:not(.has-end) #start {
+  display: none;
+}
+
+body.calc #loading {
+  display: block;
+}
+

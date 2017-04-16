@@ -12,7 +12,7 @@ var layoutOptions = {
                     /**
                      * Ideal length for links (springs in physical model).
                      */
-                    springLength: 250,
+                    springLength: 1000,
 
                     /**
                      * Hook's law coefficient. 1 - solid spring.
@@ -23,7 +23,7 @@ var layoutOptions = {
                      * Coulomb's law coefficient. It's used to repel nodes thus should be negative
                      * if you make it positive nodes start attract each other :).
                      */
-                    gravity: -4.0,
+                    gravity: -10.0,
 
                     /**
                      * Theta coefficient from Barnes Hut simulation. Ranged between (0, 1).
@@ -31,7 +31,7 @@ var layoutOptions = {
                      * Setting it to one makes Barnes Hut simulation no different from
                      * brute-force forces calculation (each node is considered).
                      */
-                    theta: 1,
+                    theta: 0.9,
 
                     /**
                      * Drag force coefficient. Used to slow down system, thus should be less than 1.
@@ -49,7 +49,7 @@ var layoutOptions = {
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
-                    stableThreshold: 0.0009
+                    stableThreshold: 0.00009
                 },
                 iterations: 10000,
                 refreshInterval: 160, // in ms
