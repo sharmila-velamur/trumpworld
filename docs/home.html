@@ -6,7 +6,7 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
 
     <title>Trump World</title>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/ripples.min.css">
@@ -300,7 +300,7 @@
 
                     // Input parameters to clustering algorithm
                     var options = {
-                        k: 8,
+                        k: 4,
                         distance: "euclidean",
                         maxIterations: 12
                     };
@@ -488,6 +488,7 @@
                             cy.elements().not( aStar.path ).addClass('not-path');
                             console.log(aStar.path);
                             aStar.path.addClass('path');
+                            //aStar.path.neighbourhood().addClass('path');
                             cy.fit(aStar.path, 10);
 
                             cy.endBatch();
