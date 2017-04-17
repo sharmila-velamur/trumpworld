@@ -47,6 +47,22 @@ body {
     color: #3F9D2F;
 }
 
+.filterIcon {
+    padding: 0px 4px 0px;
+    text-align: left;
+    font-size: 40px;
+    border: 3px solid #FFD800;
+    color: #FFD800;
+}
+
+.exportAsIcon {
+    padding: 0px 4px 0px;
+    text-align: left;
+    font-size: 40px;
+    border: 3px solid #CCC;
+    color: #DDD;
+}
+
 #clear {
   position: absolute;
   right: 0;
@@ -58,11 +74,11 @@ body {
 #loading {
   position: absolute;
   left: 0;
-  top: 50%;
+  top: 70%;
   width: 100%;
   text-align: center;
   margin-top: -0.5em;
-  font-size: 10em;
+  font-size: 6em;
   color: #CCC;
 }
 

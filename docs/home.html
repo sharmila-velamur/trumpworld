@@ -8,6 +8,7 @@
     <title>Trump World</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
@@ -25,11 +26,13 @@
     <script type="text/javascript" src="assets/js/fastclick.min.js"></script>
     <!-- <script type="text/javascript" src="assets/js/bluebird.min.js"></script> -->
     <script type="text/javascript" src="assets/js/typeahead.bundle.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-k-means.js"></script>
 
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
     <link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
@@ -110,90 +113,87 @@
         </row>
     </div>
     <div class="card" id="slider">
-        <div id="filters">
-            <row class="vertical-align">
-                <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
-                </div>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
+            </div>
+            <div id="search">
                 <div class="col-md-5 col-lg-5 col-sm-5">
                     <div class="form-group label-static has-info">
                         <label for="startNode" class="control-label">Start At</label>
                         <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
                     </div>
                 </div>
+
                 <div class="col-md-5 col-lg-5 col-sm-5">
                     <div class="form-group label-static has-info">
                         <label for="endNode" class="control-label">End At</label>
                         <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
                     </div>
                 </div>
-            </row>
-            <row class="vertical-align">
-                <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
+            </div>
+        </row>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
+            </div>
+            <div class="col-md-9 col-lg-9 col-sm-9">
+                <div class="form-group label-static has-error">
+                    <label for="focusOn" class="control-label">Focus On</label>
+                    <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
                 </div>
-                <div class="col-md-9 col-lg-9 col-sm-9">
-                    <div class="form-group label-static has-error">
-                        <label for="focusOn" class="control-label">Focus On</label>
-                        <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
-                    </div>
+            </div>
+        </row>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="fa fa-bullseye focusOnIcon"></i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <div class="form-group label-static has-success">
+                    <label for="resizeNodes" class="control-label">Resize Nodes</label>
+                    <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                        <option value="">Select</option>
+                        <option value="degree"> Most Connected (Degree) </option>
+                        <option value="betweeness"> Most Paths (Betweeness) </option>
+                        <option value="closeness"> Most Reach (Closeness) </option>
+                    </select>
                 </div>
-            </row>
-            <row class="vertical-align">
-                <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye focusOnIcon"></i>
+            </div>
+        </row>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="fa fa-filter filterIcon"></i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <div class="form-group label-static has-success">
+                <label for="filters" class="control-label has-warning">Filter / Remove</label>
+                    <select id="filters" multiple="" class="form-control" style="font-size:14px;color:#FFD800;height:40px;">
+                        <option value=""> Select </option>
+                        <option value="Person"> Person </option>
+                        <option value="Organization"> Organization </option>
+                        <option value="Agency"> Agency </option>
+                        <option value="Contract"> Contract </option>
+                        <option value="Country"> Country </option>
+                    </select>                        
                 </div>
-                <div class="col-md-10 col-lg-10 col-sm-10">
-                    <div class="form-group label-static has-success">
-                        <label for="resizeNodes" class="control-label">Resize Nodes</label>
-                        <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
-                            <option value="">Select</option>
-                            <option value="degree"> Most Connected (Degree) </option>
-                            <option value="betweeness"> Most Paths (Betweeness) </option>
-                            <option value="closeness"> Most Reach (Closeness) </option>
-                        </select>
-                    </div>
+            </div>
+        </row>
+        <row class="vertical-align">
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="fa fa-download exportAsIcon"></i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <div class="form-group label-static has-success">
+                    <label for="exportAs" class="control-label">Export As</label>
+                    <select id="exportAs" class="form-control" style="font-size:14px;color:#DDD;">
+                        <option value="">Select</option>
+                        <option value="png"> PNG </option>
+                        <option value="svg"> SVG </option>
+                        <option value="graphml"> GraphML </option>
+                    </select>
                 </div>
-            </row>
-            <row class="vertical-align">
-                <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye focusOnIcon"></i>
-                </div>
-                <div class="col-md-10 col-lg-10 col-sm-10">
-                    <div class="form-group label-static has-success">
-                        <fieldset id="nodeTypeFilters">
-                            <legend class="control-label"> Filter away: </legend>
-                            <input type="checkbox" id="organization" name="nodeTypeFilter" value="Organization" checked="true" />
-                            <label for="organization"> Organization </label>
-                            <input type="checkbox" id="person" name="nodeTypeFilter" value="Person" checked="true"/>
-                            <label for="person"> Person </label>
-                            <input type="checkbox" id="contract" name="nodeTypeFilter" value="Contract" checked="true"/>
-                            <label for="contract"> Contract </label>
-                            <input type="checkbox" id="agency" name="nodeTypeFilter" value="Agency" checked="true"/>
-                            <label for="agency"> Agency </label>
-                            <input type="checkbox" id="country" name="nodeTypeFilter" value="Country" checked="true"/>
-                            <label for="country"> Country </label>
-                        </fieldset>                        
-                    </div>
-                </div>
-            </row>
-            <row class="vertical-align">
-                <div class="col-md-2 col-lg-2 col-sm-2">
-                    <i class="fa fa-bullseye focusOnIcon"></i>
-                </div>
-                <div class="col-md-10 col-lg-10 col-sm-10">
-                    <div class="form-group label-static has-success">
-                        <label for="resizeNodes" class="control-label">Export As</label>
-                        <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
-                            <option value="">Select</option>
-                            <option value="png"> PNG </option>
-                            <option value="svg"> SVG </option>
-                            <option value="graphml"> GraphML </option>
-                        </select>
-                    </div>
-                </div>
-            </row>
-        </div>
+            </div>
+        </row>
     </div>
 
     <script type="text/javascript">
@@ -218,6 +218,7 @@
 
             "use strict";
             var $loading = $('#loading');
+    
 
             var graphP = $.ajax({
                 url: 'assets/data/trump-world.json',
@@ -265,8 +266,8 @@
                     ready: function() {
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        allNodes = cy.nodes();
-                        allEles = cy.elements();
+                        allNodes = this.nodes();
+                        allEles = this.elements();
                         $loading.addClass('loaded');
                         $('#slider').show();
                         this.center();
@@ -295,6 +296,25 @@
 
                 }); 
 
+                cy.pon('layoutstop').then(function( event ){
+
+                    // Input parameters to clustering algorithm
+                    var options = {
+                        k: 8,
+                        distance: "euclidean",
+                        maxIterations: 12
+                    };
+
+                    // Run clustering algorithm on graph nodes
+                    var clusters = cy.elements().kMeans( options );
+
+                    // Assign random colors to each cluster!
+                    if (clusters && clusters.length > 0) {
+                        for (var c = 0; c < clusters.length; c++) {
+                            clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
+                        }
+                    }
+                });
                                          
 
                 win.resize(function() {
@@ -403,12 +423,12 @@
 
                 /**********************************************************************/
                 /*      Apply Node Type Based Filter                                  */
-                $("#nodeTypeFilters").on('change', 'input', function() {
-                    var noOrg         = $("#organization").is(':checked');
-                    var noPerson     = $("#person").is(':checked');
-                    var noAgency      = $("#agency").is(':checked');
-                    var noCountry     = $("#country").is(':checked');
-                    var noContract    = $("#contract").is(':checked');
+                $("#filters").on('change', function() {
+                    var noOrg         = !$("#filters").val().includes('Organization');
+                    var noPerson      = !$("#filters").val().includes('Person');
+                    var noAgency      = !$("#filters").val().includes('Agency');
+                    var noCountry     = !$("#filters").val().includes('Country');
+                    var noContract    = !$("#filters").val().includes('Contract');
                     cy.batch (function() {
                         allNodes.forEach ( n => { 
                             var type = n.data("label");                            
@@ -427,9 +447,12 @@
                     });
                 });
 
-                $("#endNode").on('change', function() {
+
+                $("#search").on('change', 'input', function() {
                     if ($("#startNode").val() === "" || $("#startNode").val() === undefined) {
-                        alert("Please enter a value for the starting node.");
+                        alert("Start At is required.");
+                    } else if ($("#endNode").val() === "" || $("#endNode").val() === undefined) {
+                        alert("End At is required.");
                     } else {
                         let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
                         let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
@@ -463,6 +486,7 @@
                             }
 
                             cy.elements().not( aStar.path ).addClass('not-path');
+                            console.log(aStar.path);
                             aStar.path.addClass('path');
                             cy.fit(aStar.path, 10);
 
