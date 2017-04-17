@@ -30,6 +30,9 @@ node {
     text-outline-opacity: 1;
     overlay-color: #fff;
 }
+node[label = "Contract"] {
+    content: data(purpose);    
+}
 
 edge[connection = "Ownership"] {
     curve-style: haystack;
