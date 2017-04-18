@@ -8,7 +8,6 @@
     <title>Trump World</title>
     <script type="text/javascript" src="assets/js/fastclick.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
@@ -157,6 +156,7 @@
                         <option value="degree"> Most Connected (Degree) </option>
                         <option value="betweeness"> Most Paths (Betweeness) </option>
                         <option value="closeness"> Most Reach (Closeness) </option>
+                        <option value="pagerank"> Most Popular (Pagerank) </option>
                     </select>
                 </div>
             </div>
@@ -466,16 +466,11 @@
                         });
 
                     });
-                });
-
-                
+                });              
 
                 $("#search").on('change', 'input', function() {
-                    if ($("#startNode").val() === "" || $("#startNode").val() === undefined) {
-                        alert("Start At is required.");
-                    } else if ($("#endNode").val() === "" || $("#endNode").val() === undefined) {
-                        alert("End At is required.");
-                    } else {
+                    if ($("#startNode").val() && $("#endNode").val()) {
+                       
                         let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
                         let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
 
@@ -506,10 +501,11 @@
                                 cy.endBatch();
                                 return;
                             } else {
-
+                                $("#slider").hide();
+                                $("#trigger").disable();
                                 var circleLayoutOptions = {
                                     name: 'circle',
-                                    fit: true, // whether to fit the viewport to the graph
+                                    fit: false, // whether to fit the viewport to the graph
                                     istartAngle: 3 / 2 * Math.PI,
                                     // directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
                                     // padding: 30, // padding on fit
@@ -521,7 +517,8 @@
                                 aStar.path.addClass('path');
                                 let layout = aStar.path.layout(circleLayoutOptions);
                                 cy.pan({x: 30, y:50});
-                                cy.zoom(2);
+                                cy.zoomingEnabled(false);
+
                                 cy.layout();
                                 let pathTableColumns = ['ID', 'Type', 'Name', 'Closeness', 'Degree', 'Betweeness', 'Pagerank'];
                                 let pathTableData = [];
@@ -545,6 +542,45 @@
                         }, 300);
                     }
 
+                });
+
+                $('#resizeNodes').on('change', function() {
+                    console.log("In resizeNodes: " + $('#resizeNodes').val());
+                    switch ($('#resizeNodes').val()) {
+                        case 'betweeness': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('ccn-resize pr-resize');
+                            cy.nodes().addClass('bc-resize');
+                            cy.endBatch();
+                            break;
+                        case 'closeness': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize pr-resize');
+                            cy.nodes().addClass('ccn-resize');
+                            cy.endBatch();
+                            break;
+                        case 'pagerank': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize pr-resize');
+                            cy.nodes().addClass('ccn-resize');
+                            cy.endBatch();
+                            break;
+                        default:
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize ccn-resize pr-resize');
+                            cy.endBatch();
+                    }
+                });
+
+
+                $('#focusOn').on('change', function() {
+                    console.log("In focusOn: " + $('#focusOn').val());
+                    let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
+                    let pos = focusOn.position();
+                    cy.elements().not( focusOn.neighbourhood() ).addClass('not-path'); 
+                    focusOn.addClass('start');
+                    cy.pan(pos);
+                    cy.zoom(1);
                 });
 
             }

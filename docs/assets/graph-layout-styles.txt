@@ -60,8 +60,23 @@ node[label = "Contract"] {
 }
 
 node{
-    width: mapData(dcn, 0, 1, 50, 700);
-    height: mapData(dcn, 0, 1, 50, 700);
+    width: mapData(dcn, 0, 1, 50, 400);
+    height: mapData(dcn, 0, 1, 50, 400);
+}
+
+node.ccn-resize{
+    width: mapData(ccn, 0, 1, 10, 200);
+    height: mapData(ccn, 0, 1, 10, 200);
+}
+
+node.bc-resize{
+    width: mapData(bc, 0, 20156000, 20, 700);
+    height: mapData(bc, 0, 20156000, 20, 700);
+}
+
+node.pr-resize{
+    width: mapData(bc, 0, 0.05, 30, 500);
+    height: mapData(bc, 0, 0.05, 30, 500);
 }
 
 node.highlighted {
@@ -123,10 +138,11 @@ edge.path {
 }
 
 node.path {
-  width: 50;
-    height: 50;
+  width: 120;
+    height: 60;
     font-size: 16;
     font-weight: bold;
+    shape: rectangle;
 }
 
 node.start,
