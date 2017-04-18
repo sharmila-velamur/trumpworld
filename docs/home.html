@@ -438,7 +438,7 @@
 
                 $("#refresh").on('click', function() {
                     $('body').removeClass('has-start has-end');
-                    cy.elements().removeClass('path not-path start end');
+                    cy.elements().removeClass('path not-path start end hidden');
                     cy.layout(layoutOptions);
                 });         
 
