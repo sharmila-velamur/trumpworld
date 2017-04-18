@@ -1,5 +1,5 @@
-var tabulate = function (data,columns) {
-	var table = d3.select('#graph_data').append('table')
+var tabulate = function (container, data, columns) {
+	var table = d3.select(container).append('table')
 		table.classed("table", true);
 		table.classed("table-striped", true);
 		table.classed("table-bordered", true);

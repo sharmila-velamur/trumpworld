@@ -39,28 +39,37 @@ body {
     text-align: center;
 }
 
-.focusOnIcon {
-    padding: 0px 4px 0px;
-    text-align: left;
-    font-size: 40px;
-    border: 3px solid #3F9D2F;
-    color: #3F9D2F;
+input, select {
+    font-size: 12px;
+    color: #111;
 }
 
-.filterIcon {
+.icon{
     padding: 0px 4px 0px;
     text-align: left;
     font-size: 40px;
-    border: 3px solid #FFD800;
-    color: #FFD800;
+    border: 3px solid;
+    line-height: 50px;
 }
 
-.exportAsIcon {
-    padding: 0px 4px 0px;
-    text-align: left;
-    font-size: 40px;
-    border: 3px solid #CCC;
-    color: #DDD;
+.search {
+    color: #034AA0;
+}
+
+.focusOn {
+    color: #AD1B39;
+}
+
+.bullsEye {
+    color: #E7C21C;
+}
+
+.filter {
+    color: #359B23;
+}
+
+.exportAs {
+    color: #424F5D;
 }
 
 #clear {

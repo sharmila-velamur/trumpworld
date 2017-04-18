@@ -16,6 +16,8 @@
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script>
     <script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
@@ -31,7 +33,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/mdi/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
@@ -42,7 +44,8 @@
 
     <!-- Material Design for Bootstrap -->
     <script>
-        $.material.init();
+        $.material.input();
+        $.material.checkbox();
     </script>
 
 </head>
@@ -83,11 +86,9 @@
                 <div class="panel panel-primary">
                     <div id="cy_container">
                         <div id="cy"></div>
-                    </div>
-                    
+                    </div>                    
                     <div id="adj_matrix_container">
-                        <div id="adj_matrix">
-                            
+                        <div id="adj_matrix">                            
                         </div>
                     </div>
 
@@ -115,43 +116,43 @@
     <div class="card" id="slider">
         <row class="vertical-align">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #232C96;color:#232C96;">search</i>
+                <i class="material-icons search icon">search</i>
             </div>
             <div id="search">
                 <div class="col-md-5 col-lg-5 col-sm-5">
-                    <div class="form-group label-static has-info">
-                        <label for="startNode" class="control-label">Start At</label>
-                        <input type="text" class="form-control" id="startNode" style="font-size:14px;color:#111;">
+                    <div class="form-group label-static">
+                        <label for="startNode" class="control-label" ><span class="search">Start At</label>
+                        <input type="text" class="form-control" id="startNode" data-ripple-color="#034AA0">
                     </div>
                 </div>
 
                 <div class="col-md-5 col-lg-5 col-sm-5">
-                    <div class="form-group label-static has-info">
-                        <label for="endNode" class="control-label">End At</label>
-                        <input type="text" class="form-control" id="endNode" style="font-size:14px;color:#111;">
+                    <div class="form-group label-static search" data-ripple-color="#034AA0">
+                        <label for="endNode" class="control-label" style="color:#034AA0;"><span class="search">End At</label>
+                        <input type="text" class="form-control" id="endNode">
                     </div>
                 </div>
             </div>
         </row>
         <row class="vertical-align">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons" style="text-align:left;font-size:40px;border:3px solid #F93324;color:#F93324;">zoom_in</i>
+                <i class="material-icons focusOn icon">zoom_in</i>
             </div>
             <div class="col-md-9 col-lg-9 col-sm-9">
-                <div class="form-group label-static has-error">
-                    <label for="focusOn" class="control-label">Focus On</label>
-                    <input type="text" class="form-control" id="focusOn" style="font-size:14px;color:#111;">
+                <div class="form-group label-static">
+                    <label for="focusOn" class="control-label"><span class="focusOn">Focus On</span></label>
+                    <input type="text" class="form-control" id="focusOn">
                 </div>
             </div>
         </row>
-        <row class="vertical-align">
+        <row class="vertical-align ">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="fa fa-bullseye focusOnIcon"></i>
+                <i class="mdi mdi-bullseye resize icon"></i>
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static has-success">
-                    <label for="resizeNodes" class="control-label">Resize Nodes</label>
-                    <select id="resizeNodes" class="form-control" style="font-size:14px;color:#111;">
+                <div class="form-group label-static">
+                    <label for="resizeNodes" class="control-label"><span class="resize">Resize Nodes</span></label>
+                    <select id="resizeNodes" class="form-control">
                         <option value="">Select</option>
                         <option value="degree"> Most Connected (Degree) </option>
                         <option value="betweeness"> Most Paths (Betweeness) </option>
@@ -160,14 +161,14 @@
                 </div>
             </div>
         </row>
-        <row class="vertical-align">
+        <row class="vertical-align ">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="fa fa-filter filterIcon"></i>
+                <i class="mdi mdi-filter-outline filter icon"></i>
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static has-success">
-                <label for="filters" class="control-label has-warning">Filter / Remove</label>
-                    <select id="filters" multiple="" class="form-control" style="font-size:14px;color:#FFD800;height:40px;">
+                <div class="form-group label-static">
+                <label for="filters" class="control-label"><span class="filter">Filter / Remove</span></label>
+                    <select id="filters" multiple="" class="form-control">
                         <option value=""> Select </option>
                         <option value="Person"> Person </option>
                         <option value="Organization"> Organization </option>
@@ -178,14 +179,14 @@
                 </div>
             </div>
         </row>
-        <row class="vertical-align">
+        <row class="vertical-align ">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="fa fa-download exportAsIcon"></i>
+                <i class="material-icons exportAs icon">file_download</i>
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static has-success">
-                    <label for="exportAs" class="control-label">Export As</label>
-                    <select id="exportAs" class="form-control" style="font-size:14px;color:#DDD;">
+                <div class="form-group label-static ">
+                    <label for="exportAs" class="control-label"><span class="exportAs">Export As</span></label>
+                    <select id="exportAs" class="form-control">
                         <option value="">Select</option>
                         <option value="png"> PNG </option>
                         <option value="svg"> SVG </option>
@@ -231,7 +232,26 @@
                 type: 'GET',
                 dataType: 'text'
             });
-            
+
+            var getFadePromise = function( ele, opacity ){
+                return ele.animation({
+                  style: { 'opacity': opacity },
+                  duration: aniDur
+                }).play().promise();
+            };
+
+            var restoreElesPositions = function( nhood ){
+                return Promise.all( nhood.map(function( ele ){
+                  var p = ele.data('orgPos');
+
+                  return ele.animation({
+                    position: { x: p.x, y: p.y },
+                    duration: aniDur,
+                    easing: easing
+                  }).play().promise();
+                }));
+            };
+                        
             // when both graph export json and style loaded, init cy
             Promise.all([graphP, styleP]).then(initCy);
 
@@ -294,27 +314,27 @@
                         });
                     } 
 
-                }); 
-
-                cy.pon('layoutstop').then(function( event ){
-
-                    // Input parameters to clustering algorithm
-                    var options = {
-                        k: 4,
-                        distance: "euclidean",
-                        maxIterations: 12
-                    };
-
-                    // Run clustering algorithm on graph nodes
-                    var clusters = cy.elements().kMeans( options );
-
-                    // Assign random colors to each cluster!
-                    if (clusters && clusters.length > 0) {
-                        for (var c = 0; c < clusters.length; c++) {
-                            clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
-                        }
-                    }
                 });
+
+                // cy.pon('layoutstop').then(function( event ){
+
+                //     // Input parameters to clustering algorithm
+                //     var options = {
+                //         k: 4,
+                //         distance: "euclidean",
+                //         maxIterations: 12
+                //     };
+
+                //     // Run clustering algorithm on graph nodes
+                //     var clusters = cy.elements().kMeans( options );
+
+                //     // Assign random colors to each cluster!
+                //     if (clusters && clusters.length > 0) {
+                //         for (var c = 0; c < clusters.length; c++) {
+                //             clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
+                //         }
+                //     }
+                // });
                                          
 
                 win.resize(function() {
@@ -324,7 +344,7 @@
 
                 d3.csv('assets/data/org-org-connections.csv',function (data) {
                     var columns = ['Organization A','Organization B','Connection','Source(s)'];
-                    tabulate(data,columns);
+                    tabulate('#graph_data',data,columns);
                 });
 
                 $('#slider').slideReveal({
@@ -419,6 +439,7 @@
                 $("#refresh").on('click', function() {
                     $('body').removeClass('has-start has-end');
                     cy.elements().removeClass('path not-path start end');
+                    cy.layout(layoutOptions);
                 });         
 
                 /**********************************************************************/
@@ -447,6 +468,7 @@
                     });
                 });
 
+                
 
                 $("#search").on('change', 'input', function() {
                     if ($("#startNode").val() === "" || $("#startNode").val() === undefined) {
@@ -456,15 +478,15 @@
                     } else {
                         let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
                         let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
-                        console.log(start);
-                        console.log(end);
 
                         // calculate shortest path
                         cy.startBatch();
+                        
+                        start.addClass('start');
                         end.addClass('end');
 
                         setTimeout (function() {
-                            var aStar = cy.elements().aStar({
+                             var aStar = cy.elements().aStar({
                                 root: start,
                                 goal: end,
                                 directed: false,
@@ -483,17 +505,43 @@
 
                                 cy.endBatch();
                                 return;
+                            } else {
+
+                                var circleLayoutOptions = {
+                                    name: 'circle',
+                                    fit: true, // whether to fit the viewport to the graph
+                                    istartAngle: 3 / 2 * Math.PI,
+                                    // directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
+                                    // padding: 30, // padding on fit
+                                    // circle: true, // put depths in concentric circles if true, put depths top down if false
+                                    // spacingFactor: 1.0, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                                    avoidOverlap: true // prevents node overlap, may overflow boundingBox if not enough space
+                                };               
+                                cy.elements().not( aStar.path ).addClass('hidden');    
+                                aStar.path.addClass('path');
+                                let layout = aStar.path.layout(circleLayoutOptions);
+                                cy.pan({x: 30, y:50});
+                                cy.zoom(2);
+                                cy.layout();
+                                let pathTableColumns = ['ID', 'Type', 'Name', 'Closeness', 'Degree', 'Betweeness', 'Pagerank'];
+                                let pathTableData = [];
+                                aStar.path.nodes().jsons().forEach(d => {
+                                    pathTableData.push({
+                                        'ID': d.data.id,
+                                        'Type': d.data.label,
+                                        'Name': d.data.name,
+                                        'Closeness': d.data.ccn,
+                                        'Degree': d.data.dcn,
+                                        'Betweeness': d.data.bc,
+                                        'Pagerank': d.data.pr
+                                    });    
+                                    
+                                });
+                                tabulate("#cy_container", pathTableData, pathTableColumns);
+                                cy.endBatch();
+                                $('body').removeClass('calc');
                             }
 
-                            cy.elements().not( aStar.path ).addClass('not-path');
-                            console.log(aStar.path);
-                            aStar.path.addClass('path');
-                            //aStar.path.neighbourhood().addClass('path');
-                            cy.fit(aStar.path, 10);
-
-                            cy.endBatch();
-
-                            $('body').removeClass('calc');
                         }, 300);
                     }
 
