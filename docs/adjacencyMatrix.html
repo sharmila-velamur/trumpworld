@@ -6,6 +6,12 @@
 Source code from: 
 Mike Bostock's Les Mis co-occurrence adjacency matrix example https://bost.ocks.org/mike/miserables/
 L Cherny's Twittwe adjacency matrix example http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html 
+//TO DO-
+//1) Get a presorted JSON file by one of our centrality measures
+//2) Adjust the coloring to reflect one of our measurs of centrality, fill not working
+//3) create more room for the text on the side -DONE
+
+
 -->
 <style>
 
@@ -98,7 +104,7 @@ text.active {
 
 
 
-<h2>Sample with High Eigenvector Centrality</h2>
+<h2>Cluster Analysis of Important Nodes by Node Type </h2>
 
 
 <aside style="margin-top:80px;">
@@ -110,9 +116,10 @@ text.active {
 
 	<h4>Order (From Top Left) By:</h4>
 	<select id="order">
-	  <option value="eigen">Eigenvector Centrality</option>
+	  <option value="pageRank">PageRank</option>
 	  <option value="degree">Degree</option>
 	  <option value="betweenness">Betweenness</option>
+      <option value="ccn">Closeness</option>   
 	</select>
 
 
@@ -121,17 +128,24 @@ text.active {
 			<a href="http://bost.ocks.org/mike/miserables/">Les Mis Co-occurrence Matrix Example</a>. Built with <a href="http://mbostock.github.com/d3/">D3</a>
 	  	and 
 	  		<a href="http://www.ghostweather.com/">Lynn Cherny</a> from NetworkX analysis with accompanying <a href="http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html">talk slides and blog post.</a>
+        <p>This dataset is a subset of the overall network, filtered for the nodes with the highest PageRank centrality scores</p>
+        <p>There are 3 types of nodes present: People, Organizations and Federal Agencies.  When both rows and columns are the same node type, they take on the color of their node type.  If they are different, for example, one is a Person and another is an Organization, it appears black.
+            This shows how different groups have different types of influence.</p>
+        <p>Node Colors:</p>
+        <p>People: Orange</p>
+        <p>Organizations: Blue</p>
+        <p>Federal Agencies: Green</p>
 	 </sourcenote>
 
 </aside>
 
 <script>
-var margin = {top: 80, right: 0, bottom: 10, left: 90},
+var margin = {top: 250, right: 0, bottom: 10, left: 250}, //made wider for names
     width = 820,
     height = 820;
 
 var x = d3.scale.ordinal().rangeBands([0, width]),
-    z = d3.scale.linear().domain([0, 4]).clamp(true),
+    z = d3.scale.linear().domain([0, 4]).clamp(true), //does 4 makes ense for use
     c = d3.scale.category10().domain(d3.range(10));
 
 var svg = d3.select("body").append("svg")
@@ -145,7 +159,7 @@ var svg = d3.select("body").append("svg")
 d3.json("assets/data/trump-world-d3.json", function(json) {
 
 	var sorted = json.nodes.slice();
-	sorted.sort(function(a,b) {return d3.descending(a.eigen_cent,b.eigen_cent);});
+	sorted.sort(function(a,b) {return d3.descending(a.pr,b.pr);});
 	
   var matrix = [],
       nodes = sorted.slice(0,88),
@@ -165,20 +179,20 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
     matrix[link.target][link.source].z += 1;
     matrix[link.source][link.source].z += 1;
     matrix[link.target][link.target].z += 1;
-	linkstotal += 1;
+	linkstotal += 1; //broken at the moment
 	}
   });
 
   // Precompute the orders.
   var orders = {
-    degree: d3.range(n).sort(function(a, b) { return nodes[b].degree - nodes[a].degree; }),
-    betweenness: d3.range(n).sort(function(a, b) { return nodes[b].betweenness - nodes[a].betweenness; }),
-    partition: d3.range(n).sort(function(a, b) { return nodes[b].partition - nodes[a].partition; }),
-	eigen: d3.range(n).sort(function(a, b) { return nodes[b].eigen_cent - nodes[a].eigen_cent; })
+    degree: d3.range(n).sort(function(a, b) { return nodes[b].dcn - nodes[a].dcn; }),
+    betweenness: d3.range(n).sort(function(a, b) { return nodes[b].bc - nodes[a].bc; }),
+    ccn: d3.range(n).sort(function(a, b) { return nodes[b].ccn - nodes[a].ccn; }), //seems to be used to fill, 
+	pageRank: d3.range(n).sort(function(a, b) { return nodes[b].pr - nodes[a].pr; })
   };
 
   // The default sort order.
-  x.domain(orders.eigen);
+  x.domain(orders.pageRank);
 
   svg.append("rect")
       .attr("class", "background")
@@ -200,7 +214,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "end")
-      .text(function(d, i) { return nodes[i].id; });
+      .text(function(d, i) { return nodes[i].name; });
 
   var column = svg.selectAll(".column")
       .data(matrix)
@@ -216,18 +230,23 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "start")
-      .text(function(d, i) { return nodes[i].id; });
+      .text(function(d, i) { return nodes[i].name; });
 
-  function row(row) {
+   var someColors = d3.scale.category20b();
+    
+    function row(row) {
     var cell = d3.select(this).selectAll(".cell")
-        .data(row.filter(function(d) { return d.z; }))
+        .data(row.filter(function(d) { return d.x; })) //d.z only returning nodes that are connected to each other, d.z is a link. Change to d.x to return all nodes and ignore edges
       .enter().append("rect")
         .attr("class", "cell")
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        .style("fill-opacity", function(d) { return z(d.z); })
-        .style("fill", function(d) { return nodes[d.x].partition == nodes[d.y].partition ? c(nodes[d.x].partition) : null; })
+        //.style("fill-opacity", function(d) { return z(d.z); }) //filters out nodes that aren't connected, second way
+        .style("fill", function(d) { return nodes[d.x].label == nodes[d.y].label ? c(nodes[d.x].label) : null ; }) //is ccn right here?
+        //.style("fill", function(d) { return c(nodes[d.y].label) ; }) //is ccn right here?
+        //.style("fill", function (d) {return c(nodes.label)}) //doesn't work
+        //.style("fill", "red")
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
   }
@@ -264,7 +283,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
   }
 
   var timeout = setTimeout(function() {
-    order("eigen");
+    order("pageRank");
     d3.select("#order").property("selectedIndex", 0).node().focus();
   }, 5000);
   
