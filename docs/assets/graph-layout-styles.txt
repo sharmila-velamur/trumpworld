@@ -75,8 +75,8 @@ node.bc-resize{
 }
 
 node.pr-resize{
-    width: mapData(bc, 0, 0.05, 30, 500);
-    height: mapData(bc, 0, 0.05, 30, 500);
+    width: mapData(bc, 0, 0.05, 30, 700);
+    height: mapData(bc, 0, 0.05, 30, 700);
 }
 
 node.highlighted {
