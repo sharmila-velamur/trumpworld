@@ -69,14 +69,20 @@
                     <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
                 </div>
             </div>
-            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-lg-offset-1 col-sm-offset-1"> 
-                <div class="btn-group btn-group-justified">               
-                    <button id="reset" class="btn btn-sm"><i class="material-icons ">aspect_ratio</i></button>                
-                    <button id="refresh" class="btn btn-sm"><i class="material-icons" >refresh</i></button>
-                </div>                 
+            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-lg-offset-1 col-sm-offset-1">                               
+                <a href="javascript:void(0)" id="reset" class="card btn">
+                    <i class="material-icons icon-sm">aspect_ratio</i>
+                </a>             
             </div>
-            <div id="trigger" class="col-md-2 col-lg-2 col-sm-2 ">
-                <a href="javascript:void(0)" class="card btn btn-danger btn-lg btn-block btn-raised">Analysis</a>    
+            <div class="col-md-1 col-lg-1 col-sm-1"> 
+                <a href="javascript:void(0)" id="refresh" class="card btn">
+                    <i class="material-icons icon-sm" >refresh</i>
+                </a>
+            </div>
+            <div id="trigger" class="col-md-1 col-lg-1 col-sm-1 ">
+                <a href="javascript:void(0)" class="btn btn-danger btn-raised">
+                    <i class="material-icons icon-sm" >menu</i>
+                </a>    
             </div>
             
         </row>
@@ -85,6 +91,7 @@
                 <div class="panel panel-primary">
                     <div id="cy_container">
                         <div id="cy"></div>
+                        <div id="info" class="panel panel-info"></div>
                     </div>                    
                     <div id="adj_matrix_container">
                         <div id="adj_matrix">                            
@@ -163,6 +170,22 @@
         </row>
         <row class="vertical-align ">
             <div class="col-md-2 col-lg-2 col-sm-2">
+                <i class="material-icons exportAs icon">file_download</i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <div class="form-group label-static ">
+                    <label for="exportAs" class="control-label"><span class="exportAs">Export As</span></label>
+                    <select id="exportAs" class="form-control">
+                        <option value="">Select</option>
+                        <option value="png"> PNG </option>
+                        <option value="svg"> SVG </option>
+                        <option value="graphml"> GraphML </option>
+                    </select>
+                </div>
+            </div>
+        </row>
+        <row class="vertical-align ">
+            <div class="col-md-2 col-lg-2 col-sm-2">
                 <i class="mdi mdi-filter-outline filter icon"></i>
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
@@ -179,30 +202,11 @@
                 </div>
             </div>
         </row>
-        <row class="vertical-align ">
-            <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons exportAs icon">file_download</i>
-            </div>
-            <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static ">
-                    <label for="exportAs" class="control-label"><span class="exportAs">Export As</span></label>
-                    <select id="exportAs" class="form-control">
-                        <option value="">Select</option>
-                        <option value="png"> PNG </option>
-                        <option value="svg"> SVG </option>
-                        <option value="graphml"> GraphML </option>
-                    </select>
-                </div>
-            </div>
-        </row>
     </div>
 
     <script type="text/javascript">
         var win = $(window);
-        var allNodes = null;
-        var allEles = null;
-        var lastHighlighted = null;
-        var lastUnhighlighted = null;
+
         $('#slider').hide();
 
         /*****************************************/
@@ -219,7 +223,13 @@
 
             "use strict";
             var $loading = $('#loading');
-    
+            var layoutPadding = 50;
+            var aniDur = 500;
+            var easing = 'linear';
+            var allNodes = null;
+            var allEles = null;
+            var lastHighlighted = null;
+            var lastUnhighlighted = null;
 
             var graphP = $.ajax({
                 url: 'assets/data/trump-world.json',
@@ -232,25 +242,6 @@
                 type: 'GET',
                 dataType: 'text'
             });
-
-            var getFadePromise = function( ele, opacity ){
-                return ele.animation({
-                  style: { 'opacity': opacity },
-                  duration: aniDur
-                }).play().promise();
-            };
-
-            var restoreElesPositions = function( nhood ){
-                return Promise.all( nhood.map(function( ele ){
-                  var p = ele.data('orgPos');
-
-                  return ele.animation({
-                    position: { x: p.x, y: p.y },
-                    duration: aniDur,
-                    easing: easing
-                  }).play().promise();
-                }));
-            };
                         
             // when both graph export json and style loaded, init cy
             Promise.all([graphP, styleP]).then(initCy);
@@ -289,6 +280,7 @@
                         allNodes = this.nodes();
                         allEles = this.elements();
                         $loading.addClass('loaded');
+
                         $('#slider').show();
                         this.center();
                         this.elements().qtip({
@@ -314,8 +306,9 @@
                         });
                     } 
 
-                });
+                }); //end cy
 
+                /** K-Means Clustering - But this conflicts with colors & styles applied based on node/edge type **/
                 // cy.pon('layoutstop').then(function( event ){
 
                 //     // Input parameters to clustering algorithm
@@ -335,115 +328,79 @@
                 //         }
                 //     }
                 // });
-                                         
-
-                win.resize(function() {
-                    $("#cy_container").height(win.innerHeight() - 130);
-                    cy.resize();
-                });
-
-                d3.csv('assets/data/org-org-connections.csv',function (data) {
-                    var columns = ['Organization A','Organization B','Connection','Source(s)'];
-                    tabulate('#graph_data',data,columns);
-                });
-
-                $('#slider').slideReveal({
-                    trigger: $("#trigger"),
-                    position: "right",
-                    width: "26%",
-                    top: 180,
-                    push: false,
-                    overlay: true,
-                    autoEscape: true                
-                });
-
 
                 /**********************************************************************/
-                /*** On Click of Trump World show Cytoscape Container       ***********/
+                /*  SAVE ORIGINAL POSITION TO RESTORE ELEMENTS LATER                  */
+                /**********************************************************************/
+                cy.on('free', 'node', function( e ){
+                    var n = e.cyTarget;
+                    var p = n.position();
 
-                $("#graph_viz_btn").click(function() {
-                    $("#cy_container").show();
-                    $("#trigger").show();
-                    $('#reset').show();
-                    $('#refresh').show();
-                    $("#adj_matrix_container").hide();
-                    $("#graph_data_container").hide();
-                    $("#help_container").hide();
-                    $("#rankings_container").hide();    
+                    n.data('orgPos', {
+                        x: p.x,
+                        y: p.y
+                    });
                 });
 
                 /**********************************************************************/
-                /*** On Click of Rankings show Rankings Container           ***********/
+                /*  RESTORE ORIGINAL POSITION AFTER BRIEF ANIMATION                   */
+                /**********************************************************************/
+                var restoreElesPositions = function( nhood ){
+                    return Promise.all( nhood.map(function( ele ){
+                      var p = ele.data('orgPos');
 
-                $("#rankings_btn").click(function() {
-                    $("#cy_container").hide();
-                    $("#trigger").hide();
-                    $('#reset').hide();
-                    $('#refresh').hide();
-                    $("#adj_matrix_container").hide();
-                    $("#graph_data_container").hide();
-                    $("#help_container").hide();
-                    $("#rankings_container").show();    
+                      return ele.animation({
+                        position: { x: p.x, y: p.y },
+                        duration: aniDur,
+                        easing: easing
+                      }).play().promise();
+                    }));
+                };
+
+                /**********************************************************************/
+                /*  FADE ELEMENTS OUT USING ANIMATION                                 */
+                /**********************************************************************/
+                var getFadePromise = function( ele, opacity ) {
+                    return ele.animation({
+                      style: { 'opacity': opacity },
+                      duration: aniDur
+                    }).play().promise();
+                };
+
+                /**********************************************************************/
+                /*  USER INTERACTION BASED EVENT LISTENERS                            */
+                /**********************************************************************/
+                cy.on('tap', function(){
+                    $('#search').blur();
                 });
 
                 /**********************************************************************/
-                /*** On Click of Description show Description Container           ***********/
-
-                $("#adj_matrix_btn").click(function() {
-                    $("#cy_container").hide();
-                    $("#trigger").hide();
-                    $('#reset').hide();
-                    $('#refresh').hide();
-                    $("#adj_matrix_container").show();
-                    $("#graph_data_container").hide();
-                    $("#help_container").hide();
-                    $("#rankings_container").hide();    
-                });
+                /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
+                /**********************************************************************/
+                $('#focusOn').on('change', function() {
+                    console.log("In focusOn: " + $('#focusOn').val());
+                    let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
+                    let pos = focusOn.position();
+                    var circleLayoutOptions = {
+                        name: 'concentric',
+                        fit: false, // whether to fit the viewport to the graph
+                        istartAngle: 3 / 2 * Math.PI,
+                        // directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
+                        // padding: 30, // padding on fit
+                        // circle: true, // put depths in concentric circles if true, put depths top down if false
+                        // spacingFactor: 1.0, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                        avoidOverlap: true // prevents node overlap, may overflow boundingBox if not enough space
+                    };   
+                    cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('not-path fade hidden');                 
+                    focusOn.addClass('focus');
+                    focusOn.neighbourhood().addClass('focus path');
+                    cy.pan(pos);
+                    cy.zoom(0.1);
+                }); //end focus on
 
                 /**********************************************************************/
-                /*** On Click of Graph Data show Graph Data Container           ***********/
-
-                $("#graph_data_btn").click(function() {
-
-                    $("#cy_container").hide();
-                    $("#trigger").hide();
-                    $('#reset').hide();
-                    $('#refresh').hide();
-                    $("#adj_matrix_container").hide();
-                    $("#graph_data_container").show();
-                    $("#help_container").hide();
-                    $("#rankings_container").hide();
-
-                });
-
+                /*      FILTER OUT NODE TYPES CHOSEN BY THE USER                      */
                 /**********************************************************************/
-                /*** On Click of Help show Help Container           ***********/
-
-                $("#help_btn").click(function() {
-                    $("#cy_container").hide();
-                    $("#trigger").hide();
-                    $('#reset').hide();
-                    $('#refresh').hide();
-                    $("#adj_matrix_container").hide();
-                    $("#graph_data_container").hide();
-                    $("#help_container").show();
-                    $("#rankings_container").hide();    
-                });
-
-                $("#reset").on('click', function() {
-                    cy.zoom(0.05);
-                    cy.center();
-                    this.blur();
-                }); 
-
-                $("#refresh").on('click', function() {
-                    $('body').removeClass('has-start has-end');
-                    cy.elements().removeClass('path not-path start end hidden');
-                    cy.layout(layoutOptions);
-                });         
-
-                /**********************************************************************/
-                /*      Apply Node Type Based Filter                                  */
                 $("#filters").on('change', function() {
                     var noOrg         = !$("#filters").val().includes('Organization');
                     var noPerson      = !$("#filters").val().includes('Person');
@@ -466,10 +423,48 @@
                         });
 
                     });
-                });              
+                }); //end filter by
 
+                /**********************************************************************************/
+                /**     RESIZE NODES TO HIGHLIGHT DIFFERENT CENTRALITY MEASURES             *******/
+                /**********************************************************************************/
+
+                $('#resizeNodes').on('change', function() {
+                    console.log("In resizeNodes: " + $('#resizeNodes').val());
+
+                    switch ($('#resizeNodes').val()) {
+                        case 'betweeness': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('ccn-resize pr-resize');
+                            cy.nodes().addClass('bc-resize');
+                            cy.endBatch();
+                            break;
+                        case 'closeness': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize pr-resize');
+                            cy.nodes().addClass('ccn-resize');
+                            cy.endBatch();
+                            break;
+                        case 'pagerank': 
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize pr-resize');
+                            cy.nodes().addClass('ccn-resize');
+                            cy.endBatch();
+                            break;
+                        default:
+                            cy.startBatch();
+                            cy.nodes().removeClass('bc-resize ccn-resize pr-resize');
+                            cy.endBatch();
+                    }
+                }); //end resize by
+
+                /**********************************************************************************/
+                /*  ASTAR IMPLEMENTATION -  FIND PATH TO GOAL NODE                              ***/
+                /**********************************************************************************/ 
                 $("#search").on('change', 'input', function() {
+
                     if ($("#startNode").val() && $("#endNode").val()) {
+                        $("#slider").slideReveal("hide");
                        
                         let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
                         let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
@@ -501,40 +496,34 @@
                                 cy.endBatch();
                                 return;
                             } else {
-                                $("#slider").hide();
-                                $("#trigger").disable();
+                                
+                                $("#cy_container").width(win.innerWidth()*0.5);
+                                cy.resize();
                                 var circleLayoutOptions = {
                                     name: 'circle',
-                                    fit: false, // whether to fit the viewport to the graph
-                                    istartAngle: 3 / 2 * Math.PI,
-                                    // directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
-                                    // padding: 30, // padding on fit
-                                    // circle: true, // put depths in concentric circles if true, put depths top down if false
-                                    // spacingFactor: 1.0, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                                    fit: true,                                    
                                     avoidOverlap: true // prevents node overlap, may overflow boundingBox if not enough space
                                 };               
                                 cy.elements().not( aStar.path ).addClass('hidden');    
                                 aStar.path.addClass('path');
-                                let layout = aStar.path.layout(circleLayoutOptions);
-                                cy.pan({x: 30, y:50});
-                                cy.zoomingEnabled(false);
-
+                                let layout = aStar.path.layout(circleLayoutOptions);                           
                                 cy.layout();
-                                let pathTableColumns = ['ID', 'Type', 'Name', 'Closeness', 'Degree', 'Betweeness', 'Pagerank'];
+                                cy.zoom(0.5);
+                                let pathTableColumns = ['Type', 'Name', 'Closeness', 'Degree', 'Betweeness', 'Pagerank'];
                                 let pathTableData = [];
                                 aStar.path.nodes().jsons().forEach(d => {
                                     pathTableData.push({
                                         'ID': d.data.id,
                                         'Type': d.data.label,
                                         'Name': d.data.name,
-                                        'Closeness': d.data.ccn,
-                                        'Degree': d.data.dcn,
-                                        'Betweeness': d.data.bc,
-                                        'Pagerank': d.data.pr
+                                        'Closeness': d.data.ccn.toFixed(3),
+                                        'Degree': d.data.dcn.toFixed(3),
+                                        'Betweeness': d.data.bc.toFixed(3),
+                                        'Pagerank': d.data.pr.toFixed(3)
                                     });    
                                     
                                 });
-                                tabulate("#cy_container", pathTableData, pathTableColumns);
+                                tabulate("#info", pathTableData, pathTableColumns);
                                 cy.endBatch();
                                 $('body').removeClass('calc');
                             }
@@ -542,50 +531,189 @@
                         }, 300);
                     }
 
-                });
+                }); //end search
 
-                $('#resizeNodes').on('change', function() {
-                    console.log("In resizeNodes: " + $('#resizeNodes').val());
-                    switch ($('#resizeNodes').val()) {
-                        case 'betweeness': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('ccn-resize pr-resize');
-                            cy.nodes().addClass('bc-resize');
-                            cy.endBatch();
-                            break;
-                        case 'closeness': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize pr-resize');
-                            cy.nodes().addClass('ccn-resize');
-                            cy.endBatch();
-                            break;
-                        case 'pagerank': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize pr-resize');
-                            cy.nodes().addClass('ccn-resize');
-                            cy.endBatch();
-                            break;
-                        default:
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize ccn-resize pr-resize');
-                            cy.endBatch();
+                /**********************************************************************/
+                /*  CENTER AND RESET ZOOM OF THE VIEW PORT                            */
+                /**********************************************************************/
+                $("#reset").on('click', function() {
+                    cy.zoom(0.05);
+                    cy.center();
+                    this.blur();
+                }); 
+
+                /**********************************************************************/
+                /*  REMOVE CSS CLASSES AND SPECIAL STYLES; RESTORE ORG POSITIONS      */
+                /**********************************************************************/
+                $("#refresh").on('click', function() {
+                    $('body').removeClass('has-start has-end');
+                    cy.elements().removeClass('path not-path start end hidden');
+                    cy.layout(layoutOptions);
+                });         
+
+            } //end init cy
+
+            /**********************************************************************************/
+            /*          TOP MENU & NON-CY EVENTS                                              */
+            /**********************************************************************************/
+
+            /**********************************************************************************/
+            /*          BOOTSTRAP CY DIV FIX                                                  */
+            /**********************************************************************************/
+            win.resize(function() {
+                $("#cy_container").height(win.innerHeight() - 130);
+                cy.resize();
+            });
+
+            /**********************************************************************************/
+            /*          D3 TABULATE - PROVIDE CONTAINER DIV ID, DATA AND COLUMN NAMES         */
+            /**********************************************************************************/
+            d3.csv('assets/data/org-org-connections.csv',function (data) {
+                var columns = ['Organization A','Organization B','Connection','Source(s)'];
+                tabulate('#graph_data',data,columns);
+            });
+
+            /**********************************************************************************/
+            /** RIGHT TO LEFT SLIDER - GRAPH ANALYSIS TOOLS                                  **/
+            /**********************************************************************************/
+            $('#slider').slideReveal({
+                trigger: $("#trigger"),
+                position: "right",
+                width: "26%",
+                top: 180,
+                push: false,
+                overlay: true,
+                autoEscape: true                
+            });
+
+            /**********************************************************************/
+            /*      ON CLICK OF TRUMP WORLD SHOW CYTOSCAPE CONTAINER              */
+            /**********************************************************************/
+
+            $("#graph_viz_btn").click(function() {
+                $("#cy_container").show();
+                $("#trigger").show();
+                $('#reset').show();
+                $('#refresh').show();
+                $("#adj_matrix_container").hide();
+                $("#graph_data_container").hide();
+                $("#help_container").hide();
+                $("#rankings_container").hide();    
+            });
+
+            /**********************************************************************/
+            /*       ON CLICK OF RANKINGS SHOW RANKINGS CONTAINER                **/
+            /**********************************************************************/
+
+            $("#rankings_btn").click(function() {
+                $("#cy_container").hide();
+                $("#trigger").hide();
+                $('#reset').hide();
+                $('#refresh').hide();
+                $("#adj_matrix_container").hide();
+                $("#graph_data_container").hide();
+                $("#help_container").hide();
+                $("#rankings_container").show();    
+            });
+
+            /**********************************************************************/
+            /*       ON CLICK OF DESCRIPTION SHOW DESCRIPTION CONTAINER           */
+            /**********************************************************************/
+
+            $("#adj_matrix_btn").click(function() {
+                $("#cy_container").hide();
+                $("#trigger").hide();
+                $('#reset').hide();
+                $('#refresh').hide();
+                $("#adj_matrix_container").show();
+                $("#graph_data_container").hide();
+                $("#help_container").hide();
+                $("#rankings_container").hide();    
+            });
+
+            /**********************************************************************/
+            /*       ON CLICK OF GRAPH DATA SHOW GRAPH DATA CONTAINER             */
+            /**********************************************************************/
+
+            $("#graph_data_btn").click(function() {
+
+                $("#cy_container").hide();
+                $("#trigger").hide();
+                $('#reset').hide();
+                $('#refresh').hide();
+                $("#adj_matrix_container").hide();
+                $("#graph_data_container").show();
+                $("#help_container").hide();
+                $("#rankings_container").hide();
+
+            });
+
+            /**********************************************************************/
+            /*          ON CLICK OF HELP SHOW HELP CONTAINER                      */
+            /**********************************************************************/
+
+            $("#help_btn").click(function() {
+                $("#cy_container").hide();
+                $("#trigger").hide();
+                $('#reset').hide();
+                $('#refresh').hide();
+                $("#adj_matrix_container").hide();
+                $("#graph_data_container").hide();
+                $("#help_container").show();
+                $("#rankings_container").hide();    
+            });
+
+            /**********************************************************************/
+            /*          QTIPS FOR REFRESH AND REFIT                               */
+            /**********************************************************************/
+
+            $("#refresh").qtip({
+                content: {
+                    text: "Clear Styles"
+                },
+                position: {
+                    my: 'top center',
+                    at: 'bottom center',
+                    adjust: {
+                        method: 'shift'
+                    },
+                    viewport: true
+                },
+                show: {
+                  event: 'mouseover'
+                },
+                style: {
+                    classes: 'qtip-bootstrap',
+                    tip: {
+                        width: 16,
+                        height: 8
                     }
-                });
+                }
+            });
 
-
-                $('#focusOn').on('change', function() {
-                    console.log("In focusOn: " + $('#focusOn').val());
-                    let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
-                    let pos = focusOn.position();
-                    cy.elements().not( focusOn.neighbourhood() ).addClass('not-path'); 
-                    focusOn.addClass('start');
-                    cy.pan(pos);
-                    cy.zoom(1);
-                });
-
-            }
-
-
+            $("#reset").qtip({
+                content: {
+                    text: "Refit"
+                },
+                position: {
+                    my: 'top center',
+                    at: 'bottom center',
+                    adjust: {
+                        method: 'shift'
+                    },
+                    viewport: true
+                },
+                show: {
+                  event: 'mouseover'
+                },
+                style: {
+                    classes: 'qtip-bootstrap',
+                    tip: {
+                        width: 16,
+                        height: 8
+                    }
+                }
+            });
         });
 
     </script>

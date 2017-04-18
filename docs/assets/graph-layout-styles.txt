@@ -132,14 +132,15 @@ node.not-path {
 
 edge.path {
   opacity: 0.666;
-  line-color: #000;
+  line-color: #BBB;
   width: 10;
   z-index: 0;
 }
 
 node.path {
-  width: 120;
+    width: 120;
     height: 60;
+    min-zoomed-font-size: 10;
     font-size: 16;
     font-weight: bold;
     shape: rectangle;
@@ -147,10 +148,25 @@ node.path {
 
 node.start,
 node.end {
-  background-color: #FC4C4C;
-  color: #FC4C4C;
-    border-color: rgb(187, 219, 247);
+    border-color: lightyellow;
     border-width: 10;
+}
+
+node.focus {
+    width: 200;
+    height: 200;
+    border-color: lightyellow;
+    border-width: 10;
+}
+node.unfocus,
+edge.unfocus {
+    
+}
+edge.focus {
+    opacity: 0.666;
+    line-color: #DDD;
+    width: 10;
+    z-index: 0;    
 }
 
 
