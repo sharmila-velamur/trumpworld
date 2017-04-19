@@ -83,39 +83,44 @@
             </div>
             
         </row>
-        <row id="home">
+        <row>
             <div class="col-md-12 col-lg-12 col-sm-12">
-                <div class="panel panel-primary">
-                    <div id="cy_container">
-                        <div id="cy"></div>
-                        <div id="info"></div>
-                    </div>                    
-                    <div id="adj_matrix_container">
-                        <div id="adj_matrix">
-                            <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
+                <div id="viz">
+                    <div id="left">
+                        <div id="cy_container">
+                            <div id="cy"></div>                        
                         </div>
                     </div>
-
-                    <div id="rankings_container">
-                        <div id="rankings">
-                            Rankings and Adjacency Matrix go here.
-                        </div>
+                    <div id="right">
+                        <div id="path_info"></div>
+                        <div id="node_info"></div>
+                        <div id="graph_legends">
+                            Graph Legend Info needs to be here
+                        </div> 
+                    </div> 
+                </div>                  
+                <div id="adj_matrix_container">
+                    <div id="adj_matrix">
+                        <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
                     </div>
-
-                    <div id="graph_data_container">
-                        <div id="graph_data">
-                            
-                        </div>
-                    </div>
-
-                    <div id="help_container">
-                        <div id="help">
-                            Help the user figure this site out.
-                        </div>
-                    </div>
-                    
                 </div>
-            </div>            
+
+                <div id="rankings_container">
+                    <div id="rankings">
+                        Rankings and Adjacency Matrix go here.
+                    </div>
+                </div>
+
+                <div id="graph_data_container">
+                    <div id="graph_data"></div>
+                </div>
+
+                <div id="help_container">
+                    <div id="help">
+                        Help the user figure this site out.
+                    </div>
+                </div>
+            </div>
         </row>
     </div>
     <div class="card" id="slider">
@@ -139,7 +144,7 @@
                 </div>
             </div>
         </row>
-        <row class="vertical-align">
+        <row>
             <div class="col-md-2 col-lg-2 col-sm-2">
                 <i class="material-icons focusOn icon">zoom_in</i>
             </div>
@@ -264,10 +269,6 @@
                     style: styleJson,
                     layout: layoutOptions,                    
                     motionBlur: true,
-                    zoom: 0.5,
-                    pan: { x: 0, y: 0 },
-                    minZoom: 1e-50,
-                    maxZoom: 1e50,
                     zoomingEnabled: true,
                     userZoomingEnabled: true,
                     panningEnabled: true,
@@ -283,17 +284,14 @@
                         
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
-                        this.center();
+
+                        $('#graph_legends').show();
+                        $('#path_info').hide();
+                        $('#node_info').hide();
                         
                         allNodes = this.nodes();
                         allEles = this.elements();
 
-                        this.promiseOn('layoutstop', function( event ){
-                            console.log("Layout rendering stopped");
-                            $('#loading').addClass('loaded');
-                            cy.zoom(0.1);
-                        });
-                        
                         this.elements().qtip({
                             content: {
                                 title: function() { return this.data("label"); },
@@ -327,32 +325,13 @@
                 }); //end cy
 
                 /**********************************************************************/
-                /*  SAVE ORIGINAL POSITION TO RESTORE ELEMENTS LATER                  */
+                /*  SET LOADING COMPLETE                                              */
                 /**********************************************************************/
-                cy.on('free', 'node', function( e ){
-                    var n = e.cyTarget;
-                    var p = n.position();
-
-                    n.data('orgPos', {
-                        x: p.x,
-                        y: p.y
-                    });
+                cy.pon('layoutstop').then(function( event ) {
+                    console.log("Layout rendering stopped");
+                    $('#loading').addClass('loaded');
                 });
 
-                /**********************************************************************/
-                /*  RESTORE ORIGINAL POSITION AFTER BRIEF ANIMATION                   */
-                /**********************************************************************/
-                var restoreElesPositions = function( nhood ){
-                    return Promise.all( nhood.map(function( ele ){
-                      var p = ele.data('orgPos');
-
-                      return ele.animation({
-                        position: { x: p.x, y: p.y },
-                        duration: aniDur,
-                        easing: easing
-                      }).play().promise();
-                    }));
-                };
 
                 /**********************************************************************/
                 /*  FADE ELEMENTS OUT USING ANIMATION                                 */
@@ -367,9 +346,14 @@
                 /**********************************************************************/
                 /*  USER INTERACTION BASED EVENT LISTENERS                            */
                 /**********************************************************************/
-                // cy.on('tap', function(){
-                //     $('#search').blur();
-                // });
+                cy.on('tap', 'node', function( event ){
+                    var n = event.cyTarget;
+                    $('#graph_legends').hide();
+                    $('#path_info').hide();
+                    $('#node_info').html('');
+                    $('#node_info').show();
+                    $('#node_nfo').html(JSON.stringify(this.data()));
+                });
 
                 /**********************************************************************/
                 /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
@@ -377,6 +361,11 @@
                 $('#focusOn').on('change', function() {
                     console.log("In focusOn: " + $('#focusOn').val());
                     $("#slider").slideReveal("hide");
+                    $('#graph_legends').hide();
+                    $('#path_info').hide();
+                    $('#node_info').html('');
+                    $('#node_info').show();
+
                     let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
                     let pos = focusOn.renderedPosition();
                       
@@ -384,7 +373,17 @@
                     focusOn.addClass('focus');
                     lastHighlighted = focusOn;
                     focusOn.neighbourhood().addClass('focus-neighbour');
-                    cy.zoom(0.1, pos);
+                    
+                    cy.animate({
+                        fit: {
+                            eles: focusOn.neighbourhood(),
+                            padding: 10
+                        },
+                        duration: 700,
+                        easing: 'ease',
+                        queue: true
+                    });
+                    $('#node_info').html(JSON.stringify(focusOn.data()));
 
                 }); //end focus on
 
@@ -455,6 +454,10 @@
 
                     if ($("#startNode").val() && $("#endNode").val()) {
                         $("#slider").slideReveal("hide");
+                        if (lastHighlighted != null) {
+                            cy.elements().removeClass('path not-path focus focus-neighbour start end hidden faded highlighted');
+                            lastHighlighted = null;
+                        }
                        
                         let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
                         let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
@@ -482,34 +485,39 @@
                                 return;
                             } else {
                                 
-                                $("#cy_container").width(win.innerWidth()*0.5);
-                                cy.resize();
-                                var bfsLayoutOptions = {
-                                    name: 'breadthfirst',
-                                    fit: true,                                    
-                                    avoidOverlap: true,
-                                    circle: false
-                                };               
-                                cy.elements().not( aStar.path ).addClass('hidden');    
+                                $("#path_info").html('');
+                                $('#graph_legends').hide();
+                                $('#path_info').show();
+                                $('#node_info').hide();
+                                               
+                                cy.elements().not( aStar.path ).addClass('not-path faded');    
                                 aStar.path.addClass('path');
-                                let layout = aStar.path.layout(bfsLayoutOptions);                           
-                                cy.layout();
-                                cy.zoom(0.5);
+                                cy.animate({
+                                    fit: {
+                                        eles: aStar.path,
+                                        padding: 20
+                                    },
+                                    duration: 700,
+                                    easing: 'ease',
+                                    queue: true
+                                });
+
                                 let pathTableColumns = ['Type', 'Name', 'Source', 'Connections'];
                                 let pathTableData = [];
+                                let maxDegree = cy.nodes().maxDegree();
                                 aStar.path.nodes().jsons().forEach(d => {
                                     pathTableData.push({
                                         'ID': d.data.id,
                                         'Type': d.data.label,
                                         'Name': d.data.name,
-                                        'Connections': d.degree(),
+                                        'Connections': d.dcn * maxDegree,
                                         'Source': d.data.fromSource                                        
                                     });    
                                     
                                 });
-                                tabulate("#info", pathTableData, pathTableColumns);
+
+                                tabulate("#path_info", pathTableData, pathTableColumns);
                                 cy.endBatch();
-                                $('body').removeClass('calc');
                             }
 
                         }, 300);
@@ -517,13 +525,15 @@
 
                 }); //end search
 
+
                 /**********************************************************************/
                 /*  CENTER AND RESET ZOOM OF THE VIEW PORT                            */
                 /**********************************************************************/
                 $("#reset").on('click', function() {
-                    cy.reset();
-                    cy.center();
-                    this.blur();
+                    cy.batch(function() { 
+                        cy.fit(cy.elements());
+                    });
+                    
                 }); 
 
                 /**********************************************************************/
@@ -531,8 +541,13 @@
                 /**********************************************************************/
                 $("#refresh").on('click', function() {
                     $('body').removeClass('has-start has-end');
-                    cy.elements().removeClass('path not-path focus focus-neighbour start end hidden');
-                    this.restoreElesPositions(cy.elements());
+                    cy.batch(function() { 
+                        cy.elements().removeClass('path not-path focus focus-neighbour start end hidden faded highlighted');
+                    });
+                    $('#graph_legends').show();
+                    $('#path_info').hide();
+                    $('#node_info').hide();
+                    lastHighlighted = null;
                 });         
 
             } //end init cy
@@ -575,7 +590,7 @@
             /**********************************************************************/
 
             $("#graph_viz_btn").click(function() {
-                $("#cy_container").show();
+                $("#viz").show();
                 $("#trigger").show();
                 $('#reset').show();
                 $('#refresh').show();
@@ -590,7 +605,7 @@
             /**********************************************************************/
 
             $("#rankings_btn").click(function() {
-                $("#cy_container").hide();
+                $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
                 $('#refresh').hide();
@@ -605,7 +620,7 @@
             /**********************************************************************/
 
             $("#adj_matrix_btn").click(function() {
-                $("#cy_container").hide();
+                $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
                 $('#refresh').hide();
@@ -621,7 +636,7 @@
 
             $("#graph_data_btn").click(function() {
 
-                $("#cy_container").hide();
+                $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
                 $('#refresh').hide();
@@ -637,7 +652,7 @@
             /**********************************************************************/
 
             $("#help_btn").click(function() {
-                $("#cy_container").hide();
+                $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
                 $('#refresh').hide();
@@ -677,7 +692,7 @@
 
             $("#reset").qtip({
                 content: {
-                    text: "Refit"
+                    text: "Fit Graph to Screen"
                 },
                 position: {
                     my: 'top center',

@@ -44,7 +44,7 @@ var layoutOptions = {
                      */
                     timeStep: 20,
                     iterations: 10000,
-                    fit: false,
+                    fit: true,
 
                     /**
                      * Maximum movement of the system which can be considered as stabilized
@@ -56,5 +56,5 @@ var layoutOptions = {
                 refreshInterval: 16, // in ms
                 refreshIterations: 10, // iterations until thread sends an update
                 stableThreshold: 2,
-                fit: false
+                fit: true
             };

@@ -1,7 +1,7 @@
 
 core {
     active-bg-color: #fff;
-    active-bg-opacity: 0.333;
+    active-bg-opacity: 1.0;
 }
 
 edge {
@@ -37,7 +37,6 @@ node[dcn > 0.009] {
 node[label = "Contract" ] [dcn > 0.009]{
     content: data(purpose);    
 }
-
 
 
 node[label = "Organization"] {
@@ -107,46 +106,40 @@ node.not-path {
 }
 
 edge.path {
-  opacity: 0.666;
-  line-color: #BBB;
+  opacity: 0.8;
+  line-color: #999;
   width: 10;
   z-index: 0;
 }
 
 node.path {
-    width: 120;
-    height: 60;
-    min-zoomed-font-size: 10;
-    font-size: 16;
-    font-weight: bold;
-    shape: rectangle;
+    border-color: #999;
+    border-width: 10;
 }
 
 node.start,
 node.end {
-    border-color: lightyellow;
+    border-color: #999;
     border-width: 10;
 }
 
 node.focus {
-    width: 200;
-    height: 200;
     border-color: #999;
     border-width: 10;
-    min-zoomed-font-size: 10;
+    min-zoomed-font-size: 0;
     content: data(name);
 }
 
 node.focus-neighbour {
-    min-zoomed-font-size: 10;
+    min-zoomed-font-size: 0;
     content: data(name); 
 }
 
 edge.focus {
     opacity: 0.666;
-    line-color: #DDD;
+    line-color: #999;
     width: 10;
-    z-index: 0; 
+    z-index: 9999; 
     content: data(label);   
 }
 
@@ -156,10 +149,12 @@ edge.focus {
 
 node.faded {
   opacity: 0.08;
+  z-index: 0;
 }
 
 edge.faded {
   opacity: 0.06;
+  z-index: 0;
 }
 
 .hidden {

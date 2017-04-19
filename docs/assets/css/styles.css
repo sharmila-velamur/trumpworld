@@ -12,12 +12,15 @@ body {
 #loading {
   position: absolute;
   width: 100%;
-  top: 50%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  padding-top: 400px;
   text-align: center;
   font-size: 3em;
   color: #999;
   background-color: #EEE;
-  opacity:0.8;
+  opacity:1.0;
   display: block;
 }
 
@@ -27,12 +30,20 @@ body {
 
 /************   END LOADING SPINNER  ************************/
 
-#cy_container {
-    position: absolute;
+#viz {
+    display: flex;
     width: 100%;
     background-color: #FFF;
 }
-
+#left {
+    width: 70%;
+    border: 1px solid #CCC;
+}
+#right {
+    width: 29%;
+    height: 100%;
+    border: 1px solid #CCC;
+}
 #cy {
     height:100%;
     border: 1px solid #CCC;    
