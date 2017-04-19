@@ -248,7 +248,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        //.style("fill-opacity", function(d) { return z(d.z); }) //filters out nodes that aren't connected, second way
+        .style("fill-opacity", function(d) { return z(d.z)+ 0.6; }) //Nodes that actually have an edge are slightly darker
         .style("fill", function(d) { return nodes[d.x].label == nodes[d.y].label ? c(nodes[d.x].label) : null ; }) //is ccn right here?
         //.style("fill", function(d) { return c(nodes[d.y].label) ; }) //is ccn right here?
         //.style("fill", function (d) {return c(nodes.label)}) //doesn't work
