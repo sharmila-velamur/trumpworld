@@ -33,20 +33,18 @@ body {
 #viz {
     display: flex;
     width: 100%;
-    background-color: #FFF;
 }
 #left {
     width: 70%;
-    border: 1px solid #CCC;
 }
 #right {
-    width: 29%;
+    width: 30%;
     height: 100%;
-    border: 1px solid #CCC;
+    margin-left: 5px;
+    padding-right: 5px;
 }
 #cy {
     height:100%;
-    border: 1px solid #CCC;    
 }
 
 #rankings_container,
@@ -58,14 +56,6 @@ body {
     border: 1px solid #DDD;
 }
 
-#cy_container#info {
-    position: absolute;
-    display: inline;
-    top: 0px;
-    padding: 10px;
-    width: 95%;
-    height: 100%;
-}
 
 .title {
     font-family: Metrophobic, sans-serif !important;
@@ -97,6 +87,7 @@ body {
     font-size: 30px;
     border: 2px solid;
     line-height: 40px;
+    color: #B0BEC5;
 }
 
 .icon-sm{
@@ -104,27 +95,5 @@ body {
     font-size: 28px;
 }
 
-.search {
-    color: #034AA0;
-}
 
-.focusOn {
-    color: #AD1B39;
-}
-
-.resize {
-    color: #E7C21C;
-}
-
-.filter {
-    color: #359B23;
-}
-
-.exportAs {
-    color: #424F5D;
-}
-
-#filters {
-    height: 100px;
-}
 

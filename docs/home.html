@@ -86,14 +86,20 @@
         <row>
             <div class="col-md-12 col-lg-12 col-sm-12">
                 <div id="viz">
-                    <div id="left">
+                    <div id="left" class="card">
                         <div id="cy_container">
                             <div id="cy"></div>                        
                         </div>
                     </div>
                     <div id="right">
                         <div id="path_info"></div>
-                        <div id="node_info"></div>
+                        <div id="node_info">
+                            <div id="node_info_heading" ></div>
+                            <div id="node_info_body" >
+                                <div id="node-picture" class=""></div>
+                                <div id="node-source"></div>                                
+                            </div>
+                        </div>
                         <div id="graph_legends">
                             Graph Legend Info needs to be here
                         </div> 
@@ -123,7 +129,7 @@
             </div>
         </row>
     </div>
-    <div class="card" id="slider">
+    <div class="panel panel-default" id="slider">
         <row class="vertical-align">
             <div class="col-md-2 col-lg-2 col-sm-2">
                 <i class="material-icons search icon">search</i>
@@ -131,26 +137,26 @@
             <div id="search">
                 <div class="col-md-5 col-lg-5 col-sm-5">
                     <div class="form-group label-static">
-                        <label for="startNode" class="control-label" ><span class="search">Start At</label>
-                        <input type="text" class="form-control" id="startNode" data-ripple-color="#034AA0">
+                        <label for="startNode" class="control-label" >Start At</label>
+                        <input type="text" class="form-control" id="startNode">
                     </div>
                 </div>
 
                 <div class="col-md-5 col-lg-5 col-sm-5">
-                    <div class="form-group label-static search" data-ripple-color="#034AA0">
-                        <label for="endNode" class="control-label" style="color:#034AA0;"><span class="search">End At</label>
+                    <div class="form-group label-static search">
+                        <label for="endNode" class="control-label">End At</label>
                         <input type="text" class="form-control" id="endNode">
                     </div>
                 </div>
             </div>
         </row>
-        <row>
+        <row class="vertical-align ">
             <div class="col-md-2 col-lg-2 col-sm-2">
                 <i class="material-icons focusOn icon">zoom_in</i>
             </div>
             <div class="col-md-9 col-lg-9 col-sm-9">
                 <div class="form-group label-static">
-                    <label for="focusOn" class="control-label"><span class="focusOn">Focus On</span></label>
+                    <label for="focusOn" class="control-label">Learn More About</label>
                     <input type="text" class="form-control" id="focusOn">
                 </div>
             </div>
@@ -159,9 +165,9 @@
             <div class="col-md-2 col-lg-2 col-sm-2">
                 <i class="mdi mdi-bullseye resize icon"></i>
             </div>
-            <div class="col-md-10 col-lg-10 col-sm-10">
+            <div class="col-md-9 col-lg-9 col-sm-9">
                 <div class="form-group label-static">
-                    <label for="resizeNodes" class="control-label"><span class="resize">Resize Nodes</span></label>
+                    <label for="resizeNodes" class="control-label">Reprioritize Graph By</label>
                     <select id="resizeNodes" class="form-control">
                         <option value="">Select</option>
                         <option value="degree"> Most Connected (Degree) </option>
@@ -178,7 +184,7 @@
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
                 <div class="form-group label-static ">
-                    <label for="exportAs" class="control-label"><span class="exportAs">Export As</span></label>
+                    <label for="exportAs" class="control-label">Export As</label>
                     <select id="exportAs" class="form-control">
                         <option value="">Select</option>
                         <option value="png"> PNG </option>
@@ -194,7 +200,7 @@
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
                 <div class="form-group label-static">
-                <label for="filters" class="control-label"><span class="filter">Filter / Remove</span></label>
+                <label for="filters" class="control-label">Filter / Remove</label>
                     <select id="filters" multiple="" class="form-control">
                         <option value=""> Select </option>
                         <option value="Person"> Person </option>
@@ -218,17 +224,6 @@
         var layoutPadding = 50;
         var aniDur = 500;
         var easing = 'linear';
-        
-
-        /*****************************************/
-        /**** Handlebar Template for Node Info ***/
-        var infoTemplate = Handlebars.compile([
-            '<p class="ac-name">{{name}}</p>',
-            '<p class="ac-node-type"><i class="fa fa-info-circle"></i> {{NodeType}} {{#if Type}}({{Type}}){{/if}}</p>',
-            '{{#if Milk}}<p class="ac-milk"><i class="fa fa-angle-double-right"></i> {{Milk}}</p>{{/if}}',
-            '{{#if Country}}<p class="ac-country"><i class="fa fa-map-marker"></i> {{Country}}</p>{{/if}}',
-            '<p class="ac-more"><i class="fa fa-external-link"></i> <a target="_blank" href="https://duckduckgo.com/?q={{name}}">More information</a></p>'
-          ].join(''));
 
         $(function() {          
 
@@ -281,9 +276,8 @@
                     autoungrabify: false,
                     autounselectify: false,
                     ready: function() {
-                        
-                        $("#cy_container").height(win.innerHeight() - 130);
-                        this.resize();
+                        //apply cytoscape bootstrap fix for container height
+                        resize();
 
                         $('#graph_legends').show();
                         $('#path_info').hide();
@@ -327,7 +321,7 @@
                 /**********************************************************************/
                 /*  SET LOADING COMPLETE                                              */
                 /**********************************************************************/
-                cy.pon('layoutstop').then(function( event ) {
+                cy.on('layoutstop', function( event ) {
                     console.log("Layout rendering stopped");
                     $('#loading').addClass('loaded');
                 });
@@ -346,14 +340,16 @@
                 /**********************************************************************/
                 /*  USER INTERACTION BASED EVENT LISTENERS                            */
                 /**********************************************************************/
-                cy.on('tap', 'node', function( event ){
-                    var n = event.cyTarget;
-                    $('#graph_legends').hide();
-                    $('#path_info').hide();
-                    $('#node_info').html('');
-                    $('#node_info').show();
-                    $('#node_nfo').html(JSON.stringify(this.data()));
-                });
+                // cy.on('tap', 'node', function( evt ){
+                //     var n = evt.cyTarget;
+                //     console.log(n.data());
+                //     $('#graph_legends').hide();
+                //     $('#path_info').hide();
+                //     $('#node_info').html('');
+                //     $('#node_info').show();
+                //     $('#node_info_heading').html(n.data().name);
+                //     $('#node_info_heading').html(n.data().name);
+                // });
 
                 /**********************************************************************/
                 /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
@@ -383,7 +379,11 @@
                         easing: 'ease',
                         queue: true
                     });
-                    $('#node_info').html(JSON.stringify(focusOn.data()));
+                    let name = focusOn.data.name;
+                    let type = focusOn.data.label;
+                    let info = focusOn.data.fromSource;
+                    $('#node_info').html("<div class='panel-heading'>More about: " + name + "</div>");
+                    $('#node_info').html("<div class='panel-body'><h3>Type of Entity: " + type + "</h3><h4>Info: " + info + "</h4></div>");
 
                 }); //end focus on
 
@@ -502,16 +502,16 @@
                                     queue: true
                                 });
 
-                                let pathTableColumns = ['Type', 'Name', 'Source', 'Connections'];
+                                let pathTableColumns = ['Type', 'Name', 'Source', 'Target', 'Info'];
                                 let pathTableData = [];
-                                let maxDegree = cy.nodes().maxDegree();
-                                aStar.path.nodes().jsons().forEach(d => {
+                                aStar.path.jsons().forEach(d => {                                    
                                     pathTableData.push({
                                         'ID': d.data.id,
                                         'Type': d.data.label,
                                         'Name': d.data.name,
-                                        'Connections': d.dcn * maxDegree,
-                                        'Source': d.data.fromSource                                        
+                                        'Source': d.data.source,
+                                        'Target': d.data.target,
+                                        'Info': d.data.fromSource                                        
                                     });    
                                     
                                 });
@@ -559,9 +559,15 @@
             /**********************************************************************************/
             /*          BOOTSTRAP CY DIV FIX                                                  */
             /**********************************************************************************/
-            win.resize(function() {
+            var resize = function() {
+                $("#right").height(win.innerHeight());
+                $("#left").height(win.innerHeight());
                 $("#cy_container").height(win.innerHeight() - 130);
                 cy.resize();
+            };
+
+            win.resize(function() {
+                resize()
             });
 
             /**********************************************************************************/

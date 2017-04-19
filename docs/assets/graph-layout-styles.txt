@@ -5,10 +5,10 @@ core {
 }
 
 edge {
-    line-color: #AAA;
+    line-color: #607D8B;
     curve-style: haystack;
     haystack-radius: 0.2;
-    opacity: 0.55;
+    opacity: 0.8;
     width: 2;
     z-index: 0;
     overlay-opacity: 0;
@@ -20,39 +20,36 @@ node {
     height: 2;
     font-size: 16;
     font-weight: normal;
-    min-zoomed-font-size: 6;    
+    min-zoomed-font-size: 2;    
     text-valign: center;
     text-halign: center;
-    color: #000;
-    text-outline-width: 2;
-    text-outline-color: #FFF;
-    text-outline-opacity: 0.7;
-    overlay-color: #fff;
+    color: #263238;
+    text-background-color: #fff;
 }
 
-node[dcn > 0.009] {
+node[dcn > 0.05] {
     content: data(name); 
 }
 
-node[label = "Contract" ] [dcn > 0.009]{
+node[label = "Contract" ] [dcn > 0.05]{
     content: data(purpose);    
 }
 
 
 node[label = "Organization"] {
-    background-color: #FFAC00;
+    background-color: #FF1744;
 }
 node[label = "Person"] {
-    background-color: #0FB2FC;
+    background-color: #673AB7;
 }
 node[label = "Agency"] {
-    background-color: #3F9D2F;
+    background-color: #0277BD;
 }
 node[label = "Country"] {
-    background-color: #00ACAC;
+    background-color: #0288D1;
 }
 node[label = "Contract"] {
-    background-color: #F93324;
+    background-color: #1B5E20;
 }
 
 node{
@@ -76,19 +73,9 @@ node.pr-resize{
 }
 
 
-edge[connection = "Ownership"] {
-    curve-style: haystack;
-    haystack-radius: 0.2;
-    line-color: #CCC;
-    opacity: 0.666;
-    z-index: 9;
-    width: 4;
-}
-
 node:selected {
-    border-color: #999;
-    border-opacity: 0.5;
-    border-width: 10;
+    border-color: #FFFF00;
+    border-width: 5;
 }
 
 .filtered {
@@ -107,37 +94,37 @@ node.not-path {
 
 edge.path {
   opacity: 0.8;
-  line-color: #999;
+  line-color: #37474F;
   width: 10;
-  z-index: 0;
+  z-index: 9999;
 }
 
 node.path {
-    border-color: #999;
+    border-color: #FFFF00;
     border-width: 10;
 }
 
 node.start,
 node.end {
-    border-color: #999;
+    border-color: #FFFF00;
     border-width: 10;
 }
 
 node.focus {
-    border-color: #999;
+    border-color: #FFFF00;
     border-width: 10;
-    min-zoomed-font-size: 0;
     content: data(name);
 }
 
 node.focus-neighbour {
-    min-zoomed-font-size: 0;
-    content: data(name); 
+    content: data(name);
+    border-color: #FFFF00;
+    order-width: 5; 
 }
 
 edge.focus {
-    opacity: 0.666;
-    line-color: #999;
+    opacity: 0.8;
+    line-color: #37474F;
     width: 10;
     z-index: 9999; 
     content: data(label);   
