@@ -7,6 +7,26 @@ body {
     padding: 0;
     color: #000;
 }
+
+/*****************  LOADING SPINNER STARTS ******************/
+#loading {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  text-align: center;
+  font-size: 3em;
+  color: #999;
+  background-color: #EEE;
+  opacity:0.8;
+  display: block;
+}
+
+#loading.loaded {
+  display: none;
+}
+
+/************   END LOADING SPINNER  ************************/
+
 #cy_container {
     position: absolute;
     width: 100%;
@@ -17,15 +37,25 @@ body {
     height:100%;
     border: 1px solid #CCC;    
 }
-#info {
+
+#rankings_container,
+#description_container,
+#graph_data_container,
+#help_container {
+    display: none;
+    position: absolute;
+    border: 1px solid #DDD;
+}
+
+#cy_container#info {
     position: absolute;
     display: inline;
     top: 0px;
-    left: 101%;
     padding: 10px;
     width: 95%;
     height: 100%;
 }
+
 .title {
     font-family: Metrophobic, sans-serif !important;
 }
@@ -34,13 +64,6 @@ body {
     align-items: center;
 }
 
-#rankings_container,
-#description_container,
-#graph_data_container,
-#help_container {
-    display: none;
-    border: 1px solid #DDD;
-}
 
 #reset, #refresh {
     font-size: 20px;
@@ -90,50 +113,7 @@ body {
     color: #424F5D;
 }
 
-#clear {
-  position: absolute;
-  right: 0;
-  top: 0;
-  margin: 0.25em;
-  visibility: hidden;
-}
-
-#loading {
-  position: absolute;
-  left: 0;
-  top: 70%;
-  width: 100%;
-  text-align: center;
-  margin-top: -0.5em;
-  font-size: 6em;
-  color: #CCC;
-}
-
-#loading.loaded {
-  display: none;
-}
-
 #filters {
     height: 100px;
-}
-
-body.has-start #clear {
-  visibility: visible;
-}
-
-#end {
-  display: none;
-}
-
-body.has-start:not(.has-end) #end {
-  display: inline;
-}
-
-body.has-start:not(.has-end) #start {
-  display: none;
-}
-
-body.calc #loading {
-  display: block;
 }
 

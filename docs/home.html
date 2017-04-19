@@ -15,8 +15,8 @@
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script>
+    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script>
+    <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script> -->
     <script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
@@ -31,13 +31,13 @@
 
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link href="assets/css/mdi/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-material-design/dist/css/ripples.min.css">
+    <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/css/jquery.qtip.min.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" >
+    <link href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css" rel="stylesheet" type="text/css" >
+    <link href="assets/css/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet" type="text/css" >
     
     <link href="assets/css/styles.css" rel="stylesheet" />
 
@@ -49,11 +49,8 @@
 
 </head>
 
-<body>
+<body>    
     <div class="container-fluid">
-        <div id="loading">
-            <span class="fa fa-refresh fa-spin"></span>
-        </div>
         <row class="card jumbotron">
             <div class="col-md-12 col-lg-12 col-sm-12">
                 <h2 class=" title">Mapping The Trump World</h2>
@@ -91,10 +88,11 @@
                 <div class="panel panel-primary">
                     <div id="cy_container">
                         <div id="cy"></div>
-                        <div id="info" class="panel panel-info"></div>
+                        <div id="info"></div>
                     </div>                    
                     <div id="adj_matrix_container">
-                        <div id="adj_matrix">                            
+                        <div id="adj_matrix">
+                            <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
                         </div>
                     </div>
 
@@ -115,6 +113,7 @@
                             Help the user figure this site out.
                         </div>
                     </div>
+                    
                 </div>
             </div>            
         </row>
@@ -203,11 +202,18 @@
             </div>
         </row>
     </div>
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="">Loading...</span>
+    </div>
 
     <script type="text/javascript">
         var win = $(window);
-
-        $('#slider').hide();
+        
+        var layoutPadding = 50;
+        var aniDur = 500;
+        var easing = 'linear';
+        
 
         /*****************************************/
         /**** Handlebar Template for Node Info ***/
@@ -222,10 +228,8 @@
         $(function() {          
 
             "use strict";
-            var $loading = $('#loading');
-            var layoutPadding = 50;
-            var aniDur = 500;
-            var easing = 'linear';
+            
+            
             var allNodes = null;
             var allEles = null;
             var lastHighlighted = null;
@@ -250,7 +254,8 @@
                 console.log("In Init CY");
 
                 var styleJson = then[1];
-                var graphElements = then[0];                
+                var graphElements = then[0];
+
                 var cy = window.cy = cytoscape({
                     headless: false,
                     styleEnabled: true,
@@ -259,7 +264,7 @@
                     style: styleJson,
                     layout: layoutOptions,                    
                     motionBlur: true,
-                    zoom: 0.05,
+                    zoom: 2.4,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
                     maxZoom: 1e50,
@@ -275,14 +280,14 @@
                     autoungrabify: false,
                     autounselectify: false,
                     ready: function() {
+                        
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
+                        this.center();
+                        $('#loading').addClass('loaded');
                         allNodes = this.nodes();
                         allEles = this.elements();
-                        $loading.addClass('loaded');
-
-                        $('#slider').show();
-                        this.center();
+                        
                         this.elements().qtip({
                             content: {
                                 title: function() { return this.data("label"); },
@@ -308,71 +313,73 @@
 
                 }); //end cy
 
-                /** K-Means Clustering - But this conflicts with colors & styles applied based on node/edge type **/
-                // cy.pon('layoutstop').then(function( event ){
+                
+                // cy.on('layoutstop').then(function( event ){
 
-                //     // Input parameters to clustering algorithm
-                //     var options = {
-                //         k: 4,
-                //         distance: "euclidean",
-                //         maxIterations: 12
-                //     };
+                    
+                    /** K-Means Clustering - But this conflicts with colors & styles applied based on node/edge type **/
+                    // Input parameters to clustering algorithm
+                    // var options = {
+                    //     k: 4,
+                    //     distance: "euclidean",
+                    //     maxIterations: 12
+                    // };
 
-                //     // Run clustering algorithm on graph nodes
-                //     var clusters = cy.elements().kMeans( options );
+                    // // Run clustering algorithm on graph nodes
+                    // var clusters = cy.elements().kMeans( options );
 
-                //     // Assign random colors to each cluster!
-                //     if (clusters && clusters.length > 0) {
-                //         for (var c = 0; c < clusters.length; c++) {
-                //             clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
-                //         }
-                //     }
+                    // // Assign random colors to each cluster!
+                    // if (clusters && clusters.length > 0) {
+                    //     for (var c = 0; c < clusters.length; c++) {
+                    //         clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
+                    //     }
+                    // }
                 // });
 
                 /**********************************************************************/
                 /*  SAVE ORIGINAL POSITION TO RESTORE ELEMENTS LATER                  */
                 /**********************************************************************/
-                cy.on('free', 'node', function( e ){
-                    var n = e.cyTarget;
-                    var p = n.position();
+                // cy.on('free', 'node', function( e ){
+                //     var n = e.cyTarget;
+                //     var p = n.position();
 
-                    n.data('orgPos', {
-                        x: p.x,
-                        y: p.y
-                    });
-                });
+                //     n.data('orgPos', {
+                //         x: p.x,
+                //         y: p.y
+                //     });
+                // });
 
                 /**********************************************************************/
                 /*  RESTORE ORIGINAL POSITION AFTER BRIEF ANIMATION                   */
                 /**********************************************************************/
-                var restoreElesPositions = function( nhood ){
-                    return Promise.all( nhood.map(function( ele ){
-                      var p = ele.data('orgPos');
+                // var restoreElesPositions = function( nhood ){
+                //     return Promise.all( nhood.map(function( ele ){
+                //       var p = ele.data('orgPos');
 
-                      return ele.animation({
-                        position: { x: p.x, y: p.y },
-                        duration: aniDur,
-                        easing: easing
-                      }).play().promise();
-                    }));
-                };
+                //       return ele.animation({
+                //         position: { x: p.x, y: p.y },
+                //         duration: aniDur,
+                //         easing: easing
+                //       }).play().promise();
+                //     }));
+                // };
 
                 /**********************************************************************/
                 /*  FADE ELEMENTS OUT USING ANIMATION                                 */
                 /**********************************************************************/
-                var getFadePromise = function( ele, opacity ) {
-                    return ele.animation({
-                      style: { 'opacity': opacity },
-                      duration: aniDur
-                    }).play().promise();
-                };
+                // var getFadePromise = function( ele, opacity ) {
+                //     return ele.animation({
+                //       style: { 'opacity': opacity },
+                //       duration: aniDur
+                //     }).play().promise();
+                // };
 
                 /**********************************************************************/
                 /*  USER INTERACTION BASED EVENT LISTENERS                            */
                 /**********************************************************************/
-                cy.on('tap', function(){
-                    $('#search').blur();
-                });
+                // cy.on('tap', function(){
+                //     $('#search').blur();
+                // });
 
                 /**********************************************************************/
                 /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
@@ -395,7 +402,9 @@
                     focusOn.addClass('focus');
                     focusOn.neighbourhood().addClass('focus path');
                     cy.pan(pos);
-                    cy.zoom(0.1);
+                    cy.zoom(0.5);
+                    cy,center();
+
                 }); //end focus on
 
                 /**********************************************************************/
@@ -499,27 +508,26 @@
                                 
                                 $("#cy_container").width(win.innerWidth()*0.5);
                                 cy.resize();
-                                var circleLayoutOptions = {
-                                    name: 'circle',
+                                var bfsLayoutOptions = {
+                                    name: 'breadthfirst',
                                     fit: true,                                    
-                                    avoidOverlap: true // prevents node overlap, may overflow boundingBox if not enough space
+                                    avoidOverlap: true,
+                                    circle: false
                                 };               
                                 cy.elements().not( aStar.path ).addClass('hidden');    
                                 aStar.path.addClass('path');
-                                let layout = aStar.path.layout(circleLayoutOptions);                           
+                                let layout = aStar.path.layout(bfsLayoutOptions);                           
                                 cy.layout();
                                 cy.zoom(0.5);
-                                let pathTableColumns = ['Type', 'Name', 'Closeness', 'Degree', 'Betweeness', 'Pagerank'];
+                                let pathTableColumns = ['Type', 'Name', 'Source', 'Connections'];
                                 let pathTableData = [];
                                 aStar.path.nodes().jsons().forEach(d => {
                                     pathTableData.push({
                                         'ID': d.data.id,
                                         'Type': d.data.label,
                                         'Name': d.data.name,
-                                        'Closeness': d.data.ccn.toFixed(3),
-                                        'Degree': d.data.dcn.toFixed(3),
-                                        'Betweeness': d.data.bc.toFixed(3),
-                                        'Pagerank': d.data.pr.toFixed(3)
+                                        'Connections': d.degree(),
+                                        'Source': d.data.fromSource                                        
                                     });    
                                     
                                 });
