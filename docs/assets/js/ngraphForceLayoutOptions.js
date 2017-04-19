@@ -51,7 +51,7 @@ var layoutOptions = {
                      */
                     stableThreshold: 0.000009
                 },
-                animate: false,
+                animate: true,
                 iterations: 10000,
                 refreshInterval: 16, // in ms
                 refreshIterations: 10, // iterations until thread sends an update

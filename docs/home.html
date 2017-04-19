@@ -204,7 +204,7 @@
     </div>
     <div id="loading">
         <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-        <span class="">Loading...</span>
+        <div>Loading: Trump Network Data </div>
     </div>
 
     <script type="text/javascript">
@@ -217,13 +217,13 @@
 
         /*****************************************/
         /**** Handlebar Template for Node Info ***/
-        // var infoTemplate = Handlebars.compile([
-        //     '<p class="ac-name">{{name}}</p>',
-        //     '<p class="ac-node-type"><i class="fa fa-info-circle"></i> {{NodeTypeFormatted}} {{#if Type}}({{Type}}){{/if}}</p>',
-        //     '{{#if Milk}}<p class="ac-milk"><i class="fa fa-angle-double-right"></i> {{Milk}}</p>{{/if}}',
-        //     '{{#if Country}}<p class="ac-country"><i class="fa fa-map-marker"></i> {{Country}}</p>{{/if}}',
-        //     '<p class="ac-more"><i class="fa fa-external-link"></i> <a target="_blank" href="https://duckduckgo.com/?q={{name}}">More information</a></p>'
-        //   ].join(''));
+        var infoTemplate = Handlebars.compile([
+            '<p class="ac-name">{{name}}</p>',
+            '<p class="ac-node-type"><i class="fa fa-info-circle"></i> {{NodeType}} {{#if Type}}({{Type}}){{/if}}</p>',
+            '{{#if Milk}}<p class="ac-milk"><i class="fa fa-angle-double-right"></i> {{Milk}}</p>{{/if}}',
+            '{{#if Country}}<p class="ac-country"><i class="fa fa-map-marker"></i> {{Country}}</p>{{/if}}',
+            '<p class="ac-more"><i class="fa fa-external-link"></i> <a target="_blank" href="https://duckduckgo.com/?q={{name}}">More information</a></p>'
+          ].join(''));
 
         $(function() {          
 
@@ -264,7 +264,7 @@
                     style: styleJson,
                     layout: layoutOptions,                    
                     motionBlur: true,
-                    zoom: 2.4,
+                    zoom: 0.5,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
                     maxZoom: 1e50,
@@ -284,18 +284,30 @@
                         $("#cy_container").height(win.innerHeight() - 130);
                         this.resize();
                         this.center();
-                        $('#loading').addClass('loaded');
+                        
                         allNodes = this.nodes();
                         allEles = this.elements();
+
+                        this.promiseOn('layoutstop', function( event ){
+                            console.log("Layout rendering stopped");
+                            $('#loading').addClass('loaded');
+                            cy.zoom(0.1);
+                        });
                         
                         this.elements().qtip({
                             content: {
                                 title: function() { return this.data("label"); },
                                 text: function() { 
-                                    let x = (this.data("name") === undefined) ? '' : 'Name: ' + this.data("name");
-                                    x += (this.data("purpose") === undefined) ? '' : 'Purpose: ' + this.data("purpose");
+                                    let x = (this.data("name") === undefined) ? '' : $.camelCase(this.data("name"));
+                                    x += (this.data("purpose") === undefined) ? '' : $.camelCase(this.data("purpose"));
                                     return x; 
                                 }                                                              
+                            },
+                            show: {
+                              event: 'mouseover'
+                            },
+                            hide: {
+                                event: 'mouseout'
                             },
                             position: {
                                 my: 'top center',
@@ -306,63 +318,41 @@
                                 tip: {
                                     width: 16,
                                     height: 8
-                                }
+                                },
+                                'font-size': '8px'
                             }
                         });
                     } 
 
                 }); //end cy
 
-                
-                // cy.on('layoutstop').then(function( event ){
-
-                    
-                    /** K-Means Clustering - But this conflicts with colors & styles applied based on node/edge type **/
-                    // Input parameters to clustering algorithm
-                    // var options = {
-                    //     k: 4,
-                    //     distance: "euclidean",
-                    //     maxIterations: 12
-                    // };
-
-                    // // Run clustering algorithm on graph nodes
-                    // var clusters = cy.elements().kMeans( options );
-
-                    // // Assign random colors to each cluster!
-                    // if (clusters && clusters.length > 0) {
-                    //     for (var c = 0; c < clusters.length; c++) {
-                    //         clusters[c].style( 'background-color', '#' + Math.floor(Math.random()*16777215).toString(16) );
-                    //     }
-                    // }
-                // });
-
                 /**********************************************************************/
                 /*  SAVE ORIGINAL POSITION TO RESTORE ELEMENTS LATER                  */
                 /**********************************************************************/
-                // cy.on('free', 'node', function( e ){
-                //     var n = e.cyTarget;
-                //     var p = n.position();
+                cy.on('free', 'node', function( e ){
+                    var n = e.cyTarget;
+                    var p = n.position();
 
-                //     n.data('orgPos', {
-                //         x: p.x,
-                //         y: p.y
-                //     });
-                // });
+                    n.data('orgPos', {
+                        x: p.x,
+                        y: p.y
+                    });
+                });
 
                 /**********************************************************************/
                 /*  RESTORE ORIGINAL POSITION AFTER BRIEF ANIMATION                   */
                 /**********************************************************************/
-                // var restoreElesPositions = function( nhood ){
-                //     return Promise.all( nhood.map(function( ele ){
-                //       var p = ele.data('orgPos');
+                var restoreElesPositions = function( nhood ){
+                    return Promise.all( nhood.map(function( ele ){
+                      var p = ele.data('orgPos');
 
-                //       return ele.animation({
-                //         position: { x: p.x, y: p.y },
-                //         duration: aniDur,
-                //         easing: easing
-                //       }).play().promise();
-                //     }));
-                // };
+                      return ele.animation({
+                        position: { x: p.x, y: p.y },
+                        duration: aniDur,
+                        easing: easing
+                      }).play().promise();
+                    }));
+                };
 
                 /**********************************************************************/
                 /*  FADE ELEMENTS OUT USING ANIMATION                                 */
@@ -386,24 +376,15 @@
                 /**********************************************************************/
                 $('#focusOn').on('change', function() {
                     console.log("In focusOn: " + $('#focusOn').val());
+                    $("#slider").slideReveal("hide");
                     let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
-                    let pos = focusOn.position();
-                    var circleLayoutOptions = {
-                        name: 'concentric',
-                        fit: false, // whether to fit the viewport to the graph
-                        istartAngle: 3 / 2 * Math.PI,
-                        // directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
-                        // padding: 30, // padding on fit
-                        // circle: true, // put depths in concentric circles if true, put depths top down if false
-                        // spacingFactor: 1.0, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
-                        avoidOverlap: true // prevents node overlap, may overflow boundingBox if not enough space
-                    };   
-                    cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('not-path fade hidden');                 
+                    let pos = focusOn.renderedPosition();
+                      
+                    cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('faded');                 
                     focusOn.addClass('focus');
-                    focusOn.neighbourhood().addClass('focus path');
-                    cy.pan(pos);
-                    cy.zoom(0.5);
-                    cy,center();
+                    lastHighlighted = focusOn;
+                    focusOn.neighbourhood().addClass('focus-neighbour');
+                    cy.zoom(0.1, pos);
 
                 }); //end focus on
 
@@ -491,11 +472,6 @@
                                 directed: false,
                                 weight: function( e ) { 
                                     return 1;
-                                      // if( e.data('is_walking') ){
-                                      //   return 0.25; // assume very little time to walk inside stn
-                                      // }
-                                      
-                                      // return e.data('is_bullet') ? 1 : 3; // assume bullet is ~3x faster
                                 }
                             });                             
                             if ( !aStar.found ) {
@@ -545,7 +521,7 @@
                 /*  CENTER AND RESET ZOOM OF THE VIEW PORT                            */
                 /**********************************************************************/
                 $("#reset").on('click', function() {
-                    cy.zoom(0.05);
+                    cy.reset();
                     cy.center();
                     this.blur();
                 }); 
@@ -555,8 +531,8 @@
                 /**********************************************************************/
                 $("#refresh").on('click', function() {
                     $('body').removeClass('has-start has-end');
-                    cy.elements().removeClass('path not-path start end hidden');
-                    cy.layout(layoutOptions);
+                    cy.elements().removeClass('path not-path focus focus-neighbour start end hidden');
+                    this.restoreElesPositions(cy.elements());
                 });         
 
             } //end init cy

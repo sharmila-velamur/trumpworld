@@ -5,10 +5,10 @@ core {
 }
 
 edge {
-    line-color: #CCC;
+    line-color: #AAA;
     curve-style: haystack;
     haystack-radius: 0.2;
-    opacity: 0.2;
+    opacity: 0.55;
     width: 2;
     z-index: 0;
     overlay-opacity: 0;
@@ -16,32 +16,29 @@ edge {
 }
 
 node {
-    width: 5;
-    height: 5;
+    width: 2;
+    height: 2;
     font-size: 16;
-    font-weight: bold;
-    min-zoomed-font-size: 4;
-    content: data(name);
+    font-weight: normal;
+    min-zoomed-font-size: 6;    
     text-valign: center;
     text-halign: center;
     color: #000;
     text-outline-width: 2;
     text-outline-color: #FFF;
-    text-outline-opacity: 1;
+    text-outline-opacity: 0.7;
     overlay-color: #fff;
 }
-node[label = "Contract"] {
+
+node[dcn > 0.009] {
+    content: data(name); 
+}
+
+node[label = "Contract" ] [dcn > 0.009]{
     content: data(purpose);    
 }
 
-edge[connection = "Ownership"] {
-    curve-style: haystack;
-    haystack-radius: 0.2;
-    line-color: #CCC;
-    opacity: 0.666;
-    z-index: 9;
-    width: 4;
-}
+
 
 node[label = "Organization"] {
     background-color: #FFAC00;
@@ -60,58 +57,37 @@ node[label = "Contract"] {
 }
 
 node{
-    width: mapData(dcn, 0, 1, 50, 400);
-    height: mapData(dcn, 0, 1, 50, 400);
+    width: mapData(dcn, 0.1, 1, 100, 700);
+    height: mapData(dcn, 0.1, 1, 100, 700);
 }
 
 node.ccn-resize{
-    width: mapData(ccn, 0, 1, 10, 200);
-    height: mapData(ccn, 0, 1, 10, 200);
+    width: mapData(ccn, 0, 1, 10, 700);
+    height: mapData(ccn, 0, 1, 10, 700);
 }
 
 node.bc-resize{
-    width: mapData(bc, 0, 20156000, 20, 700);
-    height: mapData(bc, 0, 20156000, 20, 700);
+    width: mapData(bc, 0, 20156000, 10, 700);
+    height: mapData(bc, 0, 20156000, 10, 700);
 }
 
 node.pr-resize{
-    width: mapData(bc, 0, 0.05, 30, 700);
-    height: mapData(bc, 0, 0.05, 30, 700);
+    width: mapData(bc, 0, 0.05, 10, 700);
+    height: mapData(bc, 0, 0.05, 10, 700);
 }
 
-node.highlighted {
-    min-zoomed-font-size: 0;
-    z-index: 9999;
-}
 
-edge.highlighted {
-    opacity: 0.8;
+edge[connection = "Ownership"] {
+    curve-style: haystack;
+    haystack-radius: 0.2;
+    line-color: #CCC;
+    opacity: 0.666;
+    z-index: 9;
     width: 4;
-    z-index: 9999;
-}
-
-.faded {
-  events: no;
-}
-
-node.faded {
-  opacity: 0.08;
-}
-
-edge.faded {
-  opacity: 0.06;
-}
-
-.hidden {
-    display: none;
-}
-
-.highlighted {
-
 }
 
 node:selected {
-    border-color: rgb(187, 219, 247);
+    border-color: #999;
     border-opacity: 0.5;
     border-width: 10;
 }
@@ -155,18 +131,54 @@ node.end {
 node.focus {
     width: 200;
     height: 200;
-    border-color: lightyellow;
+    border-color: #999;
     border-width: 10;
+    min-zoomed-font-size: 10;
+    content: data(name);
 }
-node.unfocus,
-edge.unfocus {
-    
+
+node.focus-neighbour {
+    min-zoomed-font-size: 10;
+    content: data(name); 
 }
+
 edge.focus {
     opacity: 0.666;
     line-color: #DDD;
     width: 10;
-    z-index: 0;    
+    z-index: 0; 
+    content: data(label);   
+}
+
+.faded {
+  events: no;
+}
+
+node.faded {
+  opacity: 0.08;
+}
+
+edge.faded {
+  opacity: 0.06;
+}
+
+.hidden {
+    display: none;
+}
+
+.highlighted {
+
+}
+
+node.highlighted {
+    min-zoomed-font-size: 0;
+    z-index: 9999;
+}
+
+edge.highlighted {
+    opacity: 0.8;
+    width: 4;
+    z-index: 9999;
 }
 
 
