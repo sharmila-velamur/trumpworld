@@ -24,7 +24,7 @@ node {
     text-valign: center;
     text-halign: center;
     color: #000;
-    font-weight:400;
+    font-weight:600;
     text-background-color: #fff;
     text-background-opacity: 1;
     opacity: 0.75;
@@ -101,6 +101,13 @@ edge.path {
   width: 10;
   z-index: 9999;
   content: data(connection); 
+  font-size: 20;
+    font-weight: normal;
+    min-zoomed-font-size: 2;    
+    color: #000;
+    font-weight:600;
+    text-background-color: #fff;
+    text-background-opacity: 1; 
 }
 
 node.path {
@@ -130,8 +137,15 @@ edge.focus {
     opacity: 0.8;
     line-color: #37474F;
     width: 10;
-    z-index: 9999; 
-    content: data(connection);   
+    z-index: 9999;
+    content: data(connection);  
+    font-size: 20;
+    font-weight: normal;
+    min-zoomed-font-size: 2;    
+    color: #000;
+    font-weight:600;
+    text-background-color: #fff;
+    text-background-opacity: 1; 
 }
 
 .faded {

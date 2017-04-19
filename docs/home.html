@@ -382,8 +382,11 @@
                     let name = focusOn.data("name");
                     let type = focusOn.data("label");
                     let info = focusOn.data("fromSource");
-                    $('#node_info').html("<h3'>More about: " + name + "</h3>");
-                    $('#node_info').html("<h3>Type of Entity: " + type + "</h3><h4>Info: " + info + "</h4>");
+                    if (info === undefined) {
+                        info = "https://www.buzzfeed.com/johntemplon/help-us-map-trumpworld";
+                    }
+                    $('#node_info').html();
+                    $('#node_info').html("<p class='bg-primary' style='font-size:20px;'>More about: " + name + "</p>" + "<p style='font-size:16px;'>Type of Entity: " + type + "</p><p style='font-size:16px;>Info: " + info + "</p>");
 
                 }); //end focus on
 
