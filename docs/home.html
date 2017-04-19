@@ -379,11 +379,11 @@
                         easing: 'ease',
                         queue: true
                     });
-                    let name = focusOn.data.name;
-                    let type = focusOn.data.label;
-                    let info = focusOn.data.fromSource;
-                    $('#node_info').html("<div class='panel-heading'>More about: " + name + "</div>");
-                    $('#node_info').html("<div class='panel-body'><h3>Type of Entity: " + type + "</h3><h4>Info: " + info + "</h4></div>");
+                    let name = focusOn.data("name");
+                    let type = focusOn.data("label");
+                    let info = focusOn.data("fromSource");
+                    $('#node_info').html("<h3'>More about: " + name + "</h3>");
+                    $('#node_info').html("<h3>Type of Entity: " + type + "</h3><h4>Info: " + info + "</h4>");
 
                 }); //end focus on
 
@@ -502,15 +502,15 @@
                                     queue: true
                                 });
 
-                                let pathTableColumns = ['Type', 'Name', 'Source', 'Target', 'Info'];
+                                let pathTableColumns = ['ID', 'Type', 'Name', 'Source', 'Target', 'Info'];
                                 let pathTableData = [];
                                 aStar.path.jsons().forEach(d => {                                    
                                     pathTableData.push({
                                         'ID': d.data.id,
                                         'Type': d.data.label,
                                         'Name': d.data.name,
-                                        'Source': d.data.source,
-                                        'Target': d.data.target,
+                                        'Source ID': d.data.source,
+                                        'Target ID': d.data.target,
                                         'Info': d.data.fromSource                                        
                                     });    
                                     
@@ -584,7 +584,7 @@
             $('#slider').slideReveal({
                 trigger: $("#trigger"),
                 position: "right",
-                width: "26%",
+                width: "30%",
                 top: 180,
                 push: false,
                 overlay: true,
