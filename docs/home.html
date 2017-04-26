@@ -562,6 +562,7 @@
                     
                 });
 
+                $("#node_info .card-body .card-body-content").html('');
                 $('#node_info .card-body .card-body-header').html('<h4> ' +  nodeHeaderName + ' (' + focusOn.data('label') + ')</h4>');
                 tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns); 
                 $('#node_info').show(); 
@@ -782,11 +783,27 @@
                                 let moreInfo;
                                 //Is this an edge or node?
                                 if (d.source() && d.source().length > 0) {
-                                    sourceName = d.source().data('name') === undefined ? '' : d.source().data('name').trim();
+                                    // sourceName = d.source().data('name') === undefined ? '' : d.source().data('name').trim();
                                     sourceType = d.source().data('label') === undefined? '' : d.source().data('label').trim();
+                                    sourceName = targetType === 'Contract' 
+                                            ? 'PIID:' + d.source().data('piid').trim() 
+                                                      + ' - ' 
+                                                      + d.source().data('purpose').trim() 
+                                                      + ', for $' 
+                                                      + d.source().data('amount').trim()
+                                            : d.source().data('name').trim();
                                     from = sourceType + ', ' + sourceName;
-                                    targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
+                                    // targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
                                     targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
+                                    
+                                    targetName = targetType === 'Contract' 
+                                            ? 'PIID:' + d.target().data('piid').trim() 
+                                                      + ' - ' 
+                                                      + d.target().data('purpose').trim() 
+                                                      + ', for $' 
+                                                      + d.target().data('amount').trim()
+                                            : d.target().data('name').trim();
+
                                     to = targetType + ', ' + targetName;
 
                                     connectionType = d.data('connection') === undefined ? '' : d.data('connection');
