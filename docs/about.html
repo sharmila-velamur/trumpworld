@@ -1,24 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head></head>
+<head>
+  <title>About Trumpworld</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 <body>
-<h1> About the Trumpworld Dataset And Our Additions</h1>
 
-    <p>This data set was largely compiled from the Buzzfeed Trumpworld dataset   <a href="https://github.com/BuzzFeedNews/trumpworld">Buzzfeed Trumpworld</a>  This dataset contains relationships between people and organizations in the Trump network, as found in legal filings and news articles. Each element, or node, in that data set has an accompanying reference for where that relationship was identified</p>
+<div class="jumbotron text-center">
+  <h1>About Trumpworld</h1>
+<!--  <p>Resize this responsive page to see the effect!</p> -->
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <h3>Data Sources</h3>
+     
+       <p>This data set was largely compiled from the <a href="https://github.com/BuzzFeedNews/trumpworld">Buzzfeed Trumpworld Dataset</a>.  This dataset contains relationships between people and organizations in the Trump network, as found in legal filings and news articles. Each element, or node, in that data set has an accompanying reference for where that relationship was identified, and are displayed in the "Search" and "Learn More About" results.</p>
+        
+       <p>We further enriched the Buzzfeed data by adding in 3 other sources - we'd love to get to more! This was inspired by and heavily leveraged the great work that the Neo4j community has contributed, and can all be found at the <a href="https://github.com/neo4j-contrib/trumpworld-graph">Neo4j Trumpworld Github</a>.   </p>
     
-    <p>We attempted to further enrich the data set by adding in 3 other main sources - we'd love to get to more! This was inspired by and heavily leveraged the great work that Neo4j has contributed to analyzing this dataset, and can all be found at the <a href="https://github.com/neo4j-contrib/trumpworld-graph">Neo4j Trumpworld Github</a>.   </p>
+       <p>First, we matched the companies in the Buzzfeed dataset against all <a href="https://www.usaspending.gov/DownloadCenter/Pages/DataDownload.aspx">US Federal Contracts</a> that were awarded in 2016.  This identified companies in the network that were awarded contracts, and created a connection between the awarding federal agency and the company.  </p>
     
-    <p>First, we matched the companies in the Buzzfeed dataset against all federal contracts that were awarded in 2016.  This identified companies in the network that were awarded contracts, and created a connection between the awarding federal agency and the company</p>
+       <p>Next, we joined all of the people and organizations in the dataset against information found in <a href="https://www.littlesis.org">LittleSis.org</a>.  LittleSis is a watchdog organization which doucments relationsihps between powerful individuals and orgnaizations. This added hundreds of connections to our original network. </p>
     
-    <p>Next, we joined all of the people and organizations in the dataset against information found in <a href="https://www.littlesis.org">LittleSis.org</a>.  LittleSis is a watchdog organization which doucments relationsihps between powerful individuals and orgnaizations. This added hundreds of connections to our original network. </p>
-    
-    <p>Finally, we merged in all of the nominees for President Trump's administration positions, as documented in the Tracker Database of the Washington Post.  This data is current as of Feb 18, 2017.  This again created new relationships between people and the federal aganecies that they were nominated to work at.</p>
-    
-    <p> All data was loaded-in using Neo4j community edition, exported into a graphML file, manipulated into JSON and built using cytoscape.js </p>
-    
-<h2>An Important Aside About Social Network Analysis</h2>
-    <p>Social network analysis is very interesting, and this one is no different.  We use multiple measures of centrality, or types of influence nodes have, throughout this site.  This analysis is limited by the total information in the network as well as it's accuracy.  Adding or removing even one node can significantly alter network measures.  This does not mean to ignore the analysis, however, but do keep in mind that this representation of the Trump Network, while vast(~8000 nodes and 11,000 edges) is incomplete.  Interesting patterns do arise, and we encourage you to add more nodes to the network via the Buzzfeed data set by emailing trump@buzzfeed.com. </p>
+       <p>Finally, we merged in all of the nominees for President Trump's administration positions, as documented in the Tracker Database of the Washington Post.  This data is current as of Feb 18, 2017.  This again created new relationships between people and the federal aganecies that they were nominated to work at.</p>
+        
+        <p> All data was loaded and merged using <a href="https://neo4j.com/product/">Neo4j community edition</a>, exported into a graphML file, manipulated into JSON and built using <a href = "http://js.cytoscape.org/">cytoscape.js</a>.</p>
+        
+      <h3>An Important Aside About Social Network Analysis</h3>
+        <p>Social network analysis is very interesting, and this one is no different.  We use multiple measures of centrality, or types of influence nodes have, throughout this site.  This analysis is limited by the total information in the network as well as it's accuracy.  Adding or removing even one node can significantly alter network measures.  This does not mean to ignore the analysis, however, but do keep in mind that this representation of the Trump Network, while vast(>8000 nodes and >11,000 edges) is incomplete.  Interesting patterns do arise, and we encourage you to add more nodes to the network via the Buzzfeed data set by emailing trump@buzzfeed.com. </p>
+    </div>
+    <div class="col-sm-3">
+      <h3>Goals</h3>
+         <p>Create a: </p>
+        <ul>
+          <li>Searchable network,</li>
+          <li>To enable journalists and curious citizens,</li>
+          <li>To explore the complex relationships between the many businesses, federal agencies and associates in the Trump network</li>
+        </ul>  
+     
+    </div>
+    <div class="col-sm-3">
+      <h3>Authors</h3>        
+       <p>This website was created by Sharmila Velamur <a href="mailto:sharmila.velamur@berkeley.eduSubject=Trumpworld" target="_top">(sharmila.velamur@berkeley.edu)</a> and Chandler McCann <a href="mailto:chandler.mccann@berkeley.eduSubject=Trumpworld" target="_top">(chandler.mccann@berkeley.edu)</a> as their class project for <a href="https://www.ischool.berkeley.edu/courses/datasci/209">W209 Data Visualization and Communication</a> at <a href="https://datascience.berkeley.edu/">The University of California, Berkeley Data Science Program</a>. </p>
+     
+    </div>
+  </div>
+</div>
+
 </body>
-
 </html>
