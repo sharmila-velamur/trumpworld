@@ -82,12 +82,26 @@
                     </div>
                 </div>
                 <div id="right" >
-                    <div id="path_info"></div>
+                    <div id="path_info" class="card" >
+                        <div class="card-content" style="background-color:#d81b60;color:#000;margin-top:-20px;">
+                            <div class="card-body">
+                                <div class="card-body-header">
+                                    <h3 class="heading-sm" >
+                                        Shortest path found:
+                                    </h3>
+                                </div>
+                                <div class="card-body-content">
+                                    <div id="path_node_info">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div id="node_info" class="card">
 
                         <!-- <div class="card-height-indicator"></div> -->
 
-                        <div class="card-content">
+                        <div class="card-content" style="background-color:#d81b60;color:#000;margin-top:-20px;">
 
                             <div class="card-body">
                                 <div class="card-body-header"></div>
@@ -739,7 +753,6 @@
                             return;
                         } else {
                             
-                            $("#path_info").html('');
                             $('#graph_legends').hide();                            
                             $('#node_info').hide();
                                            
@@ -790,9 +803,7 @@
                                 
                             });
 
-                            $("path_info").html('<h3> Shortest path from ' + $("#startNode").val() + 'to ' + $("#endNode").val() + ': </h3>');
-
-                            tabulate("#path_info", pathTableData, pathTableColumns);
+                            tabulate("#path_node_info", pathTableData, pathTableColumns);
                             cy.endBatch();
                             $('#path_info').show();
                         }
