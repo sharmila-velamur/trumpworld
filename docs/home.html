@@ -806,7 +806,7 @@
 
                                     to = targetType + ', ' + targetName;
 
-                                    connectionType = d.data('connection') === undefined ? '' : d.data('connection');
+                                    connectionType = d.data('label') === undefined ? '' : d.data('label');
                                     moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
 
                                     pathTableData.push({
@@ -819,7 +819,7 @@
                                 }  
                                 
                             });
-
+                            $("#path_node_info").html('');
                             tabulate("#path_node_info", pathTableData, pathTableColumns);
                             cy.endBatch();
                             $('#path_info').show();
