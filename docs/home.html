@@ -16,6 +16,8 @@
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="assets/js/maketable.js"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
     <script type="text/javascript" src="assets/js/jquery.qtip.min.js"></script>
@@ -29,6 +31,7 @@
     <link href="assets/css/mdi/css/materialdesignicons.min.css" media="all" rel="stylesheet" type="text/css" />
     <link href="assets/css/font-awesome-4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
     <link href="assets/css/jquery.qtip.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css">
     <link href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" >
     <link href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css" rel="stylesheet" type="text/css" >
     <link href="assets/css/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet" type="text/css" >
@@ -100,29 +103,29 @@
                         Graph Legend Info needs to be here
                     </div> 
                 </div> 
+            </div>
                                  
-                <div id="adj_matrix_container">
-                    <div id="adj_matrix">
-                        <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
-                    </div>
+            <div id="adj_matrix_container">
+                <div id="adj_matrix">
+                    <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
                 </div>
+            </div>
 
-                <div id="rankings_container">
-                    <div id="rankings">
-                        Rankings and Adjacency Matrix go here.
-                    </div>
+            <div id="rankings_container">
+                <div id="rankings">
+                    Rankings and Adjacency Matrix go here.
                 </div>
+            </div>
 
-                <div id="graph_data_container">
-                    <div id="graph_data">
-                        
-                    </div>
+            <div id="graph_data_container">
+                <div id="graph_data">
+                    
                 </div>
+            </div>
 
-                <div id="help_container">
-                    <div id="help">
-                        Help the user figure this site out.
-                    </div>
+            <div id="help_container">
+                <div id="help">
+                    Help the user figure this site out.
                 </div>
             </div>
         </div>
@@ -233,18 +236,36 @@
     <script type="text/javascript">
         var win = $(window);
         
-        var layoutPadding = 50;
-        var aniDur = 500;
-        var easing = 'linear';
+        //Create D3 JSON Object Array for Rankings
+
+        var graphElementsRankingsD3 = [];
 
         $(function() {          
 
             "use strict";
-            
-            var allNodes = null;
-            var allEles = null;
-            var lastHighlighted = null;
-            var lastUnhighlighted = null;
+
+            var nodeIndex = 0;
+
+            graphElements.forEach(c => { 
+
+                if (!c.data["source"]) {
+
+                    if (c.data["label"] === "Contract") {
+                        console.log(c.data["id"]);
+                    }
+                    graphElementsRankingsD3.push({
+                        "ID": c.data["id"],
+                        "Type": c.data["label"],
+                        "Name": (c.data["label"] === "Contract") ? c.data["purpose"] : c.data["name"],
+                        "Degree": c.data["dcn"].toFixed(3),
+                        "Closeness": c.data["ccn"].toFixed(3),
+                        "Betweeness": c.data["bc"].toFixed(3),
+                        "Pagerank": c.data["pr"].toFixed(4)
+                    });
+                } 
+            });
+
+  
 
             var cy = window.cy = cytoscape({
                 headless: false,
@@ -275,15 +296,13 @@
                     $("#right").height(win.innerHeight() - 130);
                     this.resize();
                     this.zoom(0.1);
-                    let initNode = this.$('[name="MELANIA TRUMP"]');
+                    let initNode = this.$('[name="IVANKA TRUMP"]');
                     this.fit(initNode.openNeighbourhood(), 10);                        
 
                     $('#graph_legends').show();
                     $('#path_info').hide();
                     $('#node_info').hide();
-                    
-                    allNodes = this.nodes();
-                    allEles = this.elements();
+ 
 
                     this.elements().qtip({
                         content: {
@@ -467,7 +486,6 @@
                     easing: 'ease',
                     queue: true
                 });
-                cy.zoom(0.1);
                 
                 $('#node_info').show(); 
 
@@ -815,6 +833,27 @@
                         height: 8
                     }
                 }
+            });
+
+            var table_plot = makeTable()
+              .datum(graphElementsRankingsD3)
+              .sortBy('Degree', false);
+
+            d3.select('#graph_data_container').call(table_plot, true);
+
+            table_plot.on('highlight', function(data, on_off){
+              if(on_off){//if the data is highlighted
+                d3.select('#highlighted').text(
+                  //'Oops, I just stepped over gene ' + data.symb
+                );
+              }
+            });
+            table_plot.on('select', function(data, on_off){
+              if(on_off){//if the data is highlighted
+                d3.select('#selected').text(
+                  'You chose ' + data.name
+                );
+              }
             });
         });
 

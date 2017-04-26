@@ -7,6 +7,7 @@ body {
     margin: 0;
     padding: 0;
     color: #000;
+    background-color: #ccc;
 }
 
 /*****************  LOADING SPINNER STARTS ******************/
@@ -47,7 +48,6 @@ body {
     overflow-x: wrap;
 }
 #cy {
-    margin-top: 10px;
     height:100%;
 }
 
@@ -138,7 +138,19 @@ body {
   color: #90a4ae;
 }
 
-.btn:active {
-  background-color: #212121;
-  color: #fff;
+#graph_data_table_wrapper {
+  width: 100%;
+  background-color: #fff;
+}
+
+#graph_data_table_filter label {
+  color: #212121;
+  font-family: metrophobic, helvetica neue, helvetica, arial, sans-serif;
+  font-size: 12px;
+}
+
+#graph_data_table_filter input {
+  color: #212121;
+  font-family: metrophobic, helvetica neue, helvetica, arial, sans-serif;
+  font-size: 12px;
 }
