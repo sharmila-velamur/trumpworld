@@ -101,7 +101,9 @@
 
                     </div>
                     <div id="graph_legends">
-                        Graph Legend Info needs to be here
+                        <div class="col-sm-8 col-lg-8 col-md-8 card">
+
+                        </div>
                     </div> 
                 </div> 
             </div>
@@ -153,17 +155,17 @@
                     <row>
                           <h3 class="heading">Data Sources</h3>
                          
-                           <p>This data set was largely compiled from the <a class="" href="https://github.com/BuzzFeedNews/trumpworld">Buzzfeed Trumpworld Dataset</a>.  This dataset contains relationships between people and organizations in the Trump network, as found in legal filings and news articles. Each element, or node, in that data set has an accompanying reference for where that relationship was identified, and are displayed in the "Search" and "Learn More About" results.</p>
+                           <p>This data set was largely compiled from the <a class="" href="https://github.com/BuzzFeedNews/trumpworld" target="_blank">Buzzfeed Trumpworld Dataset</a>.  This dataset contains relationships between people and organizations in the Trump network, as found in legal filings and news articles. Each element, or node, in that data set has an accompanying reference for where that relationship was identified, and are displayed in the "Search" and "Learn More About" results.</p>
                             
-                           <p>We further enriched the Buzzfeed data by adding in 3 other sources - we'd love to get to more! This was inspired by and heavily leveraged the great work that the Neo4j community has contributed, and can all be found at the <a href="https://github.com/neo4j-contrib/trumpworld-graph">Neo4j Trumpworld Github</a>.   </p>
+                           <p>We further enriched the Buzzfeed data by adding in 3 other sources - we'd love to get to more! This was inspired by and heavily leveraged the great work that the Neo4j community has contributed, and can all be found at the <a href="https://github.com/neo4j-contrib/trumpworld-graph" target="_blank">Neo4j Trumpworld Github</a>.   </p>
                         
-                           <p>First, we matched the companies in the Buzzfeed dataset against all <a href="https://www.usaspending.gov/DownloadCenter/Pages/DataDownload.aspx">US Federal Contracts</a> that were awarded in 2016.  This identified companies in the network that were awarded contracts, and created a connection between the awarding federal agency and the company.  </p>
+                           <p>First, we matched the companies in the Buzzfeed dataset against all <a href="https://www.usaspending.gov/DownloadCenter/Pages/DataDownload.aspx" target="_blank">US Federal Contracts</a> that were awarded in 2016.  This identified companies in the network that were awarded contracts, and created a connection between the awarding federal agency and the company.  </p>
                         
-                           <p>Next, we joined all of the people and organizations in the dataset against information found in <a href="https://www.littlesis.org">LittleSis.org</a>.  LittleSis is a watchdog organization which doucments relationsihps between powerful individuals and orgnaizations. This added hundreds of connections to our original network. </p>
+                           <p>Next, we joined all of the people and organizations in the dataset against information found in <a href="https://www.littlesis.org" target="_blank">LittleSis.org</a>.  LittleSis is a watchdog organization which doucments relationsihps between powerful individuals and orgnaizations. This added hundreds of connections to our original network. </p>
                         
                            <p>Finally, we merged in all of the nominees for President Trump's administration positions, as documented in the Tracker Database of the Washington Post.  This data is current as of Feb 18, 2017.  This again created new relationships between people and the federal aganecies that they were nominated to work at.</p>
                             
-                            <p> All data was loaded and merged using <a href="https://neo4j.com/product/">Neo4j community edition</a>, exported into a graphML file, manipulated into JSON and built using <a href = "http://js.cytoscape.org/">cytoscape.js</a>.
+                            <p> All data was loaded and merged using <a href="https://neo4j.com/product/" target="_blank">Neo4j community edition</a>, exported into a graphML file, manipulated into JSON and built using <a href = "http://js.cytoscape.org/" target="_blank">cytoscape.js</a>.
                             </p>                           
                           
 
@@ -178,7 +180,7 @@
                             <p> We also have an adjacency matrix representation of the Trump World data for those who would like a more academic perspective. <a href="https://sharmila-velamur.github.io/trumpworld/adjacencyMatrix.html" target="_blank"> You can view that here. </a></p>
 
                           <h3 class="heading">Authors</h3>        
-                           <p>This website was created by Sharmila Velamur <a href="mailto:sharmila.velamur@berkeley.eduSubject=Trumpworld" target="_top">(sharmila.velamur@berkeley.edu)</a> and Chandler McCann <a href="mailto:chandler.mccann@berkeley.eduSubject=Trumpworld" target="_top">(chandler.mccann@berkeley.edu)</a> as their class project for <a href="https://www.ischool.berkeley.edu/courses/datasci/209">W209 Data Visualization and Communication</a> at <a href="https://datascience.berkeley.edu/">The University of California, Berkeley Data Science Program</a>. </p>                                
+                           <p>This website was created by Sharmila Velamur <a href="mailto:sharmila.velamur@berkeley.eduSubject=Trumpworld" target="_top">(sharmila.velamur@berkeley.edu)</a> and Chandler McCann <a href="mailto:chandler.mccann@berkeley.eduSubject=Trumpworld" target="_top">(chandler.mccann@berkeley.edu)</a> as their class project for <a href="https://www.ischool.berkeley.edu/courses/datasci/209" target="_blank">W209 Data Visualization and Communication</a> at <a href="https://datascience.berkeley.edu/" target="_blank">The University of California, Berkeley Data Science Program</a>. </p>                                
                         </row>
                         
                 </div>
@@ -348,8 +350,10 @@
                 hideEdgesOnViewport: true,
                 textureOnViewport: true,
                 ready: function() {
-                    $("#cy_container").height(win.innerHeight() - 60);
-                    $("#right").height(win.innerHeight() - 60);
+                    $("#right").height(win.innerHeight() - 130);
+                    $("#left").height(win.innerHeight() - 130);
+                    $("#cy_container").height(win.innerHeight() - 130);
+                    
                     this.resize();
                     this.zoom(0.1);
                     let initNode = this.$('[name="IVANKA TRUMP"]');
@@ -426,8 +430,8 @@
             /*          BOOTSTRAP CY DIV FIX                                                  */
             /**********************************************************************************/
             var resize = function() {
-                $("#right").height(win.innerHeight());
-                $("#left").height(win.innerHeight());
+                $("#right").height(win.innerHeight() - 130);
+                $("#left").height(win.innerHeight() - 130);
                 $("#cy_container").height(win.innerHeight() - 130);
                 cy.resize();
             };
@@ -778,6 +782,7 @@
             $("#graph_viz_btn").click(function() {
                 
                 $("#viz").show();
+                win.resize();
                 $("#trigger").show();
                 $('#reset').show();
                 $('#refresh').show();
