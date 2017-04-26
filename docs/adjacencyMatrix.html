@@ -10,11 +10,8 @@ L Cherny's Twittwe adjacency matrix example http://blogger.ghostweather.com/2012
 //1) Get a presorted JSON file by one of our centrality measures
 //2) Adjust the coloring to reflect one of our measurs of centrality, fill not working
 //3) create more room for the text on the side -DONE
-
-
 -->
 <style>
-
 body {
   position: relative;
   font-family: "Arial Narrow", sans-serif;
@@ -23,88 +20,71 @@ body {
   margin-top: 40px;
   margin-bottom: 4em;
 }
-
 footer {
   font-size: small;
   margin-top: 8em;
 }
-
 aside {
   font-size: medium;
   position:absolute;
   width: 180px;
   left: 850px;
 }
-
 h2,h3,h4 {
 font-family: "Arial Narrow", sans-serif;
 margin-top: .5em;
 margin-bottom: .2em;
 color: gray;
 }
-
 .midnote {
 margin-top: .25em;
 font-size: small;
 border-bottom: 1px #ccc;
 }
-
 .infotext {
 	font-size: medium;
 	padding-bottom: .2em;
 	}
-
 .infotext p {
 margin-top: .5em;
 margin-bottom: .5em;
 }
-
 sourcenote {
 font-style: italic;
 font-size: small;
 }
-
-
 body > p {
   line-height: 1em;
   width: 1000px;
 }
-
 .infotext {
 	font-size: medium;
 	padding-bottom: .2em;
 	}
-
 a {
   color: steelblue;
 }
-
 a:not(:hover) {
   text-decoration: none;
 }
-
 .background {
   fill: #eee;
 }
-
 line {
   stroke: #fff;
 }
-
 text {
   font: 10px sans-serif;
 }
-
 text.active {
   fill: red;
 }
-
 </style>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 
 
-<h2>Cluster Analysis of Important Nodes by Node Type </h2>
+<h2>Who's Influential? Cluster Analysis by Type of Node</h2>
 
 
 <aside style="margin-top:80px;">
@@ -128,18 +108,18 @@ text.active {
         <p>This dataset is only the nodes with the most influence, measured by PageRank</p>
         
         <p><b>Node Legend:</b></p>
-        <p>People: Orange</p>
-        <p>Organizations: Blue</p>
-        <p>Federal Agencies: Green</p>
+        <p>People: Blue</p>
+        <p>Organizations: Green</p>
+        <p>Federal Agencies: Pink</p>
         
         <p><b>Clusters:</b></p>
         <p>When rows and columns aren't the same type of node (i.e not clustered) they appear black.Blocks of color show influence by node type</p>
         <p><b>Explanation of Centrality Measures</b></p>
 <!--        <p>There are multiple ways to analyze a node's importance in a social network.  Each measure tells a slightly different story. IMPORTANT- these measures are an approximation, and can change significantly by adding or removing nodes.  </p>-->
         <p><b>PageRank:</b> How well-connected a node and its direct connections are.  If you and your network have many connections, your pageRank is higher. Can be seen as power-players.</p>
-        <p>Degree: Who is the most connected to other nodes? This can relate to influence, or strategic importance for communication.</p>
-        <p>Closeness: Who can most quickly access other nodes? A high score means you have a lower distance to other nodes and can communicate easily.</p>
-        <p>Betweenness:High scoring nodes are typically "bridges" between other nodes or clusters.  They are the shortest pathways of communication within the network.  </p>
+        <p><b>Degree:</b> Who is the most connected to other nodes? This can relate to influence, or strategic importance for communication.</p>
+        <p><b>Closeness</b>Who can most quickly access other nodes? A high score means you have a lower distance to other nodes and can communicate easily.</p>
+        <p><b>Betweeness</b>High scoring nodes are typically "bridges" between other nodes or clusters.  They are the shortest pathways of communication within the network.  </p>
         	Based on Mike Bostock's 
 			<a href="http://bost.ocks.org/mike/miserables/">Les Mis Co-occurrence Matrix Example</a>. Built with <a href="http://mbostock.github.com/d3/">D3</a>
 	  	and 
@@ -153,27 +133,23 @@ var margin = {top: 300, right: 0, bottom: 10, left: 300}, //made wider for names
     width = 820,
     height = 820;
 var someColors = [];
-someColors["Person"] = "#d81b60"; 
-someColors["Organization"] = "#CCCDDD";
-someColors["Agency"] = "#0000FF";
-someColors["Country"] = "#FF00FF";
+someColors["Person"] = "#3333ff"; 
+someColors["Organization"] = "#00cc00";
+someColors["Agency"] = "#FF00FF";
 someColors["Contract"] = "#00FFFF";
 var x = d3.scale.ordinal().rangeBands([0, width]),
     z = d3.scale.linear().domain([0, 4]).clamp(true), //does 4 makes ense for use
     c = function(l) {
       return someColors[l];
     }
-
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .style("margin-left", -margin.left + "px")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 	// I used the 100 node set, and then sliced off the first 88.
 d3.json("assets/data/trump-world-d3.json", function(json) {
-
 	var sorted = json.nodes.slice();
 	sorted.sort(function(a,b) {return d3.descending(a.pr,b.pr);});
 	
@@ -187,7 +163,6 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
     node.index = i;
     matrix[i] = d3.range(n).map(function(j) { return {x: j, y: i, z: 0}; });
   });
-
   // Convert links to matrix; count character occurrences.
   json.links.forEach(function(link) {
 	if ((link.source < n) && (link.target < n)) {
@@ -198,7 +173,6 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
 	linkstotal += 1; //broken at the moment
 	}
   });
-
   // Precompute the orders.
   var orders = {
     degree: d3.range(n).sort(function(a, b) { return nodes[b].dcn - nodes[a].dcn; }),
@@ -206,22 +180,18 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
     ccn: d3.range(n).sort(function(a, b) { return nodes[b].ccn - nodes[a].ccn; }), //seems to be used to fill, 
 	pageRank: d3.range(n).sort(function(a, b) { return nodes[b].pr - nodes[a].pr; })
   };
-
   // The default sort order.
   x.domain(orders.pageRank);
-
   svg.append("rect")
       .attr("class", "background")
       .attr("width", width)
       .attr("height", height);
-
   var row = svg.selectAll(".row")
       .data(matrix)
     .enter().append("g")
       .attr("class", "row")
       .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
       .each(row);
-
   row.append("line")
       .attr("x2", width);
 	  
@@ -232,17 +202,13 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("text-anchor", "end")
       //.text(function(d, i) { return nodes[i].name; });
       .text(function(d, i) { return ((nodes[i].name).charAt(0).toUpperCase()) + nodes[i].name.slice(1).toLowerCase(); });
-
-
   var column = svg.selectAll(".column")
       .data(matrix)
     .enter().append("g")
       .attr("class", "column")
       .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
-
   column.append("line")
       .attr("x1", -width);
-
   column.append("text")
       .attr("x", 6)
       .attr("y", x.rangeBand() / 2)
@@ -261,7 +227,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        .style("fill-opacity", function(d) { return z(d.z)+ 0.65; }) //Nodes that actually have an edge are slightly darker
+        .style("fill-opacity", function(d) { return z(d.z)+.85; }) //Nodes that actually have an edge are slightly darker
         .style("fill", function(d) { return nodes[d.x].label == nodes[d.y].label ? c(nodes[d.x].label) : null ; }) //is ccn right here?
         //.style("fill", function(d) { return c(nodes[d.y].label) ; }) //is ccn right here?
         //.style("fill", function (d) {return c(nodes.label)}) //doesn't work
@@ -269,38 +235,30 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
   }
-
   function mouseover(p) {
     d3.selectAll(".row text").classed("active", function(d, i) { return i == p.y; });
     d3.selectAll(".column text").classed("active", function(d, i) { return i == p.x; });
   }
-
   function mouseout() {
     d3.selectAll("text").classed("active", false);
   }
-
   d3.select("#order").on("change", function() {
     clearTimeout(timeout);
     order(this.value);
   });
-
   function order(value) {
     x.domain(orders[value]);
-
     var t = svg.transition().duration(2500);
-
     t.selectAll(".row")
         .delay(function(d, i) { return x(i) * 4; })
         .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
       .selectAll(".cell")
         .delay(function(d) { return x(d.x) * 4; })
         .attr("x", function(d) { return x(d.x); });
-
     t.selectAll(".column")
         .delay(function(d, i) { return x(i) * 4; })
         .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
   }
-
   var timeout = setTimeout(function() {
     order("pageRank");
     d3.select("#order").property("selectedIndex", 0).node().focus();
@@ -315,6 +273,5 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
 	.text(function(d) {return d;});
 	
 });
-
 </script>
 </html>
