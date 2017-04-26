@@ -12,6 +12,7 @@
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
     <script type="text/javascript" src="assets/js/trump-world-preset.js"></script>
     <script type="text/javascript" src="assets/js/graph-styles.js"></script>
+    <script type="text/javascript" src="assets/js/formatXml.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
 
@@ -117,7 +118,27 @@
                 </div>
             </div>
 
-            <div id="graph_data_container" class="card">
+            <div id="graph_data_container" class="container ">
+                <div class="card">
+                    <ul class="list-group" style="margin:20px;">
+                        <li class="list-group-item ">
+                            <a href="#per_per" class="btn btn-info btn-flat btn-block " style="border:1px solid rgb(3, 169, 244);text-align: left;" data-toggle="collapse">View Buzzfeed Data: Person to Person</a>
+                            <div id="per_per" class="collapse"></div>
+                        </li>
+                        <li class="list-group-item ">
+                            <a href="#per_org" class="btn btn-info btn-flat btn-block " style="border:1px solid rgb(3, 169, 244);text-align: left;" data-toggle="collapse">View Buzzfeed Data: Person to Organization</a>
+                            <div id="per_org" class="collapse"></div>
+                        </li>
+                        <li class="list-group-item ">
+                            <a href="#org_org" class="btn btn-info btn-flat btn-block " style="border:1px solid rgb(3, 169, 244);text-align: left;" data-toggle="collapse">View Buzzfeed Data: Organization to Organization</a>
+                            <div id="org_org" class="collapse "></div>
+                        </li>
+                    </ul> 
+                </div>
+                <div class="card" style="margin-top:10px;margin-bottom:10px;padding:20px;">
+                    <h2 class="heading"> GraphML: Buzzfeed, FEC Donors and Federal Contracts Data </h2>
+                    <div id="graphml_data" style="padding-left:20px;border:1px solid #212121;height:400px; overflow-y: scroll;"></div>
+                </div>
             </div>
 
             <div id="help_container" class="container">
@@ -412,19 +433,7 @@
                 resize();
             });
 
-
-
-            /**********************************************************************/
-            /*  USER INTERACTION BASED EVENT LISTENERS                            */
-            /**********************************************************************/
-            cy.on('click', 'node', function( evt ){
-                var focusOn = evt.cyTarget;
-                console.log(focusOn.data());
-                $('#graph_legends').hide();
-                $('#path_info').hide();
-                $('#node_info .card-body .card-body-header').html('');
-                $('#node_info .card-body .card-body-content').html('');
-                
+            var displayNodeInfo = function(focusOn) {
                 //Contract type nodes are special cases
                 //They connect to an organization (issued contract)
                 //They connect to an agency (awarded contract)
@@ -437,9 +446,7 @@
 
                 if (sourceType  === 'Contract') {
                     nodeHeaderName = 'PIID: ' + focusOn.data('piid');
-                }
-                
-
+                }                
                 
                 focusOn.connectedEdges().forEach(d => { 
                     let nextNode = null;
@@ -483,27 +490,26 @@
                         'With': connectedEntity,                        
                         'Source': sourceInfo
                     }); 
-
-                    // if (d.target().data('label') === 'Contract' ) {
-                    //     d.target().connectedEdges().forEach( c => {
-                    //         console.log(c.data('id') + ': ' + c.data('label'));
-                    //         if (c.data('label') === 'AWARDED_CONTRACT') {
-                    //             console.log(c.target().data());
-                    //             connectionsData.push({
-                    //                 'Connected To': c.source().data('name'),
-                    //                 'Relationship': c.source().data('label'),
-                    //                 'Source': ''
-                    //             }); 
-
-                    //         }
-                    //     });
-                    // }   
                     
                 });
 
                 $('#node_info .card-body .card-body-header').html('<h4> ' +  nodeHeaderName + ' (' + focusOn.data('label') + ')</h4>');
                 tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns); 
                 $('#node_info').show(); 
+            }
+
+            /**********************************************************************/
+            /*  USER INTERACTION BASED EVENT LISTENERS                            */
+            /**********************************************************************/
+            cy.on('click', 'node', function( evt ){
+                var focusOn = evt.cyTarget;
+                console.log(focusOn.data());
+                $('#graph_legends').hide();
+                $('#path_info').hide();
+                $('#node_info .card-body .card-body-header').html('');
+                $('#node_info .card-body .card-body-content').html('');
+                
+                displayNodeInfo(focusOn);
             });
 
             /**********************************************************************/
@@ -546,7 +552,6 @@
               source: substringMatcher(nodeNames)
             });
 
-
             $('#focusOn').on('change', function(e){
 
                 console.log("In focusOn: " + $('#focusOn').val());
@@ -572,32 +577,7 @@
                     queue: true
                 });
                 
-                $('#node_info').show(); 
-
-                $('#node_info .card-body .card-body-header').html('<h4> ' + focusOn.data('name') + ' (' + focusOn.data('label') + ')</h4>');
-
-                let connectionsColumns = ['Connected To', 'Relationship', 'Source'];
-                let connectionsData = [];
-                focusOn.connectedEdges().forEach(d => { 
-                    let targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
-                    let targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
-                    let connectedTo = targetType + ', ' + targetName;
-
-                    let connectionType = d.data('connection') === undefined ? '' : d.data('connection');
-                    let moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
-                    // if (moreInfo.indexOf("https://") >= 0 || moreInfo.indexOf("http://") >= 0) {
-                    //     moreInfo = '<a class="btn btn-flat" href="' + moreInfo + '" target="_blank"> More Info </a>'    
-                    // } 
-                    connectionsData.push({
-                        'Connected To': connectedTo,
-                        'Relationship': connectionType,
-                        'Source': moreInfo
-                    });    
-                    
-                });
-
-                tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns);  
-                $('#node_info').show();            
+                displayNodeInfo(focusOn);       
 
             }); //end focus on
 
@@ -941,46 +921,33 @@
               }
             });
 
-                var prettyJson = function(json) {
-                    if (typeof json != 'string') {
-                        json = JSON.stringify(json, undefined, '\t');
-                    }
-
-                    var 
-                        arr = [],
-                        _string = 'color:green',
-                        _number = 'color:darkorange',
-                        _boolean = 'color:blue',
-                        _null = 'color:magenta',
-                        _key = 'color:red';
-
-                    json = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                        var style = _number;
-                        if (/^"/.test(match)) {
-                            if (/:$/.test(match)) {
-                                style = _key;
-                            } else {
-                                style = _string;
-                            }
-                        } else if (/true|false/.test(match)) {
-                            style = _boolean;
-                        } else if (/null/.test(match)) {
-                            style = _null;
-                        }
-                        arr.push(style);
-                        arr.push('');
-                        return '%c' + match + '%c';
-                });
-
-                arr.unshift(json);
-
-                //console.log.apply(console, arr);
-                return arr;
-                
-            }
-            $('#graph_data_container').html('<pre>' + prettyJson(graphElements) + '</pre>');
-
-            
+            d3.csv('assets/data/org-org-connections.csv',function (data) {
+                var columns = ['Organization A','Organization B','Connection','Source(s)']
+                tabulate("#org_org", data, columns);
+            });
+            d3.csv('assets/data/person-person-connections.csv',function (data) {
+                var columns = ['Person A','Person B','Connection','Source(s)']
+                tabulate("#per_per", data, columns);
+            });
+            d3.csv('assets/data/person-org-connections.csv',function (data) {
+                var columns = ['Organization','Person','Connection','Source(s)']
+                tabulate("#per_org", data, columns);
+            });
+            d3.csv('assets/data/person-org-connections.csv',function (data) {
+                var columns = ['Organization','Person','Connection','Source(s)']
+                tabulate("#per_org", data, columns);
+            });
+            var graphP = $.ajax({
+                url: 'assets/data/Trumpworld_CPM_20160401.graphml',
+                type: 'GET',
+                dataType: 'text'
+            });
+            Promise.all([graphP]).then(function (then) {
+                let xmlFormatted = formatXml(then[0]);
+                let xmlEscaped = xmlFormatted.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;').replace(/\n/g,'<br />');
+                $("#graphml_data").html(xmlEscaped);
+            });
+                   
         });
 
     </script>
