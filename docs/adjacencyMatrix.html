@@ -116,37 +116,40 @@ text.active {
 
 	<h4>Order (From Top Left) By:</h4>
 	<select id="order">
-	  <option value="pageRank">PageRank</option>
-	  <option value="degree">Degree</option>
-	  <option value="betweenness">Betweenness</option>
-      <option value="ccn">Closeness</option>   
+	  <option value="pageRank">Most Influence(PageRank)</option>
+	  <option value="degree">Most Connected(Degree)</option>
+	  <option value="betweenness">Most Paths (Betweeness)</option>
+      <option value="ccn">Most Reach(Closeness)</option>   
 	</select>
 
 
 	<sourcenote>
-		Based on Mike Bostock's 
-			<a href="http://bost.ocks.org/mike/miserables/">Les Mis Co-occurrence Matrix Example</a>. Built with <a href="http://mbostock.github.com/d3/">D3</a>
-	  	and 
-	  		<a href="http://www.ghostweather.com/">Lynn Cherny</a> from NetworkX analysis with accompanying <a href="http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html">talk slides and blog post.</a>
-        <p>This dataset is a subset of the overall network, filtered for the nodes with the highest PageRank centrality scores</p>
-        <p>There are 3 types of nodes present: People, Organizations and Federal Agencies.  When both rows and columns are the same node type, they take on the color of their node type.  If they are different, for example, one is a Person and another is an Organization, it appears black.
-            This shows how different clusters of groups have different types of influence.</p>
-        <p><b>Node Colors:</b></p>
+	
+        <p>This dataset is only the nodes with the most influence, measured by PageRank</p>
+        
+        <p><b>Node Legend:</b></p>
         <p>People: Orange</p>
         <p>Organizations: Blue</p>
         <p>Federal Agencies: Green</p>
+        
+        <p><b>Clusters:</b></p>
+        <p>When rows and columns aren't the same type of node (i.e not clustered) they appear black.Blocks of color show influence by node type</p>
         <p><b>Explanation of Centrality Measures</b></p>
-        <p>There are multiple ways to analyze a node's importance in a social network.  Each measure tells a slightly different story. IMPORTANT- these measures are an approximation, and can change significantly by adding or removing nodes.  </p>
-        <p>PageRank: Measure of how well-connected a node and its direct connections are.  If you have many connections, and your connections have many connections, your pageRank is higher. Can be seen as power-players in the network</p>
-        <p>Degree: Who is the most connected to other nodes? This can relate to influence, or strategic importance for communication</p>
-        <p>Closeness: Who can most quickly access other nodes in the network? A high score means you have a lower distance to other nodes and therefore can efficiently broadcast information</p>
+<!--        <p>There are multiple ways to analyze a node's importance in a social network.  Each measure tells a slightly different story. IMPORTANT- these measures are an approximation, and can change significantly by adding or removing nodes.  </p>-->
+        <p><b>PageRank:</b> How well-connected a node and its direct connections are.  If you and your network have many connections, your pageRank is higher. Can be seen as power-players.</p>
+        <p>Degree: Who is the most connected to other nodes? This can relate to influence, or strategic importance for communication.</p>
+        <p>Closeness: Who can most quickly access other nodes? A high score means you have a lower distance to other nodes and can communicate easily.</p>
         <p>Betweenness:High scoring nodes are typically "bridges" between other nodes or clusters.  They are the shortest pathways of communication within the network.  </p>
+        	Based on Mike Bostock's 
+			<a href="http://bost.ocks.org/mike/miserables/">Les Mis Co-occurrence Matrix Example</a>. Built with <a href="http://mbostock.github.com/d3/">D3</a>
+	  	and 
+	  		<a href="http://www.ghostweather.com/">Lynn Cherny</a> from NetworkX analysis with accompanying <a href="http://blogger.ghostweather.com/2012/03/digging-into-networkx-and-d3.html">talk slides and blog post.</a>
 	 </sourcenote>
 
 </aside>
 
 <script>
-var margin = {top: 250, right: 0, bottom: 10, left: 250}, //made wider for names
+var margin = {top: 300, right: 0, bottom: 10, left: 300}, //made wider for names
     width = 820,
     height = 820;
 
@@ -220,7 +223,9 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "end")
-      .text(function(d, i) { return nodes[i].name; });
+      //.text(function(d, i) { return nodes[i].name; });
+      .text(function(d, i) { return ((nodes[i].name).charAt(0).toUpperCase()) + nodes[i].name.slice(1).toLowerCase(); });
+
 
   var column = svg.selectAll(".column")
       .data(matrix)
@@ -236,8 +241,9 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       .attr("y", x.rangeBand() / 2)
       .attr("dy", ".32em")
       .attr("text-anchor", "start")
-      .text(function(d, i) { return nodes[i].name; });
-
+      //.text(function(d, i) { return nodes[i].name; });
+      .text(function(d, i) { return ((nodes[i].name).charAt(0).toUpperCase()) + nodes[i].name.slice(1).toLowerCase(); });
+    
    var someColors = d3.scale.category20b();
     
     function row(row) {
