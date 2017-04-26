@@ -55,7 +55,7 @@
             </div>
             <div class="col-md-7 col-lg-7 col-sm-7">
                 <a href="javascript:void(0)" class="btn active" id="graph_viz_btn">Network Viz</a>
-                <a href="javascript:void(0)" class="btn " id="adj_matrix_btn">Adjacency Matrix</a>
+                <a href="javascript:void(0)" class="btn " id="adj_matrix_btn" style="display:none;">Adjacency Matrix</a>
                 <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
                 <a href="javascript:void(0)" class="btn " id="graph_data_btn">Data</a>
                 <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
@@ -172,7 +172,10 @@
                               <li>Create a searchable network,</li>
                               <li>Help journalists and curious citizens with their research,</li>
                               <li>Allow exploration of complex relationships between the many businesses, federal agencies and associates in the Trump network</li>
-                            </ul>  
+                            </ul>
+
+                          <h3 class="heading">Graph Representation</h3>
+                            <p> We also have an adjacency matrix representation of the Trump World data for those who would like a more academic perspective. <a href="https://sharmila-velamur.github.io/trumpworld/adjacencyMatrix.html" target="_blank"> You can view that here. </a></p>
 
                           <h3 class="heading">Authors</h3>        
                            <p>This website was created by Sharmila Velamur <a href="mailto:sharmila.velamur@berkeley.eduSubject=Trumpworld" target="_top">(sharmila.velamur@berkeley.edu)</a> and Chandler McCann <a href="mailto:chandler.mccann@berkeley.eduSubject=Trumpworld" target="_top">(chandler.mccann@berkeley.edu)</a> as their class project for <a href="https://www.ischool.berkeley.edu/courses/datasci/209">W209 Data Visualization and Communication</a> at <a href="https://datascience.berkeley.edu/">The University of California, Berkeley Data Science Program</a>. </p>                                
@@ -345,8 +348,8 @@
                 hideEdgesOnViewport: true,
                 textureOnViewport: true,
                 ready: function() {
-                    $("#cy_container").height(win.innerHeight() - 130);
-                    $("#right").height(win.innerHeight() - 130);
+                    $("#cy_container").height(win.innerHeight() - 60);
+                    $("#right").height(win.innerHeight() - 60);
                     this.resize();
                     this.zoom(0.1);
                     let initNode = this.$('[name="IVANKA TRUMP"]');
@@ -596,7 +599,7 @@
                     // $('#graph_legends').show();
                     // $('#path_info').hide();
                     // $('#node_info').hide();
-                    allNodes.forEach ( n => { 
+                    cy.nodes().forEach ( n => { 
                         var type = n.data("label");                            
                         n.removeClass('hidden');
                         var filter = function(){
@@ -905,22 +908,7 @@
               .sortBy('Degree', false);
 
             d3.select('#rankings').call(table_plot, true);
-
-            table_plot.on('highlight', function(data, on_off){
-              if(on_off){//if the data is highlighted
-                d3.select('#highlighted').text(
-                  //'Oops, I just stepped over gene ' + data.symb
-                );
-              }
-            });
-            table_plot.on('select', function(data, on_off){
-              if(on_off){//if the data is highlighted
-                d3.select('#selected').text(
-                  'You chose ' + data.name
-                );
-              }
-            });
-
+            
             d3.csv('assets/data/org-org-connections.csv',function (data) {
                 var columns = ['Organization A','Organization B','Connection','Source(s)']
                 tabulate("#org_org", data, columns);
