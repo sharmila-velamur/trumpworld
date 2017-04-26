@@ -44,17 +44,17 @@ var layoutOptions = {
                      */
                     timeStep: 20,
                     iterations: 10000,
-                    fit: true,
+                    fit: false,
 
                     /**
                      * Maximum movement of the system which can be considered as stabilized
                      */
                     stableThreshold: 0.000009
                 },
-                animate: true,
+                animate: false,
                 iterations: 10000,
-                refreshInterval: 16, // in ms
-                refreshIterations: 10, // iterations until thread sends an update
+                refreshInterval: 1600, // in ms
+                refreshIterations: 1000, // iterations until thread sends an update
                 stableThreshold: 2,
-                fit: true
+                fit: false
             };

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <link rel="stylesheet" href="assets/js/alchemy/0.4.1/alchemy-white.css"/>
+</head>
+<body>
+  <div class="alchemy" id="alchemy"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+  <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+  <script src="assets/js/alchemy/0.4.1/alchemy.js"></script>
+  <script type="text/javascript">
+       var config = {
+            dataSource: "assets/data/miserables.json",
+            edgeTypes: {"edgeType":["IS_IN", "REFERENCED"]}, 
+            nodeTypes: {"nodeType":["Organization", "Person", "Contract", "Agency", "Country"]},
+            forceLocked: false,
+            nodeCaption: 'id',
+            edgeCaption: 'edgeType',
+            nodeStyle: {
+              "room": {
+                "color"      : "#F6F",
+                "radius"     : 20,
+                "borderWidth": 8
+              },
+              "user":{
+                "radius"     : 4
+              }
+            },
+            edgeStyle: {
+              "IS_IN": {
+                "width": 1,
+                "color": "rgba(255,255,255,0.4)"
+              },
+              "REFERENCED": {
+                "width": 3,
+                "color": "rgb(0,255,0)"
+              }
+            }
+          }
+
+        //alchemy = new Alchemy(config)
+        alchemy.begin({
+        	dataSource: "assets/data/trump-world.json", 
+        	nodeCaption: 'name', 
+        	nodeMouseOver: 'name',
+            cluster: true,
+            clusterColours: ["#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#E6AB02"]})
+    </script>
+  </body>
+</html>

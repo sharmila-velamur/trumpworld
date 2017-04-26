@@ -6,29 +6,23 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
 
     <title>Trump World</title>
-    <script type="text/javascript" src="assets/js/fastclick.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/dist/jquery.min.js"></script>
     <script src="assets/css/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-    <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>
+    <script src="assets/css/bootstrap-material-design/dist/js/material.min.js"></script>    
     <script src="assets/css/bootstrap-material-design/dist/js/ripples.min.js"></script>
-    <script type="text/javascript" src="assets/js/ngraphForceLayoutOptions.js"></script>
+    <script type="text/javascript" src="assets/js/trump-world-preset.js"></script>
+    <script type="text/javascript" src="assets/js/graph-styles.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape/dist/cytoscape.min.js"></script>
     <script type="text/javascript" src="assets/js/cytoscape-graphml/cytoscape-graphml.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-ngraph.forcelayout/cytoscape-ngraph.forcelayout.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/cytoscape-cola/cola.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-cola/cytoscape-cola.js"></script> -->
-    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script type="text/javascript" src="assets/js/graphDataView.js"></script>
     <script type="text/javascript" src="assets/js/slidereveal.js"></script>
     <script type="text/javascript" src="assets/js/jquery.qtip.min.js"></script>
     <link href="assets/css/jquery.qtip.min.css" rel="stylesheet" />
     <script type="text/javascript" src="assets/js/cytoscape-qtip.js"></script>
-    <script type="text/javascript" src="assets/js/handlebars.min.js"></script>
     <script type="text/javascript" src="assets/js/fastclick.min.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/bluebird.min.js"></script> -->
-    <script type="text/javascript" src="assets/js/typeahead.bundle.js"></script>
-    <script type="text/javascript" src="assets/js/cytoscape-k-means.js"></script>
-
+    
 
     <link href="https://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
@@ -38,73 +32,75 @@
     <link href="assets/css/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" >
     <link href="assets/css/bootstrap-material-design/dist/css/bootstrap-material-design.css" rel="stylesheet" type="text/css" >
     <link href="assets/css/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet" type="text/css" >
+
     
     <link href="assets/css/styles.css" rel="stylesheet" />
 
-    <!-- Material Design for Bootstrap -->
-    <script>
-        $.material.input();
-        $.material.checkbox();
+    <script type="text/javascript">
+        $.material.init();
     </script>
-
+    <script type="text/javascript" src="assets/js/typeahead.bundle.js"></script>
 </head>
 
-<body>    
+<body > 
     <div class="container-fluid">
-        <row class="card jumbotron">
-            <div class="col-md-12 col-lg-12 col-sm-12">
-                <h2 class=" title">Mapping The Trump World</h2>
-            </div>            
-        </row>
-        <row>
-            <div class="col-md-8 col-lg-8 col-sm-8">
-                <div class="card btn-group btn-group-justified">
-                    <a href="javascript:void(0)" class="btn " id="graph_viz_btn">Trump World</a>
-                    <a href="javascript:void(0)" class="btn " id="adj_matrix_btn">Adjacency Matrix</a>
-                    <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
-                    <a href="javascript:void(0)" class="btn " id="graph_data_btn">Graph Data</a>
-                    <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
-                </div>
+
+        <row class="card" style="padding-top:10px;margin-bottom:10px;">
+            <div class="col-md-3 col-lg-3 col-sm-3">
+                <p class="title">The Trump World</p>
             </div>
-            <div class="col-md-1 col-lg-1 col-sm-1 col-md-offset-1 col-lg-offset-1 col-sm-offset-1">                               
-                <a href="javascript:void(0)" id="reset" class="card btn">
-                    <i class="material-icons icon-sm">aspect_ratio</i>
-                </a>             
+            <div class="col-md-7 col-lg-7 col-sm-7">
+                <a href="javascript:void(0)" class="btn active" id="graph_viz_btn">Network Viz</a>
+                <a href="javascript:void(0)" class="btn " id="adj_matrix_btn">Adjacency Matrix</a>
+                <a href="javascript:void(0)" class="btn " id="rankings_btn">Rankings</a>
+                <a href="javascript:void(0)" class="btn " id="graph_data_btn">Data</a>
+                <a href="javascript:void(0)" class="btn " id="help_btn">About</a>
             </div>
-            <div class="col-md-1 col-lg-1 col-sm-1"> 
-                <a href="javascript:void(0)" id="refresh" class="card btn">
-                    <i class="material-icons icon-sm" >refresh</i>
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <a href="javascript:void(0)" id="reset" class="btn btn-sm">
+                    <i class="material-icons">aspect_ratio</i>
                 </a>
+                <a href="javascript:void(0)" id="refresh" class="btn btn-sm">
+                    <i class="material-icons" >refresh</i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm" id="trigger">
+                    <i class="material-icons" >menu</i>
+                </a> 
             </div>
-            <div id="trigger" class="col-md-1 col-lg-1 col-sm-1 ">
-                <a href="javascript:void(0)" class="btn btn-danger btn-raised">
-                    <i class="material-icons icon-sm" >menu</i>
-                </a>    
-            </div>
-            
         </row>
-        <row>
-            <div class="col-md-12 col-lg-12 col-sm-12">
-                <div id="viz">
-                    <div id="left" class="card">
-                        <div id="cy_container">
-                            <div id="cy"></div>                        
-                        </div>
+
+        <row >
+            
+            <div id="viz">
+                <div id="left" class="card">
+                    <div id="cy_container">
+                        <div id="cy"></div>                        
                     </div>
-                    <div id="right">
-                        <div id="path_info"></div>
-                        <div id="node_info">
-                            <div id="node_info_heading" ></div>
-                            <div id="node_info_body" >
-                                <div id="node-picture" class=""></div>
-                                <div id="node-source"></div>                                
+                </div>
+                <div id="right" >
+                    <div id="path_info"></div>
+                    <div id="node_info" class="card">
+
+                        <!-- <div class="card-height-indicator"></div> -->
+
+                        <div class="card-content">
+
+                            <div class="card-body">
+                                <div class="card-body-header"></div>
+                                <div class="card-body-content"></div>
                             </div>
+
+                            <footer class="card-footer">                                
+                            </footer>
+
                         </div>
-                        <div id="graph_legends">
-                            Graph Legend Info needs to be here
-                        </div> 
+
+                    </div>
+                    <div id="graph_legends">
+                        Graph Legend Info needs to be here
                     </div> 
-                </div>                  
+                </div> 
+                                 
                 <div id="adj_matrix_container">
                     <div id="adj_matrix">
                         <!-- <iframe src="adjacencyMatrix.html" style="width:100%;height:100%;overflow: scroll; border: none;"></iframe> -->                            
@@ -118,7 +114,9 @@
                 </div>
 
                 <div id="graph_data_container">
-                    <div id="graph_data"></div>
+                    <div id="graph_data">
+                        
+                    </div>
                 </div>
 
                 <div id="help_container">
@@ -127,62 +125,62 @@
                     </div>
                 </div>
             </div>
-        </row>
-    </div>
-    <div class="panel panel-default" id="slider">
-        <row class="vertical-align">
+        </div>
+    </row>
+    <div id="slider" class="card" style="padding-top:40px;">
+        <div style="height:80px">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons search icon">search</i>
+                <i class="material-icons icon">search</i>
             </div>
             <div id="search">
                 <div class="col-md-5 col-lg-5 col-sm-5">
                     <div class="form-group label-static">
                         <label for="startNode" class="control-label" >Start At</label>
-                        <input type="text" class="form-control" id="startNode">
+                        <input type="text" class="form-control typeahead" id="startNode">
                     </div>
                 </div>
 
                 <div class="col-md-5 col-lg-5 col-sm-5">
                     <div class="form-group label-static search">
                         <label for="endNode" class="control-label">End At</label>
-                        <input type="text" class="form-control" id="endNode">
+                        <input type="text" class="form-control typeahead" id="endNode" >
                     </div>
                 </div>
             </div>
-        </row>
-        <row class="vertical-align ">
+        </div>
+        <div style="height:80px">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons focusOn icon">zoom_in</i>
+                <i class="material-icons icon">zoom_in</i>
             </div>
             <div class="col-md-9 col-lg-9 col-sm-9">
                 <div class="form-group label-static">
                     <label for="focusOn" class="control-label">Learn More About</label>
-                    <input type="text" class="form-control" id="focusOn">
+                    <input type="text" class="form-control typeahead" id="focusOn" style="width: 100%">
                 </div>
             </div>
-        </row>
-        <row class="vertical-align ">
+        </div>
+        <div style="height:80px">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="mdi mdi-bullseye resize icon"></i>
+                <i class="material-icons icon">adjust</i>
             </div>
             <div class="col-md-9 col-lg-9 col-sm-9">
                 <div class="form-group label-static">
                     <label for="resizeNodes" class="control-label">Reprioritize Graph By</label>
                     <select id="resizeNodes" class="form-control">
                         <option value="">Select</option>
-                        <option value="degree"> Most Connected (Degree) </option>
+                        <option value="degree" selected="selected"> Most Connected (Degree) </option>
                         <option value="betweeness"> Most Paths (Betweeness) </option>
                         <option value="closeness"> Most Reach (Closeness) </option>
                         <option value="pagerank"> Most Popular (Pagerank) </option>
                     </select>
                 </div>
             </div>
-        </row>
-        <row class="vertical-align ">
+        </div>
+        <div style="height:80px">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="material-icons exportAs icon">file_download</i>
+                <i class="material-icons icon">file_download</i>
             </div>
-            <div class="col-md-10 col-lg-10 col-sm-10">
+            <div class="col-md-9 col-lg-9 col-sm-9">
                 <div class="form-group label-static ">
                     <label for="exportAs" class="control-label">Export As</label>
                     <select id="exportAs" class="form-control">
@@ -193,25 +191,39 @@
                     </select>
                 </div>
             </div>
-        </row>
-        <row class="vertical-align ">
+        </div>
+        <div style="height:80px">
             <div class="col-md-2 col-lg-2 col-sm-2">
-                <i class="mdi mdi-filter-outline filter icon"></i>
+                <i class="material-icons icon" style="margin-top:40px;">filter_list</i>
             </div>
             <div class="col-md-10 col-lg-10 col-sm-10">
-                <div class="form-group label-static">
-                <label for="filters" class="control-label">Filter / Remove</label>
-                    <select id="filters" multiple="" class="form-control">
-                        <option value=""> Select </option>
-                        <option value="Person"> Person </option>
-                        <option value="Organization"> Organization </option>
-                        <option value="Agency"> Agency </option>
-                        <option value="Contract"> Contract </option>
-                        <option value="Country"> Country </option>
-                    </select>                        
+                <div id="filters" class="form-group" style="margin-top: 2px;">
+                    <div style="display:block">
+                        <input name="personNode" id="personNode" type="checkbox" />
+                        <label for="personNode" class="control-label">  
+                            Person
+                        </label>
+                    </div>
+                    <div style="display:block">
+                        <input name="orgNode" id="orgNode" type="checkbox" />
+                        <label for="orgNode" class="control-label">  
+                            Organization
+                        </label>
+                    </div>
+                    
+                    <div style="display:block">
+                        <input name="contractNode" id="contractNode" type="checkbox" />
+                        <label for="contractNode" class="control-label"> Contract </label>
+                    </div>
+                    <div style="display:block">
+                         
+                        <input name="agencyNode" id="agencyNode" type="checkbox" />
+                        <label for="agencyNode" class="control-label"> Agency </label>
+                        
+                    </div>
                 </div>
             </div>
-        </row>
+        </div>
     </div>
     <div id="loading">
         <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
@@ -229,335 +241,111 @@
 
             "use strict";
             
-            
             var allNodes = null;
             var allEles = null;
             var lastHighlighted = null;
             var lastUnhighlighted = null;
 
-            var graphP = $.ajax({
-                url: 'assets/data/trump-world.json',
-                type: 'GET',
-                dataType: 'json'
-            });
-            // also get style via ajax
-            var styleP = $.ajax({
-                url: 'assets/graph-layout-styles.txt',
-                type: 'GET',
-                dataType: 'text'
-            });
-                        
-            // when both graph export json and style loaded, init cy
-            Promise.all([graphP, styleP]).then(initCy);
+            var cy = window.cy = cytoscape({
+                headless: false,
+                styleEnabled: true,
+                pixelRatio: 1,
+                container: $("#cy"),
+                elements: graphElements,
+                style: graphStyles,
+                layout: {
+                    name: 'preset'
+                },                  
+                motionBlur: true,
+                zoomingEnabled: true,
+                userZoomingEnabled: true,
+                panningEnabled: true,
+                userPanningEnabled: true,
+                boxSelectionEnabled: true,
+                selectionType: 'single',
+                touchTapThreshold: 8,
+                desktopTapThreshold: 4,
+                autolock: false,
+                autoungrabify: false,
+                autounselectify: false,
+                hideEdgesOnViewport: true,
+                textureOnViewport: true,
+                ready: function() {
+                    $("#cy_container").height(win.innerHeight() - 130);
+                    $("#right").height(win.innerHeight() - 130);
+                    this.resize();
+                    this.zoom(0.1);
+                    let initNode = this.$('[name="MELANIA TRUMP"]');
+                    this.fit(initNode.openNeighbourhood(), 10);                        
 
-            function initCy(then) {
-                console.log("In Init CY");
-
-                var styleJson = then[1];
-                var graphElements = then[0];
-
-                var cy = window.cy = cytoscape({
-                    headless: false,
-                    styleEnabled: true,
-                    container: $("#cy"),
-                    elements: graphElements,
-                    style: styleJson,
-                    layout: layoutOptions,                    
-                    motionBlur: true,
-                    zoomingEnabled: true,
-                    userZoomingEnabled: true,
-                    panningEnabled: true,
-                    userPanningEnabled: true,
-                    boxSelectionEnabled: true,
-                    selectionType: 'single',
-                    touchTapThreshold: 8,
-                    desktopTapThreshold: 4,
-                    autolock: false,
-                    autoungrabify: false,
-                    autounselectify: false,
-                    ready: function() {
-                        //apply cytoscape bootstrap fix for container height
-                        resize();
-
-                        $('#graph_legends').show();
-                        $('#path_info').hide();
-                        $('#node_info').hide();
-                        
-                        allNodes = this.nodes();
-                        allEles = this.elements();
-
-                        this.elements().qtip({
-                            content: {
-                                title: function() { return this.data("label"); },
-                                text: function() { 
-                                    let x = (this.data("name") === undefined) ? '' : $.camelCase(this.data("name"));
-                                    x += (this.data("purpose") === undefined) ? '' : $.camelCase(this.data("purpose"));
-                                    return x; 
-                                }                                                              
-                            },
-                            show: {
-                              event: 'mouseover'
-                            },
-                            hide: {
-                                event: 'mouseout'
-                            },
-                            position: {
-                                my: 'top center',
-                                at: 'bottom center'
-                            },
-                            style: {
-                                classes: 'qtip-bootstrap',
-                                tip: {
-                                    width: 16,
-                                    height: 8
-                                },
-                                'font-size': '8px'
-                            }
-                        });
-                    } 
-
-                }); //end cy
-
-                /**********************************************************************/
-                /*  SET LOADING COMPLETE                                              */
-                /**********************************************************************/
-                cy.on('layoutstop', function( event ) {
-                    console.log("Layout rendering stopped");
-                    $('#loading').addClass('loaded');
-                });
-
-
-                /**********************************************************************/
-                /*  FADE ELEMENTS OUT USING ANIMATION                                 */
-                /**********************************************************************/
-                // var getFadePromise = function( ele, opacity ) {
-                //     return ele.animation({
-                //       style: { 'opacity': opacity },
-                //       duration: aniDur
-                //     }).play().promise();
-                // };
-
-                /**********************************************************************/
-                /*  USER INTERACTION BASED EVENT LISTENERS                            */
-                /**********************************************************************/
-                // cy.on('tap', 'node', function( evt ){
-                //     var n = evt.cyTarget;
-                //     console.log(n.data());
-                //     $('#graph_legends').hide();
-                //     $('#path_info').hide();
-                //     $('#node_info').html('');
-                //     $('#node_info').show();
-                //     $('#node_info_heading').html(n.data().name);
-                //     $('#node_info_heading').html(n.data().name);
-                // });
-
-                /**********************************************************************/
-                /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
-                /**********************************************************************/
-                $('#focusOn').on('change', function() {
-                    console.log("In focusOn: " + $('#focusOn').val());
-                    $("#slider").slideReveal("hide");
-                    $('#graph_legends').hide();
-                    $('#path_info').hide();
-                    $('#node_info').html('');
-                    $('#node_info').show();
-
-                    let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
-                    let pos = focusOn.renderedPosition();
-                      
-                    cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('faded');                 
-                    focusOn.addClass('focus');
-                    lastHighlighted = focusOn;
-                    focusOn.neighbourhood().addClass('focus-neighbour');
-                    
-                    cy.animate({
-                        fit: {
-                            eles: focusOn.neighbourhood(),
-                            padding: 10
-                        },
-                        duration: 700,
-                        easing: 'ease',
-                        queue: true
-                    });
-                    let name = focusOn.data("name");
-                    let type = focusOn.data("label");
-                    let info = focusOn.data("fromSource");
-                    if (info === undefined) {
-                        info = "https://www.buzzfeed.com/johntemplon/help-us-map-trumpworld";
-                    }
-                    $('#node_info').html();
-                    $('#node_info').html("<p class='bg-primary' style='font-size:20px;'>More about: " + name + "</p>" + "<p style='font-size:16px;'>Type of Entity: " + type + "</p><p style='font-size:16px;>Info: " + info + "</p>");
-
-                }); //end focus on
-
-                /**********************************************************************/
-                /*      FILTER OUT NODE TYPES CHOSEN BY THE USER                      */
-                /**********************************************************************/
-                $("#filters").on('change', function() {
-                    var noOrg         = !$("#filters").val().includes('Organization');
-                    var noPerson      = !$("#filters").val().includes('Person');
-                    var noAgency      = !$("#filters").val().includes('Agency');
-                    var noCountry     = !$("#filters").val().includes('Country');
-                    var noContract    = !$("#filters").val().includes('Contract');
-                    cy.batch (function() {
-                        allNodes.forEach ( n => { 
-                            var type = n.data("label");                            
-                            n.removeClass('filtered');
-                            var filter = function(){
-                              n.addClass('filtered');
-                            };
-                            if (n.data("label") === "Organization" && !noOrg 
-                                || n.data("label") === "Person" && !noPerson
-                                || n.data("label") === "Agency" && !noAgency
-                                || n.data("label") === "Contract" && !noContract) {
-                                filter();
-                            }
-                        });
-
-                    });
-                }); //end filter by
-
-                /**********************************************************************************/
-                /**     RESIZE NODES TO HIGHLIGHT DIFFERENT CENTRALITY MEASURES             *******/
-                /**********************************************************************************/
-
-                $('#resizeNodes').on('change', function() {
-                    console.log("In resizeNodes: " + $('#resizeNodes').val());
-
-                    switch ($('#resizeNodes').val()) {
-                        case 'betweeness': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('ccn-resize pr-resize');
-                            cy.nodes().addClass('bc-resize');
-                            cy.endBatch();
-                            break;
-                        case 'closeness': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize pr-resize');
-                            cy.nodes().addClass('ccn-resize');
-                            cy.endBatch();
-                            break;
-                        case 'pagerank': 
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize pr-resize');
-                            cy.nodes().addClass('ccn-resize');
-                            cy.endBatch();
-                            break;
-                        default:
-                            cy.startBatch();
-                            cy.nodes().removeClass('bc-resize ccn-resize pr-resize');
-                            cy.endBatch();
-                    }
-                }); //end resize by
-
-                /**********************************************************************************/
-                /*  ASTAR IMPLEMENTATION -  FIND PATH TO GOAL NODE                              ***/
-                /**********************************************************************************/ 
-                $("#search").on('change', 'input', function() {
-
-                    if ($("#startNode").val() && $("#endNode").val()) {
-                        $("#slider").slideReveal("hide");
-                        if (lastHighlighted != null) {
-                            cy.elements().removeClass('path not-path focus focus-neighbour start end hidden faded highlighted');
-                            lastHighlighted = null;
-                        }
-                       
-                        let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
-                        let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
-
-                        // calculate shortest path
-                        cy.startBatch();
-                        
-                        start.addClass('start');
-                        end.addClass('end');
-
-                        setTimeout (function() {
-                             var aStar = cy.elements().aStar({
-                                root: start,
-                                goal: end,
-                                directed: false,
-                                weight: function( e ) { 
-                                    return 1;
-                                }
-                            });                             
-                            if ( !aStar.found ) {
-                                $("body").removeClass('calc');
-                                clear();
-
-                                cy.endBatch();
-                                return;
-                            } else {
-                                
-                                $("#path_info").html('');
-                                $('#graph_legends').hide();
-                                $('#path_info').show();
-                                $('#node_info').hide();
-                                               
-                                cy.elements().not( aStar.path ).addClass('not-path faded');    
-                                aStar.path.addClass('path');
-                                cy.animate({
-                                    fit: {
-                                        eles: aStar.path,
-                                        padding: 20
-                                    },
-                                    duration: 700,
-                                    easing: 'ease',
-                                    queue: true
-                                });
-
-                                let pathTableColumns = ['ID', 'Type', 'Name', 'Source', 'Target', 'Info'];
-                                let pathTableData = [];
-                                aStar.path.jsons().forEach(d => {                                    
-                                    pathTableData.push({
-                                        'ID': d.data.id,
-                                        'Type': d.data.label,
-                                        'Name': d.data.name,
-                                        'Source ID': d.data.source,
-                                        'Target ID': d.data.target,
-                                        'Info': d.data.fromSource                                        
-                                    });    
-                                    
-                                });
-
-                                tabulate("#path_info", pathTableData, pathTableColumns);
-                                cy.endBatch();
-                            }
-
-                        }, 300);
-                    }
-
-                }); //end search
-
-
-                /**********************************************************************/
-                /*  CENTER AND RESET ZOOM OF THE VIEW PORT                            */
-                /**********************************************************************/
-                $("#reset").on('click', function() {
-                    cy.batch(function() { 
-                        cy.fit(cy.elements());
-                    });
-                    
-                }); 
-
-                /**********************************************************************/
-                /*  REMOVE CSS CLASSES AND SPECIAL STYLES; RESTORE ORG POSITIONS      */
-                /**********************************************************************/
-                $("#refresh").on('click', function() {
-                    $('body').removeClass('has-start has-end');
-                    cy.batch(function() { 
-                        cy.elements().removeClass('path not-path focus focus-neighbour start end hidden faded highlighted');
-                    });
                     $('#graph_legends').show();
                     $('#path_info').hide();
                     $('#node_info').hide();
-                    lastHighlighted = null;
-                });         
+                    
+                    allNodes = this.nodes();
+                    allEles = this.elements();
 
-            } //end init cy
+                    this.elements().qtip({
+                        content: {
+                            title: function() { return this.data("label"); },
+                            text: function() { 
+                                let x = (this.data("name") === undefined) ? '' : $.camelCase(this.data("name"));
+                                x += (this.data("purpose") === undefined) ? '' : $.camelCase(this.data("purpose"));
+                                return x; 
+                            }                                                              
+                        },
+                        show: {
+                          event: 'mouseover'
+                        },
+                        hide: {
+                            event: 'mouseout'
+                        },
+                        position: {
+                            my: 'top center',
+                            at: 'bottom center'
+                        },
+                        style: {
+                            classes: 'qtip-bootstrap',
+                            tip: {
+                                width: 16,
+                                height: 8
+                            },
+                            'font-size': '8px'
+                        }
+                    });
+                    $('#loading').addClass('loaded');
+                    // $("#graph_viz_btn").addClass('activeButton');
+                } 
 
-            /**********************************************************************************/
-            /*          TOP MENU & NON-CY EVENTS                                              */
-            /**********************************************************************************/
+            }); //end cy
+
+            /**********************************************************************/
+            /*  CENTER AND RESET ZOOM OF THE VIEW PORT                            */
+            /**********************************************************************/
+            $("#reset").on('click', function() {
+                cy.batch(function() { 
+                    cy.fit(cy.elements());
+                });
+                
+            }); 
+
+            /**********************************************************************/
+            /*  REMOVE CSS CLASSES AND SPECIAL STYLES; RESTORE ORG POSITIONS      */
+            /**********************************************************************/
+            var clear = function() {
+                cy.batch(function() { 
+                    cy.elements().removeClass('path not-path focus focus-neighbour start end hidden faded highlighted');
+                });
+                $('#graph_legends').show();
+                $('#path_info').hide();
+                $('#node_info').hide();
+            }
+
+            $("#refresh").on('click', function() {
+                clear();
+            });         
+
+            
 
             /**********************************************************************************/
             /*          BOOTSTRAP CY DIV FIX                                                  */
@@ -570,16 +358,314 @@
             };
 
             win.resize(function() {
-                resize()
+                resize();
             });
 
-            /**********************************************************************************/
-            /*          D3 TABULATE - PROVIDE CONTAINER DIV ID, DATA AND COLUMN NAMES         */
-            /**********************************************************************************/
-            d3.csv('assets/data/org-org-connections.csv',function (data) {
-                var columns = ['Organization A','Organization B','Connection','Source(s)'];
-                tabulate('#graph_data',data,columns);
+
+
+            /**********************************************************************/
+            /*  USER INTERACTION BASED EVENT LISTENERS                            */
+            /**********************************************************************/
+            cy.on('click', 'node', function( evt ){
+                var focusOn = evt.cyTarget;
+                console.log(focusOn.data());
+                $('#graph_legends').hide();
+                $('#path_info').hide();
+                $('#node_info .card-body .card-body-header').html('');
+                $('#node_info .card-body .card-body-content').html('');
+                
+
+                $('#node_info .card-body .card-body-header').html('<h4> ' + focusOn.data('name') + ' (' + focusOn.data('label') + ')</h4>');
+
+                let connectionsColumns = ['Connected To', 'Relationship', 'Source'];
+                let connectionsData = [];
+                focusOn.connectedEdges().forEach(d => { 
+                    let targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
+                    let targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
+                    let connectedTo = targetType + ', ' + targetName;
+
+                    let connectionType = d.data('connection') === undefined ? '' : d.data('connection');
+                    let moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
+                    // if (moreInfo.indexOf("https://") >= 0 || moreInfo.indexOf("http://") >= 0) {
+                    //     moreInfo = '<a class="btn btn-flat" href="' + moreInfo + '" target="_blank"> More Info </a>'    
+                    // } 
+                    connectionsData.push({
+                        'Connected To': connectedTo,
+                        'Relationship': connectionType,
+                        'Source': moreInfo
+                    });    
+                    
+                });
+
+                tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns); 
+                $('#node_info').show(); 
             });
+
+            /**********************************************************************/
+            /*  FOCUS ON NODE - PAN & ZOOM TO SAID NODE                           */
+            /**********************************************************************/
+
+            var substringMatcher = function(strs) {
+                return function findMatches(q, cb) {
+                    var matches, substrRegex;
+
+                    // an array that will be populated with substring matches
+                    matches = [];
+
+                    // regex used to determine if a string contains the substring `q`
+                    substrRegex = new RegExp(q, 'i');
+
+                    // iterate through the pool of strings and for any string that
+                    // contains the substring `q`, add it to the `matches` array
+                    $.each(strs, function(i, str) {
+                        if (substrRegex.test(str)) {
+                            matches.push(str);
+                        }
+                    });
+                    cb(matches);
+                };
+            };
+
+            var nodeNames = [];
+            cy.nodes().forEach( n => {
+                nodeNames.push(n.data("name"));
+            });
+            console.log(nodeNames[0]);
+
+            $('.typeahead').typeahead({
+              minLength: 3,
+              highlight: false
+            },
+            {
+              name: 'my-dataset',
+              source: substringMatcher(nodeNames)
+            });
+
+
+            $('#focusOn').on('change', function(e){
+
+                console.log("In focusOn: " + $('#focusOn').val());
+                clear();
+                $("#slider").slideReveal("hide");
+                $('#graph_legends').hide();
+                $('#path_info').hide();                
+
+                let focusOn = cy.$("[name = '" + $("#focusOn").val().toUpperCase() + "']");
+                let pos = focusOn.renderedPosition();
+                  
+                cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('faded');                 
+                focusOn.addClass('focus');
+                lastHighlighted = focusOn;
+                focusOn.neighbourhood().addClass('focus-neighbour');
+                
+                cy.animate({
+                    fit: {
+                        eles: focusOn.neighbourhood(),
+                        padding: 10
+                    },
+                    duration: 700,
+                    easing: 'ease',
+                    queue: true
+                });
+                cy.zoom(0.1);
+                
+                $('#node_info').show(); 
+
+                $('#node_info .card-body .card-body-header').html('<h4> ' + focusOn.data('name') + ' (' + focusOn.data('label') + ')</h4>');
+
+                let connectionsColumns = ['Connected To', 'Relationship', 'Source'];
+                let connectionsData = [];
+                focusOn.connectedEdges().forEach(d => { 
+                    let targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
+                    let targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
+                    let connectedTo = targetType + ', ' + targetName;
+
+                    let connectionType = d.data('connection') === undefined ? '' : d.data('connection');
+                    let moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
+                    // if (moreInfo.indexOf("https://") >= 0 || moreInfo.indexOf("http://") >= 0) {
+                    //     moreInfo = '<a class="btn btn-flat" href="' + moreInfo + '" target="_blank"> More Info </a>'    
+                    // } 
+                    connectionsData.push({
+                        'Connected To': connectedTo,
+                        'Relationship': connectionType,
+                        'Source': moreInfo
+                    });    
+                    
+                });
+
+                tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns);  
+                $('#node_info').show();            
+
+            }); //end focus on
+
+            /**********************************************************************/
+            /*      FILTER OUT NODE TYPES CHOSEN BY THE USER                      */
+            /**********************************************************************/
+            $("#filters").on('change', function() {
+                var noOrg         = !$("#orgNode").is(':checked');
+                var noPerson      = !$("#personNode").is(':checked');
+                var noAgency      = !$("#agencyNode").is(':checked');
+                // var noCountry     = !$("#countryNode").is(':checked');
+                var noContract    = !$("#contractNode").is(':checked');
+                cy.batch (function() {
+                    //clear();
+                    $("#slider").slideReveal("hide");
+                    // $('#graph_legends').show();
+                    // $('#path_info').hide();
+                    // $('#node_info').hide();
+                    allNodes.forEach ( n => { 
+                        var type = n.data("label");                            
+                        n.removeClass('hidden');
+                        var filter = function(){
+                          n.addClass('hidden');
+                        };
+                        if (n.data("label") === "Organization" && !noOrg 
+                            || n.data("label") === "Person" && !noPerson
+                            || n.data("label") === "Agency" && !noAgency
+                            || n.data("label") === "Contract" && !noContract) {
+                            filter();
+                        }
+                    });
+
+                });
+            }); //end filter by
+
+            /**********************************************************************************/
+            /**     RESIZE NODES TO HIGHLIGHT DIFFERENT CENTRALITY MEASURES             *******/
+            /**********************************************************************************/
+
+            $('#resizeNodes').on('change', function() {
+                console.log("In resizeNodes: " + $('#resizeNodes').val());
+                $("#slider").slideReveal("hide");
+
+                switch ($('#resizeNodes').val()) {
+                    case 'betweeness': 
+                        cy.startBatch();
+                        cy.nodes().removeClass('ccn-resize pr-resize');
+                        cy.nodes().addClass('bc-resize');
+                        cy.endBatch();
+                        break;
+                    case 'closeness': 
+                        cy.startBatch();
+                        cy.nodes().removeClass('bc-resize pr-resize');
+                        cy.nodes().addClass('ccn-resize');
+                        cy.endBatch();
+                        break;
+                    case 'pagerank': 
+                        cy.startBatch();
+                        cy.nodes().removeClass('bc-resize pr-resize');
+                        cy.nodes().addClass('ccn-resize');
+                        cy.endBatch();
+                        break;
+                    default:
+                        cy.startBatch();
+                        cy.nodes().removeClass('bc-resize ccn-resize pr-resize');
+                        cy.endBatch();
+                }
+            }); //end resize by
+
+            /**********************************************************************************/
+            /*  ASTAR IMPLEMENTATION -  FIND PATH TO GOAL NODE                              ***/
+            /**********************************************************************************/ 
+            $("#search").on('change', 'input', function() {
+
+                if ($("#startNode").val() && $("#endNode").val()) {
+                    clear();
+                    $("#slider").slideReveal("hide");
+                    $('#graph_legends').hide();
+                    $('#path_info').hide();
+                    $('#node_info').hide();
+                    
+                   
+                    let start = cy.$("[name = '" + $("#startNode").val().toUpperCase() + "']");
+                    let end = cy.$("[name = '" + $("#endNode").val().toUpperCase() + "']");
+
+                    // calculate shortest path
+                    cy.startBatch();
+                    
+                    start.addClass('start');
+                    end.addClass('end');
+
+                    setTimeout (function() {
+                         var aStar = cy.elements().aStar({
+                            root: start,
+                            goal: end,
+                            directed: false,
+                            weight: function( e ) { 
+                                return 1;
+                            }
+                        });                             
+                        if ( !aStar.found ) {
+                            clear();
+                            cy.endBatch();
+                            return;
+                        } else {
+                            
+                            $("#path_info").html('');
+                            $('#graph_legends').hide();                            
+                            $('#node_info').hide();
+                                           
+                            cy.elements().not( aStar.path ).addClass('faded');    
+                            aStar.path.addClass('path');
+                            cy.animate({
+                                fit: {
+                                    eles: aStar.path,
+                                    padding: 20
+                                },
+                                duration: 700,
+                                easing: 'ease',
+                                queue: true
+                            });
+
+                            let pathTableColumns = ['From', 'To', 'Relationship', 'Source'];
+                            let pathTableData = [];
+                            aStar.path.forEach(d => { 
+                                let sourceName;
+                                let sourceType;
+                                let targetName;
+                                let targetType;
+                                let from;
+                                let to;
+
+                                let connectionType;
+                                let moreInfo;
+                                //Is this an edge or node?
+                                if (d.source() && d.source().length > 0) {
+                                    sourceName = d.source().data('name') === undefined ? '' : d.source().data('name').trim();
+                                    sourceType = d.source().data('label') === undefined? '' : d.source().data('label').trim();
+                                    from = sourceType + ', ' + sourceName;
+                                    targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
+                                    targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
+                                    to = targetType + ', ' + targetName;
+
+                                    connectionType = d.data('connection') === undefined ? '' : d.data('connection');
+                                    moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
+
+                                    pathTableData.push({
+                                        'From': from,
+                                        'To': to,
+                                        'Relationship': connectionType,
+                                        'Source': moreInfo
+                                    });
+
+                                }  
+                                
+                            });
+
+                            $("path_info").html('<h3> Shortest path from ' + $("#startNode").val() + 'to ' + $("#endNode").val() + ': </h3>');
+
+                            tabulate("#path_info", pathTableData, pathTableColumns);
+                            cy.endBatch();
+                            $('#path_info').show();
+                        }
+
+                    }, 300);
+                }
+            }); //end search
+
+            /**********************************************************************************/
+            /*          NON-CY EVENTS                                              */
+            /**********************************************************************************/
 
             /**********************************************************************************/
             /** RIGHT TO LEFT SLIDER - GRAPH ANALYSIS TOOLS                                  **/
@@ -588,17 +674,23 @@
                 trigger: $("#trigger"),
                 position: "right",
                 width: "30%",
-                top: 180,
+                top: 70,
                 push: false,
                 overlay: true,
-                autoEscape: true                
+                autoEscape: true,
+                show: function() {
+                    $("#slider input[type=text]").val('');
+                    $("#exportAs").val('');
+                }               
             });
 
+            
             /**********************************************************************/
             /*      ON CLICK OF TRUMP WORLD SHOW CYTOSCAPE CONTAINER              */
             /**********************************************************************/
 
             $("#graph_viz_btn").click(function() {
+                
                 $("#viz").show();
                 $("#trigger").show();
                 $('#reset').show();
@@ -614,6 +706,7 @@
             /**********************************************************************/
 
             $("#rankings_btn").click(function() {
+                
                 $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
@@ -629,6 +722,7 @@
             /**********************************************************************/
 
             $("#adj_matrix_btn").click(function() {
+             
                 $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
@@ -644,7 +738,7 @@
             /**********************************************************************/
 
             $("#graph_data_btn").click(function() {
-
+             
                 $("#viz").hide();
                 $("#trigger").hide();
                 $('#reset').hide();
