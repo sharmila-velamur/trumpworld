@@ -56,10 +56,10 @@ body {
 #graph_data_container,
 #help_container {
     display: none;
-    position: absolute;
-    border: 1px solid #DDD;
 }
-
+#rankings {
+  padding-top: 10px;
+}
 
 .title {
     font-family: Metrophobic, sans-serif !important;
@@ -139,7 +139,8 @@ body {
 }
 
 #graph_data_table_wrapper {
-  width: 100%;
+  width: 90%;
+  left: 4%;
   background-color: #fff;
 }
 

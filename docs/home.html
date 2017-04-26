@@ -111,16 +111,14 @@
                 </div>
             </div>
 
-            <div id="rankings_container">
-                <div id="rankings">
-                    Rankings and Adjacency Matrix go here.
+            <div id="rankings_container" >
+                <div id="rankings" class="card">
+                    
                 </div>
             </div>
 
-            <div id="graph_data_container">
-                <div id="graph_data">
-                    
-                </div>
+            <div id="graph_data_container" class="card">
+                
             </div>
 
             <div id="help_container">
@@ -839,7 +837,7 @@
               .datum(graphElementsRankingsD3)
               .sortBy('Degree', false);
 
-            d3.select('#graph_data_container').call(table_plot, true);
+            d3.select('#rankings').call(table_plot, true);
 
             table_plot.on('highlight', function(data, on_off){
               if(on_off){//if the data is highlighted
