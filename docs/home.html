@@ -121,9 +121,47 @@
                 
             </div>
 
-            <div id="help_container">
-                <div id="help">
-                    Help the user figure this site out.
+            <div id="help_container" class="container">
+                <div class="col-sm-10 card" style="padding:25px;">
+                    <row>
+                        <img src="assets/images/wsj-trump-500.jpg" style="height: 400px;width: 90%;margin-left:90px;">
+                        <cite class="col-sm-12" style="text-align: right">Credit: <a href="http://www.storybench.org/how-the-wall-street-journal-visualized-the-500-conflicts-of-interest-of-the-trumps/" target="_blank">The Storybench</a></cite>
+                    </row>
+                    <row>
+                        <center><h1 class="title"> Mapping the Trump World </h1></center>
+                    </row>
+                    <row>
+                          <h3 class="heading">Data Sources</h3>
+                         
+                           <p>This data set was largely compiled from the <a class="" href="https://github.com/BuzzFeedNews/trumpworld">Buzzfeed Trumpworld Dataset</a>.  This dataset contains relationships between people and organizations in the Trump network, as found in legal filings and news articles. Each element, or node, in that data set has an accompanying reference for where that relationship was identified, and are displayed in the "Search" and "Learn More About" results.</p>
+                            
+                           <p>We further enriched the Buzzfeed data by adding in 3 other sources - we'd love to get to more! This was inspired by and heavily leveraged the great work that the Neo4j community has contributed, and can all be found at the <a href="https://github.com/neo4j-contrib/trumpworld-graph">Neo4j Trumpworld Github</a>.   </p>
+                        
+                           <p>First, we matched the companies in the Buzzfeed dataset against all <a href="https://www.usaspending.gov/DownloadCenter/Pages/DataDownload.aspx">US Federal Contracts</a> that were awarded in 2016.  This identified companies in the network that were awarded contracts, and created a connection between the awarding federal agency and the company.  </p>
+                        
+                           <p>Next, we joined all of the people and organizations in the dataset against information found in <a href="https://www.littlesis.org">LittleSis.org</a>.  LittleSis is a watchdog organization which doucments relationsihps between powerful individuals and orgnaizations. This added hundreds of connections to our original network. </p>
+                        
+                           <p>Finally, we merged in all of the nominees for President Trump's administration positions, as documented in the Tracker Database of the Washington Post.  This data is current as of Feb 18, 2017.  This again created new relationships between people and the federal aganecies that they were nominated to work at.</p>
+                            
+                            <p> All data was loaded and merged using <a href="https://neo4j.com/product/">Neo4j community edition</a>, exported into a graphML file, manipulated into JSON and built using <a href = "http://js.cytoscape.org/">cytoscape.js</a>.
+                            </p>                           
+                          
+
+                          <h3 class="heading">Goals</h3>
+                            <ul>
+                              <li>Create a searchable network,</li>
+                              <li>Help journalists and curious citizens with their research,</li>
+                              <li>Allow exploration of complex relationships between the many businesses, federal agencies and associates in the Trump network</li>
+                            </ul>  
+
+                          <h3 class="heading">Authors</h3>        
+                           <p>This website was created by Sharmila Velamur <a href="mailto:sharmila.velamur@berkeley.eduSubject=Trumpworld" target="_top">(sharmila.velamur@berkeley.edu)</a> and Chandler McCann <a href="mailto:chandler.mccann@berkeley.eduSubject=Trumpworld" target="_top">(chandler.mccann@berkeley.edu)</a> as their class project for <a href="https://www.ischool.berkeley.edu/courses/datasci/209">W209 Data Visualization and Communication</a> at <a href="https://datascience.berkeley.edu/">The University of California, Berkeley Data Science Program</a>. </p>                                
+                        </row>
+                        
+                </div>
+                <div class="col-sm-10 card" style="margin-top:15px;margin-bottom:10px;">
+                        <h3 class="heading-sm">An Important Aside About Social Network Analysis</h3>
+                        <p>Social network analysis is very interesting, and this one is no different.  We use multiple measures of centrality, or types of influence nodes have, throughout this site.  This analysis is limited by the total information in the network as well as it's accuracy.  Adding or removing even one node can significantly alter network measures.  This does not mean to ignore the analysis, however, but do keep in mind that this representation of the Trump Network, while vast(>8000 nodes and >11,000 edges) is incomplete.  Interesting patterns do arise, and we encourage you to add more nodes to the network via the Buzzfeed data set by emailing trump@buzzfeed.com. </p>
                 </div>
             </div>
         </div>
@@ -248,13 +286,10 @@
 
                 if (!c.data["source"]) {
 
-                    if (c.data["label"] === "Contract") {
-                        console.log(c.data["id"]);
-                    }
                     graphElementsRankingsD3.push({
                         "ID": c.data["id"],
                         "Type": c.data["label"],
-                        "Name": (c.data["label"] === "Contract") ? c.data["purpose"] : c.data["name"],
+                        "Name": (c.data["label"] === "Contract") ? ('PIID: ' + c.data["piid"]) : c.data["name"],
                         "Degree": c.data["dcn"].toFixed(3),
                         "Closeness": c.data["ccn"].toFixed(3),
                         "Betweeness": c.data["bc"].toFixed(3),
@@ -391,29 +426,83 @@
                 $('#node_info .card-body .card-body-header').html('');
                 $('#node_info .card-body .card-body-content').html('');
                 
-
-                $('#node_info .card-body .card-body-header').html('<h4> ' + focusOn.data('name') + ' (' + focusOn.data('label') + ')</h4>');
-
-                let connectionsColumns = ['Connected To', 'Relationship', 'Source'];
+                //Contract type nodes are special cases
+                //They connect to an organization (issued contract)
+                //They connect to an agency (awarded contract)
+                //There are no other connections possible - for eg: contract to person does not exist
+                //Also, one contract is related to one organization and one agency only
+                let nodeHeaderName = focusOn.data('name');
+                let connectionsColumns = ['Has Relationship', 'With', 'Source'];
                 let connectionsData = [];
-                focusOn.connectedEdges().forEach(d => { 
-                    let targetName = d.target().data('name') === undefined ? '' : d.target().data('name').trim();
-                    let targetType = d.target().data('label') === undefined? '' : d.target().data('label').trim();
-                    let connectedTo = targetType + ', ' + targetName;
+                let sourceType = focusOn.data('label');
 
-                    let connectionType = d.data('connection') === undefined ? '' : d.data('connection');
-                    let moreInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();
-                    // if (moreInfo.indexOf("https://") >= 0 || moreInfo.indexOf("http://") >= 0) {
-                    //     moreInfo = '<a class="btn btn-flat" href="' + moreInfo + '" target="_blank"> More Info </a>'    
-                    // } 
+                if (sourceType  === 'Contract') {
+                    nodeHeaderName = 'PIID: ' + focusOn.data('piid');
+                }
+                
+
+                
+                focusOn.connectedEdges().forEach(d => { 
+                    let nextNode = null;
+                    if (sourceType  === 'Contract') {
+                        nextNode = d.source();        
+                    } else {
+                        nextNode = d.target();
+                    }
+
+                    let targetType = nextNode.data('label').trim();
+                    let targetName = targetType === 'Contract' 
+                                            ? 'PIID:' + nextNode.data('piid').trim() 
+                                                      + ' - ' 
+                                                      + nextNode.data('purpose').trim() 
+                                                      + ', for $' 
+                                                      + nextNode.data('amount').trim()
+                                            : nextNode.data('name').trim();
+
+                    let connectedEntity = targetType + ': ' + targetName;                    
+
+                    let hasRelationship = d.data('label');
+
+                    let sourceInfo = '';
+                    if (targetType === 'Contract') {
+                        // Get the target node edges and find the source agency that awarded the contract
+                        let contractNodeEdges = d.target().connectedEdges();
+                        contractNodeEdges.forEach( c => {
+                            if (c.source().data('label') === 'Agency') {
+                                sourceInfo = 'Issued By: ' + c.source().data('name');
+                            }
+                        });
+
+                    } else {
+
+                        sourceInfo = d.data('fromSource') === undefined ? '' : d.data('fromSource').trim();        
+                        
+                    }                          
+
                     connectionsData.push({
-                        'Connected To': connectedTo,
-                        'Relationship': connectionType,
-                        'Source': moreInfo
-                    });    
+                        'Has Relationship': hasRelationship,
+                        'With': connectedEntity,                        
+                        'Source': sourceInfo
+                    }); 
+
+                    // if (d.target().data('label') === 'Contract' ) {
+                    //     d.target().connectedEdges().forEach( c => {
+                    //         console.log(c.data('id') + ': ' + c.data('label'));
+                    //         if (c.data('label') === 'AWARDED_CONTRACT') {
+                    //             console.log(c.target().data());
+                    //             connectionsData.push({
+                    //                 'Connected To': c.source().data('name'),
+                    //                 'Relationship': c.source().data('label'),
+                    //                 'Source': ''
+                    //             }); 
+
+                    //         }
+                    //     });
+                    // }   
                     
                 });
 
+                $('#node_info .card-body .card-body-header').html('<h4> ' +  nodeHeaderName + ' (' + focusOn.data('label') + ')</h4>');
                 tabulate("#node_info .card-body .card-body-content", connectionsData, connectionsColumns); 
                 $('#node_info').show(); 
             });
@@ -472,7 +561,6 @@
                   
                 cy.elements().not( focusOn ).not( focusOn.neighbourhood() ).addClass('faded');                 
                 focusOn.addClass('focus');
-                lastHighlighted = focusOn;
                 focusOn.neighbourhood().addClass('focus-neighbour');
                 
                 cy.animate({
@@ -853,6 +941,8 @@
                 );
               }
             });
+
+            $('#graph_data pre').text(graphElements);
         });
 
     </script>

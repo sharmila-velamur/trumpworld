@@ -67,6 +67,23 @@ body {
     font-weight: bold;
     display: inline-flex;
 }
+
+.heading {
+    font-family: Metrophobic, sans-serif !important;
+    font-size: 28px;
+    font-weight: bold;
+    display: inline-flex;
+    color: #2E2E2E;
+}
+
+.heading-sm {
+    font-family: Metrophobic, sans-serif !important;
+    font-size: 20px;
+    font-weight: bold;
+    display: inline-flex;
+    color: #2E2E2E;
+}
+
 .vertical-align {
     display: flex;
     align-items: center;
