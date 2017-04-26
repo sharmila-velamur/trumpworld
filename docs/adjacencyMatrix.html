@@ -152,10 +152,17 @@ text.active {
 var margin = {top: 300, right: 0, bottom: 10, left: 300}, //made wider for names
     width = 820,
     height = 820;
-
+var someColors = [];
+someColors["Person"] = "#d81b60"; 
+someColors["Organization"] = "#CCCDDD";
+someColors["Agency"] = "#0000FF";
+someColors["Country"] = "#FF00FF";
+someColors["Contract"] = "#00FFFF";
 var x = d3.scale.ordinal().rangeBands([0, width]),
     z = d3.scale.linear().domain([0, 4]).clamp(true), //does 4 makes ense for use
-    c = d3.scale.category10().domain(d3.range(10));
+    c = function(l) {
+      return someColors[l];
+    }
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -244,7 +251,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
       //.text(function(d, i) { return nodes[i].name; });
       .text(function(d, i) { return ((nodes[i].name).charAt(0).toUpperCase()) + nodes[i].name.slice(1).toLowerCase(); });
     
-   var someColors = d3.scale.category20b();
+   //var someColors = ["",  ""];
     
     function row(row) {
     var cell = d3.select(this).selectAll(".cell")
@@ -254,7 +261,7 @@ d3.json("assets/data/trump-world-d3.json", function(json) {
         .attr("x", function(d) { return x(d.x); })
         .attr("width", x.rangeBand())
         .attr("height", x.rangeBand())
-        .style("fill-opacity", function(d) { return z(d.z)+ 0.6; }) //Nodes that actually have an edge are slightly darker
+        .style("fill-opacity", function(d) { return z(d.z)+ 0.65; }) //Nodes that actually have an edge are slightly darker
         .style("fill", function(d) { return nodes[d.x].label == nodes[d.y].label ? c(nodes[d.x].label) : null ; }) //is ccn right here?
         //.style("fill", function(d) { return c(nodes[d.y].label) ; }) //is ccn right here?
         //.style("fill", function (d) {return c(nodes.label)}) //doesn't work
